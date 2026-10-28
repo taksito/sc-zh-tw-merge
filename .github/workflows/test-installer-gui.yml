@@ -74,7 +74,7 @@ jobs:
           $p = Start-Process -FilePath .\SC-zhTW-Installer.exe -PassThru
           Start-Sleep -Seconds 6; Shot '1-open'
           if ($p.HasExited) { Note "程式已結束，代碼 $($p.ExitCode)"; exit 0 }
-          $main = [W]::FindWindowW('SCzhTWInstaller', $null)
+          $main = [W]::FindWindowW('SCzhTWInstaller', [NullString]::Value)
           Note "主視窗：$main"
           # 安裝：按鈕 → 確認「是」(6) → 完成「確定」(1/2)
           [W]::Click([W]::Child($main, '安裝中文化'))
