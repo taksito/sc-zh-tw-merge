@@ -119,6 +119,8 @@ nav.cats .bar i{display:block;height:100%;background:var(--ok)}
 @media (max-width:900px){.ohead{display:none}.card.orow{grid-template-columns:minmax(0,1fr) auto}.card.orow textarea{grid-column:1/-1}}
 .online{display:grid;gap:8px}
 .upd{background:var(--warn-soft);color:var(--warn);border-radius:4px;padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.decode{display:grid;gap:4px;border-top:1px solid var(--line);padding-top:12px}
+.decode p{margin:0;font-size:13px}
 .savebar{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;align-items:center}
 #saveState{color:var(--ok)}
 nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:10px 10px 2px;font-weight:600}
@@ -190,6 +192,10 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
       <label class="slot" style="padding:6px 12px;display:inline-flex;border-style:solid"><span>匯入審核紀錄</span><input type="file" id="f-prog" accept=".json"></label>
       <span class="muted" id="exportNote">未審核的項目會使用自動建議；你修改過的以修改為準。</span>
     </div>
+    <div class="decode">
+      <label class="inl"><input type="checkbox" id="addDecode" checked> <b>在 global.ini 最後加上「中文輸入解碼表」</b></label>
+      <p class="muted">產生的 global.ini 最後面會自動加入 <span id="decodeCount" class="mono">7,020</span> 條對照（<span class="mono">00=一</span>、<span class="mono">01=乙</span> … <span class="mono">4EZ=龠</span>），遊戲才能正確顯示其他玩家在聊天、名稱裡輸入的中文。已存在的同名條目不會重複加入。</p>
+    </div>
   </section>
 
   <section id="reviewPanel" hidden>
@@ -216,6 +222,9 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
 </div>
 <div class="toast" id="toast" role="status"></div>
 
+<script type="text/plain" id="decodeTable">
+/*DECODE*/
+</script>
 <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
@@ -605,7 +614,20 @@ $('#btnPageOk').onclick = ()=>{
 function renderAll(){ $('#stFilter').value = view.st; renderStats(); renderCats(); renderCards(); }
 
 // ---------- 匯出 ----------
-function buildOutput(){ return M.buildIni(result.entries, finalValue, parsed.exo.crlf ? '\r\n' : '\n'); }
+// 中文輸入解碼表（內嵌在頁面裡）
+const DECODE = (() => { const el = document.getElementById('decodeTable'); return el ? el.textContent.replace(/^\s+|\s+$/g,'').split(/\r?\n/).filter(l => /^[^=\s]+=/.test(l)) : []; })();
+try { $('#decodeCount').textContent = DECODE.length.toLocaleString(); $('#addDecode').checked = LS.get('addDecode', true); } catch(e){}
+$('#addDecode').addEventListener('change', ev => LS.set('addDecode', ev.target.checked));
+function buildOutput(){
+  const eol = parsed.exo.crlf ? '\r\n' : '\n';
+  let out = M.buildIni(result.entries, finalValue, eol);
+  if ($('#addDecode').checked && DECODE.length) {
+    const have = byKey;
+    const extra = DECODE.filter(l => !have.has(l.slice(0, l.indexOf('='))));
+    out += extra.join(eol) + eol;
+  }
+  return out;
+}
 async function offer(filename, data){
   let dl = null;
   try { dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch(e){ dl = null; }
