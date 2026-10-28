@@ -347,7 +347,7 @@ func doInstall() {
 	logLine("── " + verb + "中文化 ──")
 	if err := install(live, curPack, logLine); err != nil {
 		logLine("✘ " + err.Error())
-		msgBox(err.Error(), mbOK|mbIconErr)
+		offerElevate(err)
 	} else {
 		msgBox(verb+"完成！啟動遊戲就會是繁體中文。", mbOK|mbIconInfo)
 	}
@@ -366,11 +366,34 @@ func doUninstall() {
 	logLine("── 移除中文化 ──")
 	if err := uninstall(live, logLine); err != nil {
 		logLine("✘ " + err.Error())
-		msgBox(err.Error(), mbOK|mbIconErr)
+		offerElevate(err)
 	} else {
 		msgBox("已變回英文。", mbOK|mbIconInfo)
 	}
 	refreshStatus()
+}
+
+// 權限不足時，問要不要以系統管理員身分重新開啟
+func offerElevate(err error) {
+	if !strings.Contains(err.Error(), "Access is denied") && !strings.Contains(strings.ToLower(err.Error()), "permission") && !strings.Contains(err.Error(), "拒絕存取") {
+		msgBox(err.Error(), mbOK|mbIconErr)
+		return
+	}
+	if msgBox(err.Error()+"\n\n要以系統管理員身分重新開啟安裝器嗎？", mbYesNo|mbIconWarn) != idYes {
+		return
+	}
+	exe, e := os.Executable()
+	if e != nil {
+		return
+	}
+	args := ""
+	if curPack != nil {
+		args = `"` + curPack.Path + `"`
+	}
+	r, _, _ := pShellExecuteW.Call(hMain, uintptr(unsafe.Pointer(u16("runas"))), uintptr(unsafe.Pointer(u16(exe))), uintptr(unsafe.Pointer(u16(args))), 0, 1)
+	if r > 32 { // 成功開啟新的（管理員）視窗，就關掉目前這個
+		pPostQuitMessage.Call(0)
+	}
 }
 
 func doOpenBackup() {
