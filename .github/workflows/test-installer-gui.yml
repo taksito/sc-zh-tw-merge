@@ -1,0 +1,48 @@
+name: 測試安裝器視窗
+
+# 在 Windows 上實際打開安裝器並截圖（手動執行）
+on:
+  workflow_dispatch:
+
+jobs:
+  screenshot:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: 編譯
+        working-directory: installer
+        run: go build -trimpath -ldflags "-s -w -H=windowsgui" -o ..\SC-zhTW-Installer.exe .
+      - name: 建立假的遊戲資料夾與語言包
+        shell: pwsh
+        run: |
+          $live = 'C:\Program Files\Roberts Space Industries\StarCitizen\LIVE'
+          New-Item -ItemType Directory -Force -Path $live | Out-Null
+          New-Item -ItemType File -Force -Path "$live\Data.p4k" | Out-Null
+          Set-Content -Path "$live\user.cfg" -Value "r_DisplayInfo = 0"
+          $dl = Join-Path $env:USERPROFILE 'Downloads'
+          New-Item -ItemType Directory -Force -Path $dl | Out-Null
+          $tmp = Join-Path $env:RUNNER_TEMP 'pkg'
+          New-Item -ItemType Directory -Force -Path $tmp | Out-Null
+          $lines = @('Frontend_PU_Version=Alpha 4.10.2: Siege of Orison') + (1..20000 | ForEach-Object { "test_key_$_=測試文字 $_" })
+          [IO.File]::WriteAllLines("$tmp\global.ini", $lines, (New-Object Text.UTF8Encoding $true))
+          Compress-Archive -Path "$tmp\global.ini" -DestinationPath "$dl\global_zh-TW.zip" -Force
+      - name: 打開視窗並截圖
+        shell: pwsh
+        run: |
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          $p = Start-Process -FilePath .\SC-zhTW-Installer.exe -PassThru
+          Start-Sleep -Seconds 6
+          $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+          $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+          $g = [System.Drawing.Graphics]::FromImage($bmp)
+          $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+          $bmp.Save("$env:RUNNER_TEMP\installer.png")
+          if ($p.HasExited) { Write-Host "程式已結束，代碼 $($p.ExitCode)"; exit 1 }
+          Stop-Process -Id $p.Id
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installer-screenshot
+          path: ${{ runner.temp }}/installer.png
