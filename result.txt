@@ -1,0 +1,12 @@
+主視窗：131452
+── 安裝後 user.cfg ──
+r_DisplayInfo = 0
+g_language = chinese_(traditional)
+g_languageAudio = english
+global.ini bytes=677842 bom=239,187,191
+── 移除後 user.cfg ──
+r_DisplayInfo = 0
+g_language = english
+g_languageAudio = english
+C:\Program Files\Roberts Space Industries\StarCitizen\LIVE\語言包備份\20261028-134620\user.cfg
+C:\Program Files\Roberts Space Industries\StarCitizen\LIVE\語言包備份\20261028-134627\user.cfg
