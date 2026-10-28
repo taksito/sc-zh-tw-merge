@@ -247,11 +247,20 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         e.from = e.cat; e.cat = 'ore'; e.out = o.out; e.note = o.note; e.len = o.len;
       }
     }
+    // 地點：英文在前、中文在後
+    if (opts.loc !== false) {
+      const L = locProposals(entries, exo, opts.loc || {});
+      for (const e of entries) {
+        const v = L.get(e.k); if (v === undefined || v === e.out) continue;
+        stats[e.cat]--; stats.loc = (stats.loc || 0) + 1;
+        e.from = e.cat; e.cat = 'loc'; e.out = v;
+      }
+    }
     // 漢化固定不動、ExoAE 改版時：英文變了的條目，中文可能已過時
     if (opts.exoBase) {
       for (const e of entries) {
         // 輸出完全由 ExoAE 產生的分類（礦石、零件等級、未中文化）會自動跟著新版，不用列出
-        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force'].includes(e.cat)) continue;
+        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force'].includes(e.cat) || (e.cat === 'loc' && e.from !== 'zh')) continue;
         const bv = opts.exoBase.map.get(e.k);
         if (bv === undefined || bv === e.exo) continue;
         stats[e.cat]--; stats.updated = (stats.updated || 0) + 1;
@@ -267,6 +276,58 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
   const DEFAULT_FORCE_EXO = `# 一行一個條目鍵名，這些一律用 ExoAE 原文
 comm_HackedConnection
 `;
+
+  // ---------- 地點 ----------
+  // 漢化包沒翻的地點（多半是 Stanton、Pyro）可以在這裡補中文
+  const DEFAULT_LOC_ZH = `# 英文 => 中文。只用在漢化包沒翻、仍是英文的地點名稱
+Stanton => 斯坦頓
+Hurston => 赫斯頓
+Crusader => 十字軍
+ArcCorp => 弧光星
+microTech => 微科星
+Yela => 耶拉
+Calliope => 卡利俄佩
+Clio => 克利俄
+Euterpe => 歐忒耳佩
+Area18 => 18區
+Levski => 列夫斯基
+Grim HEX => 六角灣
+Pyro => 派羅
+Ruin Station => 廢墟空間站
+Stanton Gateway => 斯坦頓星門
+Pyro Gateway => 派羅星門
+Port Olisar => 奧麗莎空間站
+`;
+  function locProposals(entries, exo, o) {
+    // 星系名稱：有 XxxSystem / Xxx_Star 鍵，或值是「Xxx System」
+    const sys = new Set();
+    for (const k of exo.keys) {
+      let m = /^([A-Z][a-z]+)(?:System|_Star)$/.exec(k); if (m) sys.add(m[1]);
+      if (/^[A-Z][a-z]+$/.test(k) && / System$/.test(exo.map.get(k) || '')) sys.add(k);
+    }
+    const re = new RegExp('^(?:(?:' + [...sys].join('|') + ')(?:\\d+[a-z]?)?(?:_[A-Za-z0-9_\\-]+)?|RR_[A-Za-z0-9_]+|ui_pregame_port_\\w+_name)(?:,P)?$');
+    const bad = /desc|Desc|DESC|_Org|Courier|_from|[Hh]int|[Mm]ission|[Tt]itle|_obj|[Ss]hop|RepUI|Allies|Enemies/;
+    const dict = new Map();
+    for (const d of parseDict(o.zhNames != null ? o.zhNames : DEFAULT_LOC_ZH)) if (d.s) dict.set(d.s, d.to);
+    const out = new Map();
+    const esc = x => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    for (const e of entries) {
+      if (!re.test(e.k) || bad.test(e.k) || e.exo == null || e.zh == null) continue;
+      if (!['zh', 'same', 'en_exo'].includes(e.cat)) continue;
+      const en = e.exo.trim();
+      if (!en || en.length > 60 || /[~%<:\\]/.test(en) || CJK.test(en)) continue;
+      let zh = e.zh.trim();
+      if (CJK.test(zh)) {
+        zh = zh.replace(new RegExp('\\s*[（(]\\s*' + esc(en) + '\\s*[)）]\\s*', 'g'), '').trim();   // 艾若(Aero) → 艾若
+        if (!zh || zh.includes(en)) continue;
+        out.set(e.k, en + ' ' + zh);
+      } else {
+        const z = dict.get(en);
+        if (z) out.set(e.k, en + ' ' + z);
+      }
+    }
+    return out;
+  }
 
   // ---------- 零件等級 ----------
   const DEFAULT_CLASS_MAP = { CIV: '民用', MIL: '軍規', IND: '工業', STL: '隱形', STH: '隱形', CMP: '競速' };
@@ -396,6 +457,6 @@ Carinite => Carinite
     return '\ufeff' + lines.join(eol || '\n') + (eol || '\n');
   }
 
-  const api = { parseIni, merge, buildIni, parseDict, applyDict, textLen, CJK, DEFAULT_TAIL_DICT, DEFAULT_TERM_DICT, DEFAULT_ORE_ZH, DEFAULT_ORE_ABBR, DEFAULT_CLASS_MAP, DEFAULT_FORCE_EXO };
+  const api = { parseIni, merge, buildIni, parseDict, applyDict, textLen, CJK, DEFAULT_TAIL_DICT, DEFAULT_TERM_DICT, DEFAULT_ORE_ZH, DEFAULT_ORE_ABBR, DEFAULT_CLASS_MAP, DEFAULT_FORCE_EXO, DEFAULT_LOC_ZH };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SCMerge = api;
 })(this);

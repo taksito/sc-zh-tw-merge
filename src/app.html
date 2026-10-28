@@ -86,6 +86,7 @@ nav.cats .bar i{display:block;height:100%;background:var(--ok)}
 .pill{font-size:11.5px;padding:1px 8px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
 .pill.ore{background:var(--tok-soft);color:var(--tok)}
 .pill.force{background:var(--warn-soft);color:var(--warn)}
+.pill.loc{background:var(--accent-soft);color:var(--accent)}
 .pill.comp{background:var(--accent-soft);color:var(--accent)}
 .pill.issue,.pill.check{background:var(--bad-soft);color:var(--bad)}
 .pill.tail,.pill.title,.pill.wrap{background:var(--accent-soft);color:var(--accent)}
@@ -228,12 +229,15 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
           <textarea id="oreZh" class="code" rows="10" spellcheck="false"></textarea></label>
         <label>礦石英文縮寫　<span>寫在這裡的一定照用；沒寫的自動取開頭 3–6 個字母</span>
           <textarea id="oreAbbr" class="code" rows="10" spellcheck="false"></textarea></label>
+        <label>地點中文名　<span>漢化包沒翻的地點（多半是 Stanton、Pyro）在這裡補中文，會顯示成「英文 中文」</span>
+          <textarea id="locZh" class="code" rows="8" spellcheck="false"></textarea></label>
         <label>固定用 ExoAE 原文的條目　<span>一行一個鍵名，這些不翻譯</span>
           <textarea id="forceExo" class="code" rows="6" spellcheck="false"></textarea></label>
       </div>
       <div class="row" style="margin-top:10px">
         <label class="inl">礦石每行最多 <input type="number" id="oreLimit" min="6" max="40" style="width:5em"> 字</label>
         <label class="inl"><input type="checkbox" id="oreHalf"> 英文、數字算半個字</label>
+        <label class="inl"><input type="checkbox" id="locOn"> 地點顯示成「英文 中文」</label>
       </div>
       <div class="row" style="margin-top:10px"><button id="btnReapply" disabled>重新套用詞彙表</button><button id="btnResetDict" class="sm">還原預設詞彙</button></div>
     </details>
@@ -325,6 +329,7 @@ const CATS = [
   {id:'issue',  name:'問題項目', hint:'自動合併後檢查不通過，仍照建議採用', auto:true},
   {id:'check',  name:'需人工確認', hint:'ExoAE 有額外標記但接不上，採用繁中', auto:true},
   {id:'force',  name:'固定用 ExoAE', hint:'詞彙表裡指定不翻譯的條目', auto:true},
+  {id:'loc',    name:'地點（英＋中）', hint:'Nyx I 尼克斯 I：英文在前、中文在後', auto:true},
   {id:'comp',   name:'零件等級', hint:'MIL-1C "Bracer" → 軍規1C-Bracer', auto:true},
   {id:'en_exo', name:'未中文化 → ExoAE', hint:'漢化包本來就是英文，直接用 ExoAE', auto:true},
   {id:'title',  name:'標題標籤', hint:'任務標題的 [聲望] [藍圖] 與貨運路線', auto:true},
@@ -351,6 +356,8 @@ dictTerm.value = LS.get('dictTerm', M.DEFAULT_TERM_DICT);
 $('#oreZh').value = LS.get('oreZh2', M.DEFAULT_ORE_ZH);
 $('#oreAbbr').value = LS.get('oreAbbr2', M.DEFAULT_ORE_ABBR);
 $('#forceExo').value = LS.get('forceExo', M.DEFAULT_FORCE_EXO);
+$('#locZh').value = LS.get('locZh', M.DEFAULT_LOC_ZH);
+$('#locOn').checked = LS.get('locOn', true);
 $('#oreLimit').value = LS.get('oreLimit', 14);
 $('#oreHalf').checked = LS.get('oreHalf', false);
 function oreOpts(){ return { zhNames: $('#oreZh').value, abbr: $('#oreAbbr').value, limit: +$('#oreLimit').value || 14, halfWidth: $('#oreHalf').checked }; }
@@ -509,16 +516,16 @@ async function run(resumed){
 }
 function remerge(){
   LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
-  LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
+  LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('locZh', $('#locZh').value); LS.set('locOn', $('#locOn').checked); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
   const zhT = applyTerms(zhT0);
-  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value});
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false});
   byKey = new Map(result.entries.map(e=>[e.k,e]));
   $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
   view.page=0; renderAll();
 }
 $('#btnRun').onclick = () => run(false);
 $('#btnReapply').onclick = () => { if(zhT0){ remerge(); toast('已重新套用詞彙表'); } };
-$('#btnResetDict').onclick = () => { dictTail.value = M.DEFAULT_TAIL_DICT; dictTerm.value = M.DEFAULT_TERM_DICT; $('#oreZh').value = M.DEFAULT_ORE_ZH; $('#oreAbbr').value = M.DEFAULT_ORE_ABBR; $('#forceExo').value = M.DEFAULT_FORCE_EXO; $('#oreLimit').value = 14; $('#oreHalf').checked = false; toast('已還原預設，按「重新套用」生效'); };
+$('#btnResetDict').onclick = () => { dictTail.value = M.DEFAULT_TAIL_DICT; dictTerm.value = M.DEFAULT_TERM_DICT; $('#oreZh').value = M.DEFAULT_ORE_ZH; $('#oreAbbr').value = M.DEFAULT_ORE_ABBR; $('#forceExo').value = M.DEFAULT_FORCE_EXO; $('#locZh').value = M.DEFAULT_LOC_ZH; $('#locOn').checked = true; $('#oreLimit').value = 14; $('#oreHalf').checked = false; toast('已還原預設，按「重新套用」生效'); };
 
 // ---------- 審核狀態 ----------
 function status(e){
@@ -747,13 +754,14 @@ $('#btnZip').onclick = async ()=>{
   offer('global_zh-TW.zip', blob);
 };
 $('#btnTxt').onclick = async ()=>{ toast('正在產生檔案…'); await tick(); offer('global.ini.txt', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'})); };
-$('#btnSaveProg').onclick = ()=> offer('sc-merge-review.json', JSON.stringify({version:3, decisions, dictTail:dictTail.value, dictTerm:dictTerm.value, ore:oreOpts(), forceExo:$('#forceExo').value}, null, 0));
+$('#btnSaveProg').onclick = ()=> offer('sc-merge-review.json', JSON.stringify({version:3, decisions, dictTail:dictTail.value, dictTerm:dictTerm.value, ore:oreOpts(), forceExo:$('#forceExo').value, locZh:$('#locZh').value, locOn:$('#locOn').checked}, null, 0));
 $('#f-prog').addEventListener('change', async ev=>{
   const f = ev.target.files[0]; if(!f) return;
   try { const j = JSON.parse(await f.text());
     Object.assign(decisions, j.decisions||{}); saveDecisions();
     if (j.dictTail) dictTail.value=j.dictTail; if (j.dictTerm) dictTerm.value=j.dictTerm;
     if (j.forceExo != null) $('#forceExo').value = j.forceExo;
+    if (j.locZh != null) $('#locZh').value = j.locZh; if (j.locOn != null) $('#locOn').checked = !!j.locOn;
     if (j.ore) { $('#oreZh').value=j.ore.zhNames; $('#oreAbbr').value=j.ore.abbr; $('#oreLimit').value=j.ore.limit; $('#oreHalf').checked=!!j.ore.halfWidth; }
     if (zhT0) remerge(); toast(`已匯入 ${Object.keys(j.decisions||{}).length} 筆審核紀錄`);
   } catch(e){ toast('這個檔案不是審核紀錄 JSON'); }
