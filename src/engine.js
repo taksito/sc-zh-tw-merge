@@ -274,11 +274,23 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         e.out = layout === 'line' ? one : layout === 'auto' ? (wrap > 0 && textLen(one, true) > wrap ? two : one) : two;
       }
     }
+    // 任務地點：英文 3 個詞以上只用中文；1～2 個詞用「英文 中文」（中文名來自星際公民汉化组）
+    if (opts.mlocs && opts.mlocs.size) {
+      for (const e of entries) {
+        if (!/^mission_location/i.test(e.k) || e.cat === 'fill' || e.cat === 'force') continue;
+        const z = (opts.mlocs.get(e.k) || '').trim(), en = (e.out || '').trim();
+        if (!z || !en || CJK.test(en)) continue;
+        const words = en.split(/\s+/).filter(Boolean).length;
+        const out = words >= 3 || z.includes(en) ? z : en + ' ' + z;
+        stats[e.cat]--; stats.mloc = (stats.mloc || 0) + 1;
+        e.from = e.cat; e.cat = 'mloc'; e.out = out;
+      }
+    }
     // 漢化固定不動、ExoAE 改版時：英文變了的條目，中文可能已過時
     if (opts.exoBase) {
       for (const e of entries) {
         // 輸出完全由 ExoAE 產生的分類（礦石、零件等級、未中文化）會自動跟著新版，不用列出
-        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force', 'fill', 'ship'].includes(e.cat) || (e.cat === 'loc' && e.from !== 'zh')) continue;
+        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force', 'fill', 'ship', 'mloc'].includes(e.cat) || (e.cat === 'loc' && e.from !== 'zh')) continue;
         const bv = opts.exoBase.map.get(e.k);
         if (bv === undefined || bv === e.exo) continue;
         stats[e.cat]--; stats.updated = (stats.updated || 0) + 1;

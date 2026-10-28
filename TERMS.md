@@ -10,7 +10,7 @@
 - 使用本工具時，你仍須遵守 [RSI 服務條款](https://robertsspaceindustries.com/en/tos) 與 [Fankit and Fandom FAQ](https://support.robertsspaceindustries.com/hc/en-us/articles/360006895793-Star-Citizen-Fankit-and-Fandom-FAQ)。是否符合規範，由你自行確認。
 
 ## 3. 內容著作權
-- 遊戲原文的著作權屬於 CIG；中文翻譯屬於 CitizenWiki 中文社群／42kit；飛船中文名稱屬於星際公民汉化组；ExoAE 與 MrKraken 的改動屬於各自的作者。詳見 [CREDITS.md](CREDITS.md)。
+- 遊戲原文的著作權屬於 CIG；中文翻譯屬於 CitizenWiki 中文社群／42kit；飛船與任務地點中文名稱屬於星際公民汉化组；ExoAE 與 MrKraken 的改動屬於各自的作者。詳見 [CREDITS.md](CREDITS.md)。
 - 本工具只做轉換（簡轉繁）、合併與格式調整，不主張上述內容的任何權利。
 - 若任何原作者不同意本專案的使用方式，請在 GitHub 開 Issue，會盡快修正或移除相關檔案。
 - 不得將本工具產生的語言包用於商業用途。
@@ -28,7 +28,7 @@
 
 ## 6. 授權
 - 本專案自己撰寫的程式碼（`src/`、`installer/`、`build.py`、`test/`、`.github/`）採用 [MIT 授權](LICENSE)。
-- `data/` 內的語言包檔案、`src/ship_names_zh.txt` 與 `src/chinesedecode.txt` **不在** MIT 授權範圍內，權利屬於各原作者。
+- `data/` 內的語言包檔案、`src/ship_names_zh.txt`、`src/mission_locations_zh.txt` 與 `src/chinesedecode.txt` **不在** MIT 授權範圍內，權利屬於各原作者。
 
 ## 7. 條款變更
 本協議可能隨專案更新而修改，以 GitHub 上的最新版本為準。
