@@ -300,7 +300,13 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
         <label class="inl"><input type="checkbox" id="oreHalf"> 英文、數字算半個字</label>
         <label class="inl"><input type="checkbox" id="locOn"> 地點顯示成「英文 中文」</label>
         <label class="inl"><input type="checkbox" id="shipOn"> 飛船名稱顯示成「中文 英文」</label>
-        <label class="inl">超過 <input type="number" id="shipWrap" min="0" max="60" style="width:5em"> 字時英文換行（0＝不換行；中文算 1 字、英數算半字）</label>
+        <label class="inl">飛船版面
+          <select id="shipLayout">
+            <option value="wrap">中文一行、英文換到下一行</option>
+            <option value="auto">太長才換行</option>
+            <option value="line">同一行</option>
+          </select></label>
+        <label class="inl">「太長」是超過 <input type="number" id="shipWrap" min="1" max="60" style="width:5em"> 字（中文算 1 字、英數算半字）</label>
       </div>
       <div class="row" style="margin-top:10px"><button id="btnReapply" disabled>重新套用詞彙表</button><button id="btnResetDict" class="sm">還原預設詞彙</button></div>
     </details>
@@ -396,7 +402,7 @@ const CATS = [
   {id:'check',  name:'需人工確認', hint:'ExoAE 有額外標記但接不上，採用繁中', auto:true},
   {id:'fill',   name:'補充翻譯', hint:'漢化包漏翻、在詞彙表補上的條目（如量子信標）', auto:true},
   {id:'force',  name:'固定用 ExoAE', hint:'詞彙表裡指定不翻譯的條目', auto:true},
-  {id:'ship',   name:'飛船（中＋英）', hint:'黑彎刀 Cutlass Black：中文在前、英文在後', auto:true},
+  {id:'ship',   name:'飛船（中＋英）', hint:'中文一行、英文在下一行（如 黑彎刀 ⏎ Cutlass Black）', auto:true},
   {id:'loc',    name:'地點（英＋中）', hint:'Nyx I 尼克斯 I：英文在前、中文在後', auto:true},
   {id:'comp',   name:'零件等級', hint:'MIL-1C "Bracer" → 軍規1C-Bracer', auto:true},
   {id:'en_exo', name:'未中文化 → ExoAE', hint:'漢化包本來就是英文，直接用 ExoAE', auto:true},
@@ -429,6 +435,7 @@ $('#fillZh').value = LS.get('fillZh', M.DEFAULT_FILL);
 $('#locOn').checked = LS.get('locOn', true);
 $('#shipOn').checked = LS.get('shipOn', true);
 $('#shipWrap').value = LS.get('shipWrap', 15);
+$('#shipLayout').value = LS.get('shipLayout', 'wrap');
 $('#oreLimit').value = LS.get('oreLimit', 14);
 $('#oreHalf').checked = LS.get('oreHalf', false);
 function oreOpts(){ return { zhNames: $('#oreZh').value, abbr: $('#oreAbbr').value, limit: +$('#oreLimit').value || 14, halfWidth: $('#oreHalf').checked }; }
@@ -604,16 +611,16 @@ async function run(resumed){
 }
 function remerge(){
   LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
-  LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('locZh', $('#locZh').value); LS.set('fillZh', $('#fillZh').value); LS.set('locOn', $('#locOn').checked); LS.set('shipOn', $('#shipOn').checked); LS.set('shipWrap', +$('#shipWrap').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
+  LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('locZh', $('#locZh').value); LS.set('fillZh', $('#fillZh').value); LS.set('locOn', $('#locOn').checked); LS.set('shipOn', $('#shipOn').checked); LS.set('shipWrap', +$('#shipWrap').value); LS.set('shipLayout', $('#shipLayout').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
   const zhT = applyTerms(zhT0);
-  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, shipWrap: +$('#shipWrap').value});
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value});
   byKey = new Map(result.entries.map(e=>[e.k,e]));
   $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
   view.page=0; renderAll();
 }
 $('#btnRun').onclick = () => run(false);
 $('#btnReapply').onclick = () => { if(zhT0){ remerge(); toast('已重新套用詞彙表'); } };
-$('#btnResetDict').onclick = () => { dictTail.value = M.DEFAULT_TAIL_DICT; dictTerm.value = M.DEFAULT_TERM_DICT; $('#oreZh').value = M.DEFAULT_ORE_ZH; $('#oreAbbr').value = M.DEFAULT_ORE_ABBR; $('#forceExo').value = M.DEFAULT_FORCE_EXO; $('#locZh').value = M.DEFAULT_LOC_ZH; $('#locOn').checked = true; $('#shipOn').checked = true; $('#shipWrap').value = 15; $('#fillZh').value = M.DEFAULT_FILL; $('#oreLimit').value = 14; $('#oreHalf').checked = false; toast('已還原預設，按「重新套用」生效'); };
+$('#btnResetDict').onclick = () => { dictTail.value = M.DEFAULT_TAIL_DICT; dictTerm.value = M.DEFAULT_TERM_DICT; $('#oreZh').value = M.DEFAULT_ORE_ZH; $('#oreAbbr').value = M.DEFAULT_ORE_ABBR; $('#forceExo').value = M.DEFAULT_FORCE_EXO; $('#locZh').value = M.DEFAULT_LOC_ZH; $('#locOn').checked = true; $('#shipOn').checked = true; $('#shipWrap').value = 15; $('#shipLayout').value = 'wrap'; $('#fillZh').value = M.DEFAULT_FILL; $('#oreLimit').value = 14; $('#oreHalf').checked = false; toast('已還原預設，按「重新套用」生效'); };
 
 // ---------- 審核狀態 ----------
 function status(e){
@@ -859,7 +866,7 @@ $('#btnZip').onclick = async ()=>{
   offer('global_zh-TW.zip', blob);
 };
 $('#btnTxt').onclick = async ()=>{ toast('正在產生檔案…'); await tick(); offer('global.ini.txt', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'})); };
-$('#btnSaveProg').onclick = ()=> offer('sc-merge-review.json', JSON.stringify({version:3, decisions, dictTail:dictTail.value, dictTerm:dictTerm.value, ore:oreOpts(), forceExo:$('#forceExo').value, locZh:$('#locZh').value, locOn:$('#locOn').checked, shipOn:$('#shipOn').checked, shipWrap:+$('#shipWrap').value, fillZh:$('#fillZh').value}, null, 0));
+$('#btnSaveProg').onclick = ()=> offer('sc-merge-review.json', JSON.stringify({version:3, decisions, dictTail:dictTail.value, dictTerm:dictTerm.value, ore:oreOpts(), forceExo:$('#forceExo').value, locZh:$('#locZh').value, locOn:$('#locOn').checked, shipOn:$('#shipOn').checked, shipWrap:+$('#shipWrap').value, shipLayout:$('#shipLayout').value, fillZh:$('#fillZh').value}, null, 0));
 $('#f-prog').addEventListener('change', async ev=>{
   const f = ev.target.files[0]; if(!f) return;
   try { const j = JSON.parse(await f.text());
@@ -869,7 +876,8 @@ $('#f-prog').addEventListener('change', async ev=>{
     if (j.fillZh != null) $('#fillZh').value = j.fillZh;
     if (j.locZh != null) $('#locZh').value = j.locZh;
     if (j.shipOn != null) $('#shipOn').checked = !!j.shipOn;
-    if (j.shipWrap != null) $('#shipWrap').value = j.shipWrap; if (j.locOn != null) $('#locOn').checked = !!j.locOn;
+    if (j.shipWrap != null) $('#shipWrap').value = j.shipWrap;
+    if (j.shipLayout) $('#shipLayout').value = j.shipLayout; if (j.locOn != null) $('#locOn').checked = !!j.locOn;
     if (j.ore) { $('#oreZh').value=j.ore.zhNames; $('#oreAbbr').value=j.ore.abbr; $('#oreLimit').value=j.ore.limit; $('#oreHalf').checked=!!j.ore.halfWidth; }
     if (zhT0) remerge(); toast(`已匯入 ${Object.keys(j.decisions||{}).length} 筆審核紀錄`);
   } catch(e){ toast('這個檔案不是審核紀錄 JSON'); }

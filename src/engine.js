@@ -267,10 +267,11 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         if (!z || !en || CJK.test(en) || z.includes(en)) continue;
         stats[e.cat]--; stats.ship = (stats.ship || 0) + 1;
         // 太長就把英文換到下一行（中文算 1 字、英文數字算半字）
-        const wrap = opts.shipWrap == null ? 15 : +opts.shipWrap;
-        const one = z + ' ' + en;
+        // 版面：wrap＝一律中文一行、英文下一行（預設）；auto＝超過 shipWrap 字才換行；line＝同一行
+        const layout = opts.shipLayout || 'wrap', wrap = opts.shipWrap == null ? 15 : +opts.shipWrap;
+        const one = z + ' ' + en, two = z + '\\n' + en;
         e.from = e.cat; e.cat = 'ship'; e.shipZh = z;
-        e.out = wrap > 0 && textLen(one, true) > wrap ? z + '\\n' + en : one;
+        e.out = layout === 'line' ? one : layout === 'auto' ? (wrap > 0 && textLen(one, true) > wrap ? two : one) : two;
       }
     }
     // 漢化固定不動、ExoAE 改版時：英文變了的條目，中文可能已過時
