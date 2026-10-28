@@ -46,6 +46,11 @@
 3. 確認後寫入 `LIVE\Data\Localization\chinese_(traditional)\global.ini`（UTF-8 with BOM），並把 `user.cfg` 的 `g_language` 設為 `chinese_(traditional)`（其他設定保留）
 4. 舊的 `global.ini`、`user.cfg` 先備份到 `LIVE\語言包備份\日期時間\`
 
+已經安裝過中文時（`user.cfg` 的 `g_language` 是 `chinese_(traditional)`），會先問要做哪一件事：
+
+- **更新中文化**：照上面步驟寫入新的語言包
+- **移除中文化（變回英文）**：備份 `user.cfg` 後只把 `g_language` 改成 `english`，中文 `global.ini` 保留，之後可隨時再換回中文
+
 原始碼在 `installer/`（Go，只用標準函式庫）；修改後 `.github/workflows/build-installer.yml` 會自動重新編譯。
 
 ## 自動更新

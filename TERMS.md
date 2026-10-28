@@ -18,7 +18,7 @@
 ## 4. 無擔保與風險自負
 - 本工具「依現狀」提供，不保證翻譯正確、完整，也不保證與每個遊戲版本相容。
 - 遊戲改版後，舊的語言包可能出現空白或缺漏的文字，請在每次改版後重新產生並安裝。
-- 安裝器會修改遊戲資料夾裡的 `Data\Localization\chinese_(traditional)\global.ini` 與 `user.cfg`，修改前會把舊檔案備份到 `LIVE\語言包備份\`。
+- 安裝器會修改遊戲資料夾裡的 `Data\Localization\chinese_(traditional)\global.ini` 與 `user.cfg`（移除中文化時只改 `user.cfg`），修改前會把舊檔案備份到 `LIVE\語言包備份\`。
 - 使用本工具造成的任何損失，包括遊戲問題、資料遺失或帳號相關處分，作者不負任何責任。
 
 ## 5. 隱私
