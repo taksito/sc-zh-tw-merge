@@ -162,6 +162,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     const gloss = buildGlossary(zhT, exo);
     const tr = s => applyDict(s, tailDict, gloss);
     const classMap = Object.assign({}, DEFAULT_CLASS_MAP, opts.classMap || {});
+    const forceExo = new Set((opts.forceExo != null ? opts.forceExo : DEFAULT_FORCE_EXO).split(/\r?\n/).map(x => x.replace(/#.*/, '').trim()).filter(Boolean));
     const entries = [], stats = {};
     const add = (e) => { entries.push(e); stats[e.cat] = (stats[e.cat] || 0) + 1; };
 
@@ -169,6 +170,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
       const ev = exo.map.get(k), zr = zhRaw.map.get(k), zv = zhT.get(k);
       const vv = van ? van.map.get(k) : undefined;
       const base = { k, zh: zv, zhRaw: zr, exo: ev, van: vv };
+      if (forceExo.has(k)) { add({ ...base, cat: 'force', out: ev }); continue; }
       if (zr === undefined) { add({ ...base, cat: 'exo_only', out: ev }); continue; }
       if (zv === ev) { add({ ...base, cat: 'same', out: zv }); continue; }
 
@@ -249,7 +251,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     if (opts.exoBase) {
       for (const e of entries) {
         // 輸出完全由 ExoComp 產生的分類（礦石、零件等級、未中文化）會自動跟著新版，不用列出
-        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same'].includes(e.cat)) continue;
+        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force'].includes(e.cat)) continue;
         const bv = opts.exoBase.map.get(e.k);
         if (bv === undefined || bv === e.exo) continue;
         stats[e.cat]--; stats.updated = (stats.updated || 0) + 1;
@@ -260,6 +262,11 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     for (const k of zhRaw.keys) if (!seen.has(k)) add({ k, cat: 'zh_only', out: zhT.get(k), zh: zhT.get(k), zhRaw: zhRaw.map.get(k), exo: undefined, van: van ? van.map.get(k) : undefined });
     return { entries, stats, gloss };
   }
+
+  // 一律用 ExoComp 原文、不翻譯的條目（一行一個鍵名）
+  const DEFAULT_FORCE_EXO = `# 一行一個條目鍵名，這些一律用 ExoComp 原文
+comm_HackedConnection
+`;
 
   // ---------- 零件等級 ----------
   const DEFAULT_CLASS_MAP = { CIV: '民用', MIL: '軍規', IND: '工業', STL: '隱形', STH: '隱形', CMP: '競速' };
@@ -272,16 +279,21 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
 Aluminum => 鋁
 Diamond => 鑽石
 Sadaryx => 薩達瑞晶
-Savrilium => 薩維里金屬
+Savrilium => 薩維里
+Carinite => 科力晶
+Saldynium => 薩迪尼金
 Beradom => 貝拉頓石*
-Carinite => 卡里尼石*
 Feynmaline => 費曼電氣石*
 Glacosite => 格拉科石*
 Jaclium => 賈克金屬*
-Janalite => 賈納石*
-Saldynium => 薩迪尼金屬*`;
-  const DEFAULT_ORE_ABBR = `# 英文 => 縮寫（3–6 個字母）。沒寫的會自動取能互相分辨的開頭字母
+Janalite => 賈納石*`;
+  const DEFAULT_ORE_ABBR = `# 英文 => 縮寫。寫在這裡的一定照用（就算超過字數）；沒寫的自動取能互相分辨的開頭 3–6 個字母
 Quantainium => Quan
+Tungsten => Tung
+Savrilium => Sav
+Saldynium => Saldy
+Sadaryx => Sadaryx
+Carinite => Carinite
 `;
   const ORE_SUFFIX = { ore: '礦', raw: '原', pure: '純' };
   const ALIAS = { aluminium: 'aluminum', savrillium: 'savrilium' };
@@ -337,8 +349,8 @@ Quantainium => Quan
     const abbrs = b => {
       const full = en.get(b), w = full.replace(/[^A-Za-z]/g, '');
       const o2 = abbrOver.get(full.toLowerCase()) || abbrOver.get(b);
+      if (o2) return [o2];               // 你指定的寫法：一定照用
       const list = [full];
-      if (o2) list.push(o2);
       for (let n = 6; n >= minLen.get(b); n--) if (n < w.length) list.push(w.slice(0, n));
       return [...new Set(list)];
     };
@@ -359,6 +371,10 @@ Quantainium => Quan
     }
     for (const [b, js] of jobs) {
       const cands = abbrs(b);
+      if (cands.length === 1 && (abbrOver.get(en.get(b).toLowerCase()) || abbrOver.get(b))) {
+        for (const j of js) put(j.k, j.one(cands[0]), b, fit(j.one(cands[0])) ? '' : '超過字數（照你指定的縮寫）');
+        continue;
+      }
       let pick = cands.find(a => js.every(j => fit(j.one(a))));
       if (pick) { for (const j of js) put(j.k, j.one(pick), b, !zh.has(b) ? '找不到中文名' : ''); continue; }
       // 一行放不下：英文縮到最短仍超過 → 改兩行（中文優先）
@@ -380,6 +396,6 @@ Quantainium => Quan
     return '\ufeff' + lines.join(eol || '\n') + (eol || '\n');
   }
 
-  const api = { parseIni, merge, buildIni, parseDict, applyDict, textLen, CJK, DEFAULT_TAIL_DICT, DEFAULT_TERM_DICT, DEFAULT_ORE_ZH, DEFAULT_ORE_ABBR, DEFAULT_CLASS_MAP };
+  const api = { parseIni, merge, buildIni, parseDict, applyDict, textLen, CJK, DEFAULT_TAIL_DICT, DEFAULT_TERM_DICT, DEFAULT_ORE_ZH, DEFAULT_ORE_ABBR, DEFAULT_CLASS_MAP, DEFAULT_FORCE_EXO };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SCMerge = api;
 })(this);

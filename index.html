@@ -93,6 +93,7 @@ nav.cats .bar i{display:block;height:100%;background:var(--ok)}
 .card .k{font:500 12.5px var(--f-mono);word-break:break-all}
 .pill{font-size:11.5px;padding:1px 8px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
 .pill.ore{background:var(--tok-soft);color:var(--tok)}
+.pill.force{background:var(--warn-soft);color:var(--warn)}
 .pill.comp{background:var(--accent-soft);color:var(--accent)}
 .pill.issue,.pill.check{background:var(--bad-soft);color:var(--bad)}
 .pill.tail,.pill.title,.pill.wrap{background:var(--accent-soft);color:var(--accent)}
@@ -129,6 +130,7 @@ nav.cats .bar i{display:block;height:100%;background:var(--ok)}
 .upd{background:var(--warn-soft);color:var(--warn);border-radius:4px;padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .decode{display:grid;gap:4px;border-top:1px solid var(--line);padding-top:12px}
 .decode p{margin:0;font-size:13px}
+nav.cats .none{font-size:13px;color:var(--ok);padding:4px 10px 6px}
 .savebar{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;align-items:center}
 #saveState{color:var(--ok)}
 nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:10px 10px 2px;font-weight:600}
@@ -177,8 +179,10 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
           <textarea id="dictTerm" class="code" rows="14" spellcheck="false"></textarea></label>
         <label>礦石中文名　<span>漢化包裡有的會自動抓；標 * 的是建議譯名</span>
           <textarea id="oreZh" class="code" rows="10" spellcheck="false"></textarea></label>
-        <label>礦石英文縮寫　<span>沒寫的會自動取能互相分辨的開頭 3–6 個字母</span>
+        <label>礦石英文縮寫　<span>寫在這裡的一定照用；沒寫的自動取開頭 3–6 個字母</span>
           <textarea id="oreAbbr" class="code" rows="10" spellcheck="false"></textarea></label>
+        <label>固定用 ExoComp 原文的條目　<span>一行一個鍵名，這些不翻譯</span>
+          <textarea id="forceExo" class="code" rows="6" spellcheck="false"></textarea></label>
       </div>
       <div class="row" style="margin-top:10px">
         <label class="inl">礦石每行最多 <input type="number" id="oreLimit" min="6" max="40" style="width:5em"> 字</label>
@@ -7419,6 +7423,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     const gloss = buildGlossary(zhT, exo);
     const tr = s => applyDict(s, tailDict, gloss);
     const classMap = Object.assign({}, DEFAULT_CLASS_MAP, opts.classMap || {});
+    const forceExo = new Set((opts.forceExo != null ? opts.forceExo : DEFAULT_FORCE_EXO).split(/\r?\n/).map(x => x.replace(/#.*/, '').trim()).filter(Boolean));
     const entries = [], stats = {};
     const add = (e) => { entries.push(e); stats[e.cat] = (stats[e.cat] || 0) + 1; };
 
@@ -7426,6 +7431,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
       const ev = exo.map.get(k), zr = zhRaw.map.get(k), zv = zhT.get(k);
       const vv = van ? van.map.get(k) : undefined;
       const base = { k, zh: zv, zhRaw: zr, exo: ev, van: vv };
+      if (forceExo.has(k)) { add({ ...base, cat: 'force', out: ev }); continue; }
       if (zr === undefined) { add({ ...base, cat: 'exo_only', out: ev }); continue; }
       if (zv === ev) { add({ ...base, cat: 'same', out: zv }); continue; }
 
@@ -7506,7 +7512,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     if (opts.exoBase) {
       for (const e of entries) {
         // 輸出完全由 ExoComp 產生的分類（礦石、零件等級、未中文化）會自動跟著新版，不用列出
-        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same'].includes(e.cat)) continue;
+        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force'].includes(e.cat)) continue;
         const bv = opts.exoBase.map.get(e.k);
         if (bv === undefined || bv === e.exo) continue;
         stats[e.cat]--; stats.updated = (stats.updated || 0) + 1;
@@ -7517,6 +7523,11 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     for (const k of zhRaw.keys) if (!seen.has(k)) add({ k, cat: 'zh_only', out: zhT.get(k), zh: zhT.get(k), zhRaw: zhRaw.map.get(k), exo: undefined, van: van ? van.map.get(k) : undefined });
     return { entries, stats, gloss };
   }
+
+  // 一律用 ExoComp 原文、不翻譯的條目（一行一個鍵名）
+  const DEFAULT_FORCE_EXO = `# 一行一個條目鍵名，這些一律用 ExoComp 原文
+comm_HackedConnection
+`;
 
   // ---------- 零件等級 ----------
   const DEFAULT_CLASS_MAP = { CIV: '民用', MIL: '軍規', IND: '工業', STL: '隱形', STH: '隱形', CMP: '競速' };
@@ -7529,16 +7540,21 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
 Aluminum => 鋁
 Diamond => 鑽石
 Sadaryx => 薩達瑞晶
-Savrilium => 薩維里金屬
+Savrilium => 薩維里
+Carinite => 科力晶
+Saldynium => 薩迪尼金
 Beradom => 貝拉頓石*
-Carinite => 卡里尼石*
 Feynmaline => 費曼電氣石*
 Glacosite => 格拉科石*
 Jaclium => 賈克金屬*
-Janalite => 賈納石*
-Saldynium => 薩迪尼金屬*`;
-  const DEFAULT_ORE_ABBR = `# 英文 => 縮寫（3–6 個字母）。沒寫的會自動取能互相分辨的開頭字母
+Janalite => 賈納石*`;
+  const DEFAULT_ORE_ABBR = `# 英文 => 縮寫。寫在這裡的一定照用（就算超過字數）；沒寫的自動取能互相分辨的開頭 3–6 個字母
 Quantainium => Quan
+Tungsten => Tung
+Savrilium => Sav
+Saldynium => Saldy
+Sadaryx => Sadaryx
+Carinite => Carinite
 `;
   const ORE_SUFFIX = { ore: '礦', raw: '原', pure: '純' };
   const ALIAS = { aluminium: 'aluminum', savrillium: 'savrilium' };
@@ -7594,8 +7610,8 @@ Quantainium => Quan
     const abbrs = b => {
       const full = en.get(b), w = full.replace(/[^A-Za-z]/g, '');
       const o2 = abbrOver.get(full.toLowerCase()) || abbrOver.get(b);
+      if (o2) return [o2];               // 你指定的寫法：一定照用
       const list = [full];
-      if (o2) list.push(o2);
       for (let n = 6; n >= minLen.get(b); n--) if (n < w.length) list.push(w.slice(0, n));
       return [...new Set(list)];
     };
@@ -7616,6 +7632,10 @@ Quantainium => Quan
     }
     for (const [b, js] of jobs) {
       const cands = abbrs(b);
+      if (cands.length === 1 && (abbrOver.get(en.get(b).toLowerCase()) || abbrOver.get(b))) {
+        for (const j of js) put(j.k, j.one(cands[0]), b, fit(j.one(cands[0])) ? '' : '超過字數（照你指定的縮寫）');
+        continue;
+      }
       let pick = cands.find(a => js.every(j => fit(j.one(a))));
       if (pick) { for (const j of js) put(j.k, j.one(pick), b, !zh.has(b) ? '找不到中文名' : ''); continue; }
       // 一行放不下：英文縮到最短仍超過 → 改兩行（中文優先）
@@ -7637,7 +7657,7 @@ Quantainium => Quan
     return '\ufeff' + lines.join(eol || '\n') + (eol || '\n');
   }
 
-  const api = { parseIni, merge, buildIni, parseDict, applyDict, textLen, CJK, DEFAULT_TAIL_DICT, DEFAULT_TERM_DICT, DEFAULT_ORE_ZH, DEFAULT_ORE_ABBR, DEFAULT_CLASS_MAP };
+  const api = { parseIni, merge, buildIni, parseDict, applyDict, textLen, CJK, DEFAULT_TAIL_DICT, DEFAULT_TERM_DICT, DEFAULT_ORE_ZH, DEFAULT_ORE_ABBR, DEFAULT_CLASS_MAP, DEFAULT_FORCE_EXO };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SCMerge = api;
 })(this);
 
@@ -7651,12 +7671,15 @@ const LS = {
   set(k, v){ try{ localStorage.setItem('scm.'+k, JSON.stringify(v)); }catch(e){} }
 };
 const CATS = [
-  {id:'issue',  name:'問題項目', hint:'自動合併後檢查不通過（少了變數、標籤不成對等）', review:true},
+
   {id:'updated', name:'英文有更新', hint:'ExoComp 改版後英文變了，中文可能過時', review:true},
   {id:'exo_only',name:'新增條目', hint:'ExoComp 新版才有、漢化沒有的條目', review:true},
-  {id:'check',  name:'需人工確認', hint:'ExoComp 有額外標記，但無法自動接上', review:true},
-  {id:'ore',    name:'礦石', hint:'中文＋英文縮寫，每行不超過設定字數', review:true},
+
   {id:'zh_only',name:'只有漢化包有', hint:'ExoComp 沒有這個條目', review:true},
+  {id:'ore',    name:'礦石', hint:'中文＋英文縮寫，每行不超過設定字數', auto:true},
+  {id:'issue',  name:'問題項目', hint:'自動合併後檢查不通過，仍照建議採用', auto:true},
+  {id:'check',  name:'需人工確認', hint:'ExoComp 有額外標記但接不上，採用繁中', auto:true},
+  {id:'force',  name:'固定用 ExoComp', hint:'詞彙表裡指定不翻譯的條目', auto:true},
   {id:'comp',   name:'零件等級', hint:'MIL-1C "Bracer" → 軍規1C-Bracer', auto:true},
   {id:'en_exo', name:'未中文化 → ExoComp', hint:'漢化包本來就是英文，直接用 ExoComp', auto:true},
   {id:'title',  name:'標題標籤', hint:'任務標題的 [聲望] [藍圖] 與貨運路線', auto:true},
@@ -7680,8 +7703,9 @@ const PER = 25;
 const dictTail = $('#dictTail'), dictTerm = $('#dictTerm');
 dictTail.value = LS.get('dictTail', M.DEFAULT_TAIL_DICT);
 dictTerm.value = LS.get('dictTerm', M.DEFAULT_TERM_DICT);
-$('#oreZh').value = LS.get('oreZh', M.DEFAULT_ORE_ZH);
-$('#oreAbbr').value = LS.get('oreAbbr', M.DEFAULT_ORE_ABBR);
+$('#oreZh').value = LS.get('oreZh2', M.DEFAULT_ORE_ZH);
+$('#oreAbbr').value = LS.get('oreAbbr2', M.DEFAULT_ORE_ABBR);
+$('#forceExo').value = LS.get('forceExo', M.DEFAULT_FORCE_EXO);
 $('#oreLimit').value = LS.get('oreLimit', 14);
 $('#oreHalf').checked = LS.get('oreHalf', false);
 function oreOpts(){ return { zhNames: $('#oreZh').value, abbr: $('#oreAbbr').value, limit: +$('#oreLimit').value || 14, halfWidth: $('#oreHalf').checked }; }
@@ -7826,16 +7850,16 @@ async function run(resumed){
 }
 function remerge(){
   LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
-  LS.set('oreZh', $('#oreZh').value); LS.set('oreAbbr', $('#oreAbbr').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
+  LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
   const zhT = applyTerms(zhT0);
-  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base});
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value});
   byKey = new Map(result.entries.map(e=>[e.k,e]));
   $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
   view.page=0; renderAll();
 }
 $('#btnRun').onclick = () => run(false);
 $('#btnReapply').onclick = () => { if(zhT0){ remerge(); toast('已重新套用詞彙表'); } };
-$('#btnResetDict').onclick = () => { dictTail.value = M.DEFAULT_TAIL_DICT; dictTerm.value = M.DEFAULT_TERM_DICT; $('#oreZh').value = M.DEFAULT_ORE_ZH; $('#oreAbbr').value = M.DEFAULT_ORE_ABBR; $('#oreLimit').value = 14; $('#oreHalf').checked = false; toast('已還原預設，按「重新套用」生效'); };
+$('#btnResetDict').onclick = () => { dictTail.value = M.DEFAULT_TAIL_DICT; dictTerm.value = M.DEFAULT_TERM_DICT; $('#oreZh').value = M.DEFAULT_ORE_ZH; $('#oreAbbr').value = M.DEFAULT_ORE_ABBR; $('#forceExo').value = M.DEFAULT_FORCE_EXO; $('#oreLimit').value = 14; $('#oreHalf').checked = false; toast('已還原預設，按「重新套用」生效'); };
 
 // ---------- 審核狀態 ----------
 function status(e){
@@ -7892,7 +7916,7 @@ function renderStats(){
     [n.toLocaleString(),'輸出條目總數'],
     [((st.zh||0)+(st.same||0)).toLocaleString(),'直接採用繁中（或兩邊相同）'],
     [fromExo.toLocaleString(),'接上 ExoComp 資料'],
-    [((st.issue||0)+(st.check||0)).toLocaleString(),'問題＋需人工確認'],
+    [((st.updated||0)+(st.exo_only||0)).toLocaleString(),'需要你看（英文更新＋新增）'],
     [ok.toLocaleString(),'已確認'],
     [edited.toLocaleString(),'已手動修改'],
   ].map(([a,b])=>`<div class="stat"><span class="n">${a}</span><span class="l">${b}</span></div>`).join('');
@@ -7901,7 +7925,8 @@ function renderCats(){
   const counts = {}, done = {};
   for (const e of result.entries){ counts[e.cat]=(counts[e.cat]||0)+1; const s=status(e); if(s!=='todo'&&s!=='stale') done[e.cat]=(done[e.cat]||0)+1; }
   let lastGroup = null;
-  $('#cats').innerHTML = CATS.filter(c=>c.id==='*'||counts[c.id]).map(c=>{
+  const needAny = CATS.some(c => c.review && counts[c.id]);
+  $('#cats').innerHTML = (needAny ? '' : '<div class="grp">需要你看的</div><div class="none">目前沒有需要你看的條目，可以直接下載。</div>') + CATS.filter(c=>c.id==='*'||counts[c.id]).map(c=>{
     const n = c.id==='*' ? result.entries.length : counts[c.id], d = done[c.id]||0;
     const g = c.auto ? '已自動套用（不用審核）' : c.id==='*' ? '' : '需要你看的';
     const head = g && g!==lastGroup ? `<div class="grp">${g}</div>` : ''; lastGroup = g || lastGroup;
@@ -8023,7 +8048,7 @@ $('#btnPageOk').onclick = ()=>{
   for (const c of cards){ const e = byKey.get(c.dataset.k); if (status(e)==='todo'||status(e)==='stale') decisions[e.k] = {s:'ok', exo:e.exo}; }
   saveDecisions(); renderAll(); toast(`已確認 ${cards.length} 條`);
 };
-function renderAll(){ $('#stFilter').value = view.st; renderStats(); renderCats(); renderCards(); }
+function renderAll(){ if (AUTO.has(view.cat) && view.st==='todo') view.st='all'; $('#stFilter').value = view.st; renderStats(); renderCats(); renderCards(); }
 
 // ---------- 匯出 ----------
 // 中文輸入解碼表（內嵌在頁面裡）
@@ -8063,12 +8088,13 @@ $('#btnZip').onclick = async ()=>{
   offer('global_zh-TW.zip', blob);
 };
 $('#btnTxt').onclick = async ()=>{ toast('正在產生檔案…'); await tick(); offer('global.ini.txt', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'})); };
-$('#btnSaveProg').onclick = ()=> offer('sc-merge-review.json', JSON.stringify({version:2, decisions, dictTail:dictTail.value, dictTerm:dictTerm.value, ore:oreOpts()}, null, 0));
+$('#btnSaveProg').onclick = ()=> offer('sc-merge-review.json', JSON.stringify({version:3, decisions, dictTail:dictTail.value, dictTerm:dictTerm.value, ore:oreOpts(), forceExo:$('#forceExo').value}, null, 0));
 $('#f-prog').addEventListener('change', async ev=>{
   const f = ev.target.files[0]; if(!f) return;
   try { const j = JSON.parse(await f.text());
     Object.assign(decisions, j.decisions||{}); saveDecisions();
     if (j.dictTail) dictTail.value=j.dictTail; if (j.dictTerm) dictTerm.value=j.dictTerm;
+    if (j.forceExo != null) $('#forceExo').value = j.forceExo;
     if (j.ore) { $('#oreZh').value=j.ore.zhNames; $('#oreAbbr').value=j.ore.abbr; $('#oreLimit').value=j.ore.limit; $('#oreHalf').checked=!!j.ore.halfWidth; }
     if (zhT0) remerge(); toast(`已匯入 ${Object.keys(j.decisions||{}).length} 筆審核紀錄`);
   } catch(e){ toast('這個檔案不是審核紀錄 JSON'); }
