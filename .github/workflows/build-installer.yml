@@ -28,4 +28,5 @@ jobs:
           git add download/SC-zhTW-Installer.exe
           if git diff --cached --quiet; then echo '沒有變動'; exit 0; fi
           git commit -m '重新建置安裝器'
+          git pull --rebase origin main
           git push

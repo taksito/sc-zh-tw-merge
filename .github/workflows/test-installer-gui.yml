@@ -4,6 +4,9 @@ name: 測試安裝器視窗
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   screenshot:
     runs-on: windows-latest
@@ -29,20 +32,40 @@ jobs:
           $lines = @('Frontend_PU_Version=Alpha 4.10.2: Siege of Orison') + (1..20000 | ForEach-Object { "test_key_$_=測試文字 $_" })
           [IO.File]::WriteAllLines("$tmp\global.ini", $lines, (New-Object Text.UTF8Encoding $true))
           Compress-Archive -Path "$tmp\global.ini" -DestinationPath "$dl\global_zh-TW.zip" -Force
-      - name: 打開視窗並截圖
+      - name: 打開視窗、按安裝、截圖
         shell: pwsh
         run: |
           Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          $out = Join-Path $env:RUNNER_TEMP 'shots'; New-Item -ItemType Directory -Force -Path $out | Out-Null
+          function Shot($name) {
+            $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+            $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
+            $g = [System.Drawing.Graphics]::FromImage($bmp)
+            $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
+            $bmp.Save("$out\$name.png"); $g.Dispose(); $bmp.Dispose()
+          }
+          $ws = New-Object -ComObject WScript.Shell
           $p = Start-Process -FilePath .\SC-zhTW-Installer.exe -PassThru
-          Start-Sleep -Seconds 6
-          $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
-          $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
-          $g = [System.Drawing.Graphics]::FromImage($bmp)
-          $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
-          $bmp.Save("$env:RUNNER_TEMP\installer.png")
+          Start-Sleep -Seconds 6; Shot '1-open'
           if ($p.HasExited) { Write-Host "程式已結束，代碼 $($p.ExitCode)"; exit 1 }
-          Stop-Process -Id $p.Id
-      - uses: actions/upload-artifact@v4
-        with:
-          name: installer-screenshot
-          path: ${{ runner.temp }}/installer.png
+          [void]$ws.AppActivate($p.Id); Start-Sleep 1
+          [System.Windows.Forms.SendKeys]::SendWait('{ENTER}'); Start-Sleep 2; Shot '2-confirm'
+          [System.Windows.Forms.SendKeys]::SendWait('{ENTER}'); Start-Sleep 3; Shot '3-done'
+          [System.Windows.Forms.SendKeys]::SendWait('{ENTER}'); Start-Sleep 2; Shot '4-after'
+          $live = 'C:\Program Files\Roberts Space Industries\StarCitizen\LIVE'
+          Get-Content "$live\user.cfg" | Out-File "$out\user.cfg.txt"
+          $ini = "$live\Data\Localization\chinese_(traditional)\global.ini"
+          if (Test-Path $ini) { $bytes = [IO.File]::ReadAllBytes($ini); "global.ini bytes=$($bytes.Length) bom=$($bytes[0]) $($bytes[1]) $($bytes[2])" | Out-File "$out\result.txt" } else { "global.ini 不存在" | Out-File "$out\result.txt" }
+          Get-ChildItem -Recurse "$live\語言包備份" -ErrorAction SilentlyContinue | Select-Object FullName | Out-File -Append "$out\result.txt"
+          Stop-Process -Id $p.Id -ErrorAction SilentlyContinue
+      - name: 把截圖存到 ci-shots 分支
+        shell: pwsh
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git switch --orphan ci-shots
+          git rm -rf --quiet . 2>$null
+          Copy-Item "$env:RUNNER_TEMP\shots\*" .
+          git add -A
+          git commit -m "安裝器截圖 $(Get-Date -Format s)"
+          git push -f origin ci-shots
