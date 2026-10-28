@@ -1,4 +1,5 @@
 *.ini
+!data/*.ini
 *.ini.txt
 *.zip
 node_modules/

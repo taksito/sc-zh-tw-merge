@@ -125,6 +125,8 @@ nav.cats .bar i{display:block;height:100%;background:var(--ok)}
 .card.orow .over{color:var(--bad);font-weight:600}
 .card.orow .note{color:var(--warn);font-family:var(--f-ui)}
 @media (max-width:900px){.ohead{display:none}.card.orow{grid-template-columns:minmax(0,1fr) auto}.card.orow textarea{grid-column:1/-1}}
+.online{display:grid;gap:8px}
+.upd{background:var(--warn-soft);color:var(--warn);border-radius:4px;padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .savebar{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;align-items:center}
 #saveState{color:var(--ok)}
 nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:10px 10px 2px;font-weight:600}
@@ -140,6 +142,14 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
 
   <section class="panel" id="loadPanel">
     <h2>1　載入檔案</h2>
+    <div class="online">
+      <div class="row">
+        <button class="pri" id="btnOnline">從網路取得最新版並合併</button>
+        <span class="muted" id="onlineInfo">漢化：42kit 半漢化包（half）　ExoComp：ScCompLangPackRemix2</span>
+      </div>
+      <div id="updateNote" class="upd" hidden></div>
+    </div>
+    <p class="muted" style="margin:0">或手動選擇檔案：</p>
     <div class="slots">
       <label class="slot" data-slot="zh"><b>簡中漢化包</b><span class="muted">例如 chinese.ini（必填）</span><span class="fn" id="fn-zh">尚未選擇</span><input type="file" id="f-zh" accept=".ini,.txt"></label>
       <label class="slot" data-slot="exo"><b>ExoComp 英文包</b><span class="muted">有零件等級、聲望、藍圖資訊的版本（必填）</span><span class="fn" id="fn-exo">尚未選擇</span><input type="file" id="f-exo" accept=".ini,.txt"></label>
@@ -471,7 +481,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
   // ---------- 零件等級 ----------
   const DEFAULT_CLASS_MAP = { CIV: '民用', MIL: '軍規', IND: '工業', STL: '隱形', STH: '隱形', CMP: '競速' };
   // MIL-1C "Bracer"  /  Mil/1/B Delphi RS-10
-  const COMP_RE = /^(CIV|MIL|IND|STL|STH|CMP)[-\/](\d+)\/?([A-Da-d])\s+"?(.+?)"?\s*$/i;
+  const COMP_RE = /^(CIV|MIL|IND|STL|STH|CMP)[-\/]S?(\d+)\/?([A-Da-d])\s+"?(.+?)"?\s*$/i;
 
   // ---------- 礦石 ----------
   // 預設中文名（遊戲漢化沒有的才用；標 * 的是建議譯名，請自行確認）
@@ -661,11 +671,63 @@ for (const slot of ['zh','exo','van']) {
   box.addEventListener('dragleave', () => box.classList.remove('drag'));
   box.addEventListener('drop', e => { e.preventDefault(); box.classList.remove('drag'); take(e.dataTransfer.files[0]); });
 }
+// ---------- 從網路取得 ----------
+// 優先讀同一個網站 data/ 底下的副本（GitHub Actions 每天自動更新），讀不到再直接抓來源
+const SOURCES = {
+  zh:  { label:'42kit 半漢化包', local:'data/chinese.ini',  remote:'https://ini.42kit.com/half/global.ini' },
+  exo: { label:'ExoComp Remix2', local:'data/exocomp.ini', remote:'https://raw.githubusercontent.com/ExoAE/ScCompLangPack/main/ScCompLangPackRemix2/data/Localization/english/global.ini' },
+};
+const verOf = t => ((t.match(/^Frontend_PU_Version=(.*)$/m) || [])[1] || '版本不明').trim();
+async function getText(url){
+  const r = await fetch(url, {cache:'no-cache'});
+  if (!r.ok) throw new Error(r.status + ' ' + url);
+  return new TextDecoder('utf-8').decode(await r.arrayBuffer());
+}
+async function getManifest(){ try { return await (await fetch('data/sources.json', {cache:'no-cache'})).json(); } catch(e){ return null; } }
+async function fetchSources(){
+  const man = await getManifest(), out = {};
+  for (const id of ['zh','exo']) {
+    const S = SOURCES[id]; let text = null, from = '';
+    for (const u of [S.local, S.remote]) {
+      try { log(`下載 ${S.label}：${u}`); text = await getText(u); from = u; break; } catch(e) { log(`　讀取失敗（${e.message}）`); }
+    }
+    if (!text) throw new Error(`${S.label} 下載不到。請改用手動選擇檔案。`);
+    const m = man && man[id];
+    out[id] = { name: `${S.label}（${verOf(text)}）`, text, sha: m && from===S.local ? m.sha256 : sigOf(text), fetched: m && m.fetched_at };
+    log(`　完成：${(text.length/1048576).toFixed(1)} MB，${verOf(text)}`);
+  }
+  return out;
+}
+$('#btnOnline').onclick = async () => {
+  $('#log').textContent=''; $('#btnOnline').disabled = true; prog(0.03);
+  try { const f = await fetchSources(); setFile('zh', f.zh); setFile('exo', f.exo); $('#updateNote').hidden = true; await run(true); }
+  catch(e){ log('錯誤：' + e.message); prog(null); }
+  $('#btnOnline').disabled = false;
+};
+// 有上次的檔案時，看看網路上是不是有新版
+async function checkUpdate(last){
+  const man = await getManifest(); if (!man) return;
+  const changed = ['zh','exo'].filter(id => man[id] && last[id] && last[id].sha && man[id].sha256 !== last[id].sha);
+  if (!changed.length) return;
+  const n = $('#updateNote'); n.hidden = false;
+  n.innerHTML = `網路上有新版：${changed.map(id=>SOURCES[id].label + '（' + esc(man[id].version||'') + '）').join('、')}。你的審核紀錄會保留，原文有變的條目會標示出來。<button class="sm pri" id="btnUpd">更新並重新合併</button>`;
+  $('#btnUpd').onclick = () => $('#btnOnline').click();
+}
+// 共用修改：網站上的 data/review.json（你上傳的審核紀錄），本機沒有的條目會自動套用
+(async()=>{
+  try {
+    const r = await fetch('data/review.json', {cache:'no-cache'}); if (!r.ok) return;
+    const j = await r.json(); let add = 0;
+    for (const k in (j.decisions||{})) if (!(k in decisions)) { decisions[k] = j.decisions[k]; add++; }
+    if (add) { saveDecisions(); toast(`已套用網站上的共用修改 ${add} 筆`); if (result) renderAll(); }
+  } catch(e){}
+})();
 function sigOf(t){ let h=2166136261>>>0; for(let i=0;i<t.length;i+=97){ h^=t.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return t.length+'-'+h.toString(16); }
 // 打開頁面時，如果有上次的檔案就自動接續
 (async()=>{ const last = await idbGet('last'); if(last && last.zh && last.exo){
   setFile('zh',last.zh); setFile('exo',last.exo); setFile('van',last.van||null);
   log(`自動載入上次的檔案：${last.zh.name}、${last.exo.name}${last.van?'、'+last.van.name:''}（要換檔案就重新選擇後按「開始合併」）`);
+  checkUpdate(last);
   run(true);
 } })();
 

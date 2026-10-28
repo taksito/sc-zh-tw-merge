@@ -1,0 +1,65 @@
+name: 更新語言包來源
+
+on:
+  schedule:
+    - cron: '17 20 * * *'   # 每天台灣時間 04:17
+  workflow_dispatch:         # 也可以在 Actions 頁面手動按「Run workflow」
+  push:
+    paths:
+      - .github/workflows/update-sources.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 下載 42kit 漢化與 ExoComp Remix2
+        run: |
+          set -e
+          mkdir -p data
+          curl -fsSL --retry 3 -o data/chinese.ini.new 'https://ini.42kit.com/half/global.ini'
+          curl -fsSL --retry 3 -o data/exocomp.ini.new 'https://raw.githubusercontent.com/ExoAE/ScCompLangPack/main/ScCompLangPackRemix2/data/Localization/english/global.ini'
+          # 檔案太小代表下載到錯誤頁，就不更新
+          for f in chinese exocomp; do
+            size=$(stat -c%s data/$f.ini.new)
+            if [ "$size" -lt 1000000 ]; then echo "$f 只有 $size bytes，略過"; rm data/$f.ini.new; else mv data/$f.ini.new data/$f.ini; fi
+          done
+
+      - name: 寫入版本資訊
+        run: |
+          python3 - <<'PY'
+          import hashlib, json, re, datetime, pathlib
+          out = {}
+          for id, name in (('zh', 'chinese.ini'), ('exo', 'exocomp.ini')):
+              p = pathlib.Path('data') / name
+              if not p.exists(): continue
+              b = p.read_bytes()
+              m = re.search(rb'^Frontend_PU_Version=(.*)$', b, re.M)
+              out[id] = {
+                  'file': f'data/{name}',
+                  'sha256': hashlib.sha256(b).hexdigest(),
+                  'size': len(b),
+                  'version': m.group(1).decode('utf-8', 'replace').strip() if m else '',
+              }
+          old = {}
+          try: old = json.loads(pathlib.Path('data/sources.json').read_text())
+          except Exception: pass
+          now = datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+          for id in out:
+              same = old.get(id, {}).get('sha256') == out[id]['sha256']
+              out[id]['fetched_at'] = old[id].get('fetched_at', now) if same else now
+          pathlib.Path('data/sources.json').write_text(json.dumps(out, ensure_ascii=False, indent=2) + '\n')
+          PY
+
+      - name: 有變動才提交
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data
+          if git diff --cached --quiet; then echo '沒有新版本'; exit 0; fi
+          git commit -m "更新語言包來源 $(date -u +%F)"
+          git push

@@ -252,7 +252,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
   // ---------- 零件等級 ----------
   const DEFAULT_CLASS_MAP = { CIV: '民用', MIL: '軍規', IND: '工業', STL: '隱形', STH: '隱形', CMP: '競速' };
   // MIL-1C "Bracer"  /  Mil/1/B Delphi RS-10
-  const COMP_RE = /^(CIV|MIL|IND|STL|STH|CMP)[-\/](\d+)\/?([A-Da-d])\s+"?(.+?)"?\s*$/i;
+  const COMP_RE = /^(CIV|MIL|IND|STL|STH|CMP)[-\/]S?(\d+)\/?([A-Da-d])\s+"?(.+?)"?\s*$/i;
 
   // ---------- 礦石 ----------
   // 預設中文名（遊戲漢化沒有的才用；標 * 的是建議譯名，請自行確認）
