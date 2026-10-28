@@ -162,6 +162,8 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     const gloss = buildGlossary(zhT, exo);
     const tr = s => applyDict(s, tailDict, gloss);
     const classMap = Object.assign({}, DEFAULT_CLASS_MAP, opts.classMap || {});
+    const fill = new Map();
+    for (const d of parseDict(opts.fill != null ? opts.fill : DEFAULT_FILL)) if (d.s) fill.set(d.s.trim(), d.to);
     const forceExo = new Set((opts.forceExo != null ? opts.forceExo : DEFAULT_FORCE_EXO).split(/\r?\n/).map(x => x.replace(/#.*/, '').trim()).filter(Boolean));
     const entries = [], stats = {};
     const add = (e) => { entries.push(e); stats[e.cat] = (stats[e.cat] || 0) + 1; };
@@ -171,6 +173,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
       const vv = van ? van.map.get(k) : undefined;
       const base = { k, zh: zv, zhRaw: zr, exo: ev, van: vv };
       if (forceExo.has(k)) { add({ ...base, cat: 'force', out: ev }); continue; }
+      if (fill.has(k)) { add({ ...base, cat: 'fill', out: fill.get(k) }); continue; }
       if (zr === undefined) { add({ ...base, cat: 'exo_only', out: ev }); continue; }
       if (zv === ev) { add({ ...base, cat: 'same', out: zv }); continue; }
 
@@ -260,7 +263,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     if (opts.exoBase) {
       for (const e of entries) {
         // 輸出完全由 ExoAE 產生的分類（礦石、零件等級、未中文化）會自動跟著新版，不用列出
-        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force'].includes(e.cat) || (e.cat === 'loc' && e.from !== 'zh')) continue;
+        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force', 'fill'].includes(e.cat) || (e.cat === 'loc' && e.from !== 'zh')) continue;
         const bv = opts.exoBase.map.get(e.k);
         if (bv === undefined || bv === e.exo) continue;
         stats[e.cat]--; stats.updated = (stats.updated || 0) + 1;
@@ -271,6 +274,17 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     for (const k of zhRaw.keys) if (!seen.has(k)) add({ k, cat: 'zh_only', out: zhT.get(k), zh: zhT.get(k), zhRaw: zhRaw.map.get(k), exo: undefined, van: van ? van.map.get(k) : undefined });
     return { entries, stats, gloss };
   }
+
+  // 漢化包漏翻、由你補上的翻譯（鍵名 => 中文）
+  const DEFAULT_FILL = `# 鍵名 => 中文。漢化包漏翻的條目在這裡補上，會直接取代輸出
+mission_items_QTQuantumBeacon => 量子信標
+mission_items_QTDistressBeacon => 遇險信標
+mission_items_QTPatrolBeacon => 巡邏信標
+mission_items_QTRendezvousBeacon => 會合信標
+mission_items_BlackBox => 飛行記錄器
+mission_items_Confidential => 機密
+mission_items_Derelict => 殘骸
+`;
 
   // 一律用 ExoAE 原文、不翻譯的條目（一行一個鍵名）
   const DEFAULT_FORCE_EXO = `# 一行一個條目鍵名，這些一律用 ExoAE 原文
@@ -457,6 +471,6 @@ Carinite => Carinite
     return '\ufeff' + lines.join(eol || '\n') + (eol || '\n');
   }
 
-  const api = { parseIni, merge, buildIni, parseDict, applyDict, textLen, CJK, DEFAULT_TAIL_DICT, DEFAULT_TERM_DICT, DEFAULT_ORE_ZH, DEFAULT_ORE_ABBR, DEFAULT_CLASS_MAP, DEFAULT_FORCE_EXO, DEFAULT_LOC_ZH };
+  const api = { parseIni, merge, buildIni, parseDict, applyDict, textLen, CJK, DEFAULT_TAIL_DICT, DEFAULT_TERM_DICT, DEFAULT_ORE_ZH, DEFAULT_ORE_ABBR, DEFAULT_CLASS_MAP, DEFAULT_FORCE_EXO, DEFAULT_LOC_ZH, DEFAULT_FILL };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SCMerge = api;
 })(this);
