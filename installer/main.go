@@ -23,7 +23,7 @@ import (
 const (
 	langFolder = "chinese_(traditional)"
 	backupDir  = "語言包備份"
-	version    = "1.0.0"
+	version    = "1.1.0"
 )
 
 var in = bufio.NewReader(os.Stdin)
@@ -37,23 +37,51 @@ func main() {
 	fmt.Println("==============================================")
 	fmt.Println()
 
-	// 1. 找語言包檔案
+	// 1. 找遊戲資料夾
+	live := pickGameFolder()
+	if live == "" {
+		return
+	}
+	cfg := filepath.Join(live, "user.cfg")
+	target := filepath.Join(live, "Data", "Localization", langFolder, "global.ini")
+
+	// 2. 已經裝了中文 → 讓使用者選更新或移除
+	if cur := currentLanguage(cfg); strings.EqualFold(cur, langFolder) {
+		fmt.Println()
+		fmt.Println("偵測到這個資料夾已安裝繁體中文語言包。")
+		fmt.Println("  [1] 更新中文化")
+		fmt.Println("  [2] 移除中文化（變回英文）")
+		fmt.Println("  [0] 取消")
+		for {
+			switch prompt("請選擇：") {
+			case "1":
+				install(live, cfg, target)
+				return
+			case "2":
+				uninstall(live, cfg)
+				return
+			case "0", "":
+				fmt.Println("已取消，沒有修改任何檔案。")
+				return
+			default:
+				fmt.Println("請輸入 1、2 或 0。")
+			}
+		}
+	}
+	install(live, cfg, target)
+}
+
+// 安裝／更新中文化
+func install(live, cfg, target string) {
+	fmt.Println()
 	src, data, err := findPackage()
 	if err != nil {
 		fail(err.Error())
 		return
 	}
 	fmt.Printf("語言包：%s\n", src)
-	fmt.Printf("　　　　%s，%d 條\n\n", versionLine(data), countLines(data))
+	fmt.Printf("　　　　%s，%d 條\n", versionLine(data), countLines(data))
 
-	// 2. 找遊戲資料夾
-	live := pickGameFolder()
-	if live == "" {
-		return
-	}
-
-	target := filepath.Join(live, "Data", "Localization", langFolder, "global.ini")
-	cfg := filepath.Join(live, "user.cfg")
 	fmt.Println()
 	fmt.Println("即將進行：")
 	fmt.Printf("  1. 寫入 %s\n", target)
@@ -65,29 +93,11 @@ func main() {
 		fmt.Println("已取消，沒有修改任何檔案。")
 		return
 	}
-
-	// 3. 備份
-	stamp := time.Now().Format("20060102-150405")
-	bdir := filepath.Join(live, backupDir, stamp)
-	backed := 0
-	for _, f := range []string{target, cfg} {
-		if _, err := os.Stat(f); err == nil {
-			rel, _ := filepath.Rel(live, f)
-			dst := filepath.Join(bdir, rel)
-			if err := copyFile(f, dst); err != nil {
-				fail("備份失敗：" + err.Error() + "\n（可能需要用「以系統管理員身分執行」）")
-				return
-			}
-			backed++
-		}
-	}
-	if backed > 0 {
-		fmt.Printf("✔ 已備份 %d 個舊檔案到 %s\n", backed, bdir)
-	} else {
-		fmt.Println("✔ 沒有舊檔案需要備份")
+	if !backup(live, target, cfg) {
+		return
 	}
 
-	// 4. 寫入 global.ini（確保 UTF-8 with BOM）
+	// 寫入 global.ini（確保 UTF-8 with BOM）
 	if err := os.MkdirAll(filepath.Dir(target), 0o755); err != nil {
 		fail("建立資料夾失敗：" + err.Error() + "\n（可能需要用「以系統管理員身分執行」）")
 		return
@@ -101,8 +111,7 @@ func main() {
 	}
 	fmt.Println("✔ 已寫入 global.ini")
 
-	// 5. user.cfg
-	if err := updateCfg(cfg); err != nil {
+	if err := setLanguage(cfg, langFolder, true); err != nil {
 		fail("修改 user.cfg 失敗：" + err.Error())
 		return
 	}
@@ -110,6 +119,60 @@ func main() {
 	fmt.Println()
 	fmt.Println("完成！啟動遊戲就會是繁體中文。")
 	fmt.Println("要還原：把「" + backupDir + "」裡對應日期的檔案複製回 LIVE 資料夾即可。")
+}
+
+// 移除中文化：只把 user.cfg 的 g_language 改回 english
+func uninstall(live, cfg string) {
+	fmt.Println()
+	fmt.Println("即將進行：")
+	fmt.Printf("  1. 在 %s 把 g_language 改成 english\n", cfg)
+	fmt.Printf("  2. 舊的 user.cfg 先備份到 %s\n", filepath.Join(live, backupDir))
+	fmt.Println("  （中文 global.ini 會留著，之後想換回中文，再執行一次選「更新中文化」即可）")
+	fmt.Println()
+	fmt.Println("請先關閉遊戲。")
+	if !ask("確定要變回英文嗎？(Y/N)：") {
+		fmt.Println("已取消，沒有修改任何檔案。")
+		return
+	}
+	if !backup(live, cfg) {
+		return
+	}
+	if err := setLanguage(cfg, "english", false); err != nil {
+		fail("修改 user.cfg 失敗：" + err.Error())
+		return
+	}
+	fmt.Println("✔ 已把 user.cfg 改成英文")
+	fmt.Println()
+	fmt.Println("完成！啟動遊戲就會是英文。")
+}
+
+// 把存在的檔案備份到 LIVE\語言包備份\日期時間\
+func backup(live string, files ...string) bool {
+	bdir := filepath.Join(live, backupDir, time.Now().Format("20060102-150405"))
+	for i := 2; ; i++ { // 同一秒執行兩次時不要蓋掉前一份備份
+		if _, err := os.Stat(bdir); err != nil {
+			break
+		}
+		bdir = filepath.Join(live, backupDir, time.Now().Format("20060102-150405")+"-"+strconv.Itoa(i))
+	}
+	n := 0
+	for _, f := range files {
+		if _, err := os.Stat(f); err != nil {
+			continue
+		}
+		rel, _ := filepath.Rel(live, f)
+		if err := copyFile(f, filepath.Join(bdir, rel)); err != nil {
+			fail("備份失敗：" + err.Error() + "\n（可能需要用「以系統管理員身分執行」）")
+			return false
+		}
+		n++
+	}
+	if n > 0 {
+		fmt.Printf("✔ 已備份 %d 個舊檔案到 %s\n", n, bdir)
+	} else {
+		fmt.Println("✔ 沒有舊檔案需要備份")
+	}
+	return true
 }
 
 // ---------- 語言包檔案 ----------
@@ -311,7 +374,28 @@ func pickGameFolder() string {
 
 // ---------- user.cfg ----------
 
-func updateCfg(p string) error {
+var (
+	reLang  = regexp.MustCompile(`(?i)^\s*g_language\s*=\s*(.*?)\s*$`)
+	reAudio = regexp.MustCompile(`(?i)^\s*g_languageAudio\s*=`)
+)
+
+// 讀出 user.cfg 目前的 g_language（沒有就回傳空字串）
+func currentLanguage(p string) string {
+	b, err := os.ReadFile(p)
+	if err != nil {
+		return ""
+	}
+	cur := ""
+	for _, l := range strings.Split(strings.ReplaceAll(strings.TrimPrefix(string(b), "\ufeff"), "\r\n", "\n"), "\n") {
+		if m := reLang.FindStringSubmatch(l); m != nil {
+			cur = m[1]
+		}
+	}
+	return cur
+}
+
+// 設定 user.cfg 的 g_language，其他設定保留；addAudio 時若沒有語音設定就補上英文語音
+func setLanguage(p, lang string, addAudio bool) error {
 	var lines []string
 	eol := "\r\n"
 	if b, err := os.ReadFile(p); err == nil {
@@ -325,21 +409,19 @@ func updateCfg(p string) error {
 			lines = nil
 		}
 	}
-	reLang := regexp.MustCompile(`(?i)^\s*g_language\s*=`)
-	reAudio := regexp.MustCompile(`(?i)^\s*g_languageAudio\s*=`)
 	hasLang, hasAudio := false, false
 	for i, l := range lines {
 		if reLang.MatchString(l) {
-			lines[i] = "g_language = " + langFolder
+			lines[i] = "g_language = " + lang
 			hasLang = true
 		} else if reAudio.MatchString(l) {
 			hasAudio = true
 		}
 	}
 	if !hasLang {
-		lines = append(lines, "g_language = "+langFolder)
+		lines = append(lines, "g_language = "+lang)
 	}
-	if !hasAudio {
+	if addAudio && !hasAudio {
 		lines = append(lines, "g_languageAudio = english")
 	}
 	return os.WriteFile(p, []byte(strings.Join(lines, eol)+eol), 0o644)
