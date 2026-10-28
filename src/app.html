@@ -87,6 +87,7 @@ nav.cats .bar i{display:block;height:100%;background:var(--ok)}
 .pill.ore{background:var(--tok-soft);color:var(--tok)}
 .pill.force{background:var(--warn-soft);color:var(--warn)}
 .pill.fill{background:var(--ok-soft);color:var(--ok)}
+.pill.ship{background:var(--tok-soft);color:var(--tok)}
 .pill.loc{background:var(--accent-soft);color:var(--accent)}
 .pill.comp{background:var(--accent-soft);color:var(--accent)}
 .pill.issue,.pill.check{background:var(--bad-soft);color:var(--bad)}
@@ -241,6 +242,7 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
         <label class="inl">礦石每行最多 <input type="number" id="oreLimit" min="6" max="40" style="width:5em"> 字</label>
         <label class="inl"><input type="checkbox" id="oreHalf"> 英文、數字算半個字</label>
         <label class="inl"><input type="checkbox" id="locOn"> 地點顯示成「英文 中文」</label>
+        <label class="inl"><input type="checkbox" id="shipOn"> 飛船名稱顯示成「中文 英文」</label>
       </div>
       <div class="row" style="margin-top:10px"><button id="btnReapply" disabled>重新套用詞彙表</button><button id="btnResetDict" class="sm">還原預設詞彙</button></div>
     </details>
@@ -299,13 +301,16 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
 </div>
 <footer class="foot">
   <div class="wrap2">
-    <p><b>資料來源</b>：漢化 — <a href="https://citizenwiki.cn/index.php?title=Localization&amp;variant=zh-tw" target="_blank" rel="noopener">CitizenWiki 中文社群（42kit 半漢化包）</a>・零件等級 — <a href="https://github.com/ExoAE/ScCompLangPack" target="_blank" rel="noopener">ExoAE ScCompLangPack</a>・任務藍圖／聲望／採礦資訊 — <a href="https://github.com/MrKraken/StarStrings" target="_blank" rel="noopener">MrKraken StarStrings</a>・簡轉繁 — <a href="https://github.com/BYVoid/OpenCC" target="_blank" rel="noopener">OpenCC</a></p>
+    <p><b>資料來源</b>：漢化 — <a href="https://citizenwiki.cn/index.php?title=Localization&amp;variant=zh-tw" target="_blank" rel="noopener">CitizenWiki 中文社群（42kit 半漢化包）</a>・零件等級 — <a href="https://github.com/ExoAE/ScCompLangPack" target="_blank" rel="noopener">ExoAE ScCompLangPack</a>・任務藍圖／聲望／採礦資訊 — <a href="https://github.com/MrKraken/StarStrings" target="_blank" rel="noopener">MrKraken StarStrings</a>・飛船中文名 — <a href="https://starcitizenzw.com/" target="_blank" rel="noopener">星際公民汉化组</a>・簡轉繁 — <a href="https://github.com/BYVoid/OpenCC" target="_blank" rel="noopener">OpenCC</a></p>
     <p>非官方 Star Citizen 粉絲專案，與 Cloud Imperium Games 無關。Star Citizen® 為 Cloud Imperium Rights LLC 的註冊商標。語言包內容著作權屬於各原作者。</p>
     <p><a href="https://github.com/taksito/sc-zh-tw-merge/blob/main/TERMS.md" target="_blank" rel="noopener">使用者協議</a>・<a href="https://github.com/taksito/sc-zh-tw-merge/blob/main/CREDITS.md" target="_blank" rel="noopener">完整致謝</a>・<a href="https://github.com/taksito/sc-zh-tw-merge" target="_blank" rel="noopener">GitHub 原始碼</a></p>
   </div>
 </footer>
 <div class="toast" id="toast" role="status"></div>
 
+<script type="text/plain" id="shipNames">
+/*SHIPS*/
+</script>
 <script type="text/plain" id="decodeTable">
 /*DECODE*/
 </script>
@@ -333,6 +338,7 @@ const CATS = [
   {id:'check',  name:'需人工確認', hint:'ExoAE 有額外標記但接不上，採用繁中', auto:true},
   {id:'fill',   name:'補充翻譯', hint:'漢化包漏翻、在詞彙表補上的條目（如量子信標）', auto:true},
   {id:'force',  name:'固定用 ExoAE', hint:'詞彙表裡指定不翻譯的條目', auto:true},
+  {id:'ship',   name:'飛船（中＋英）', hint:'黑彎刀 Cutlass Black：中文在前、英文在後', auto:true},
   {id:'loc',    name:'地點（英＋中）', hint:'Nyx I 尼克斯 I：英文在前、中文在後', auto:true},
   {id:'comp',   name:'零件等級', hint:'MIL-1C "Bracer" → 軍規1C-Bracer', auto:true},
   {id:'en_exo', name:'未中文化 → ExoAE', hint:'漢化包本來就是英文，直接用 ExoAE', auto:true},
@@ -363,6 +369,7 @@ $('#forceExo').value = LS.get('forceExo', M.DEFAULT_FORCE_EXO);
 $('#locZh').value = LS.get('locZh', M.DEFAULT_LOC_ZH);
 $('#fillZh').value = LS.get('fillZh', M.DEFAULT_FILL);
 $('#locOn').checked = LS.get('locOn', true);
+$('#shipOn').checked = LS.get('shipOn', true);
 $('#oreLimit').value = LS.get('oreLimit', 14);
 $('#oreHalf').checked = LS.get('oreHalf', false);
 function oreOpts(){ return { zhNames: $('#oreZh').value, abbr: $('#oreAbbr').value, limit: +$('#oreLimit').value || 14, halfWidth: $('#oreHalf').checked }; }
@@ -484,6 +491,16 @@ async function convertAll(map, mode){
   }
   return out;
 }
+// 飛船中文名（簡體，內嵌在頁面裡）→ 依目前的簡轉繁方式轉換
+const SHIPS_RAW = (() => { const m = new Map(), el = document.getElementById('shipNames'); if (!el) return m;
+  for (const l of el.textContent.split(/\r?\n/)) { const i = l.indexOf('='); if (i > 0 && !l.startsWith('#')) m.set(l.slice(0, i).trim(), l.slice(i + 1).trim()); } return m; })();
+let shipsT = null;
+function convertShips(mode){
+  if (!window.OpenCC || !SHIPS_RAW.size) { shipsT = new Map(SHIPS_RAW); return; }
+  const conv = OpenCC.Converter({from:'cn', to:mode}); const keys = [...SHIPS_RAW.keys()];
+  const vals = conv([...SHIPS_RAW.values()].join('\n')).split('\n');
+  shipsT = new Map(); keys.forEach((k, i) => shipsT.set(k, vals[i] ?? SHIPS_RAW.get(k)));
+}
 function applyTerms(map){
   const d = M.parseDict(dictTerm.value);
   if (!d.length) return map;
@@ -513,6 +530,7 @@ async function run(resumed){
       zhT0 = await convertAll(parsed.zh.map, mode);
       idbPut('conv', {sig, pairs:[...zhT0]});
     }
+    convertShips(mode);
     remerge();
     idbPut('last', {zh:files.zh, exo:files.exo, van:files.van, base:files.base||null});
     log('完成。'); updateQuick();
@@ -521,16 +539,16 @@ async function run(resumed){
 }
 function remerge(){
   LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
-  LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('locZh', $('#locZh').value); LS.set('fillZh', $('#fillZh').value); LS.set('locOn', $('#locOn').checked); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
+  LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('locZh', $('#locZh').value); LS.set('fillZh', $('#fillZh').value); LS.set('locOn', $('#locOn').checked); LS.set('shipOn', $('#shipOn').checked); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
   const zhT = applyTerms(zhT0);
-  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false});
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null});
   byKey = new Map(result.entries.map(e=>[e.k,e]));
   $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
   view.page=0; renderAll();
 }
 $('#btnRun').onclick = () => run(false);
 $('#btnReapply').onclick = () => { if(zhT0){ remerge(); toast('已重新套用詞彙表'); } };
-$('#btnResetDict').onclick = () => { dictTail.value = M.DEFAULT_TAIL_DICT; dictTerm.value = M.DEFAULT_TERM_DICT; $('#oreZh').value = M.DEFAULT_ORE_ZH; $('#oreAbbr').value = M.DEFAULT_ORE_ABBR; $('#forceExo').value = M.DEFAULT_FORCE_EXO; $('#locZh').value = M.DEFAULT_LOC_ZH; $('#locOn').checked = true; $('#fillZh').value = M.DEFAULT_FILL; $('#oreLimit').value = 14; $('#oreHalf').checked = false; toast('已還原預設，按「重新套用」生效'); };
+$('#btnResetDict').onclick = () => { dictTail.value = M.DEFAULT_TAIL_DICT; dictTerm.value = M.DEFAULT_TERM_DICT; $('#oreZh').value = M.DEFAULT_ORE_ZH; $('#oreAbbr').value = M.DEFAULT_ORE_ABBR; $('#forceExo').value = M.DEFAULT_FORCE_EXO; $('#locZh').value = M.DEFAULT_LOC_ZH; $('#locOn').checked = true; $('#shipOn').checked = true; $('#fillZh').value = M.DEFAULT_FILL; $('#oreLimit').value = 14; $('#oreHalf').checked = false; toast('已還原預設，按「重新套用」生效'); };
 
 // ---------- 審核狀態 ----------
 function status(e){
@@ -759,7 +777,7 @@ $('#btnZip').onclick = async ()=>{
   offer('global_zh-TW.zip', blob);
 };
 $('#btnTxt').onclick = async ()=>{ toast('正在產生檔案…'); await tick(); offer('global.ini.txt', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'})); };
-$('#btnSaveProg').onclick = ()=> offer('sc-merge-review.json', JSON.stringify({version:3, decisions, dictTail:dictTail.value, dictTerm:dictTerm.value, ore:oreOpts(), forceExo:$('#forceExo').value, locZh:$('#locZh').value, locOn:$('#locOn').checked, fillZh:$('#fillZh').value}, null, 0));
+$('#btnSaveProg').onclick = ()=> offer('sc-merge-review.json', JSON.stringify({version:3, decisions, dictTail:dictTail.value, dictTerm:dictTerm.value, ore:oreOpts(), forceExo:$('#forceExo').value, locZh:$('#locZh').value, locOn:$('#locOn').checked, shipOn:$('#shipOn').checked, fillZh:$('#fillZh').value}, null, 0));
 $('#f-prog').addEventListener('change', async ev=>{
   const f = ev.target.files[0]; if(!f) return;
   try { const j = JSON.parse(await f.text());
@@ -767,7 +785,8 @@ $('#f-prog').addEventListener('change', async ev=>{
     if (j.dictTail) dictTail.value=j.dictTail; if (j.dictTerm) dictTerm.value=j.dictTerm;
     if (j.forceExo != null) $('#forceExo').value = j.forceExo;
     if (j.fillZh != null) $('#fillZh').value = j.fillZh;
-    if (j.locZh != null) $('#locZh').value = j.locZh; if (j.locOn != null) $('#locOn').checked = !!j.locOn;
+    if (j.locZh != null) $('#locZh').value = j.locZh;
+    if (j.shipOn != null) $('#shipOn').checked = !!j.shipOn; if (j.locOn != null) $('#locOn').checked = !!j.locOn;
     if (j.ore) { $('#oreZh').value=j.ore.zhNames; $('#oreAbbr').value=j.ore.abbr; $('#oreLimit').value=j.ore.limit; $('#oreHalf').checked=!!j.ore.halfWidth; }
     if (zhT0) remerge(); toast(`已匯入 ${Object.keys(j.decisions||{}).length} 筆審核紀錄`);
   } catch(e){ toast('這個檔案不是審核紀錄 JSON'); }

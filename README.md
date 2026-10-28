@@ -12,6 +12,7 @@
   - 任務標題：`[100 聲望] [藍圖]*`、貨運路線
   - 任務說明：獲得聲望、可能獲得的藍圖清單
 - **補充翻譯**：漢化包漏翻的條目（如 `Quantum Beacon` 量子信標）可在詞彙表用「鍵名 => 中文」補上
+- **飛船中英並列**：飛船名稱顯示成「中文 英文」（如 `黑彎刀 Cutlass Black`），中文名來自 [星際公民汉化组](https://starcitizenzw.com/)
 - **地點英中並列**：漢化包有翻的地點改成「英文 中文」（如 `Nyx I 尼克斯 I`）；沒翻的可在「地點中文名」補上
 - **礦石壓縮**：「中文＋英文縮寫（3–6 字母）＋RS 值」，每行不超過設定字數（預設 14）。
 - **自動檢查**：自動合併後會檢查變數是否缺漏、`<EM4>` 是否成對；有問題的另外列出。
@@ -91,6 +92,7 @@ Repository → Settings → Pages → Source 選 **Deploy from a branch**，Bran
 
 - **ExoAE** — [ScCompLangPack](https://github.com/ExoAE/ScCompLangPack)（使用 Remix2）：零件類別／尺寸／等級前綴
 - **MrKraken** — [StarStrings](https://github.com/MrKraken/StarStrings)：任務藍圖與聲望、貨運路線、採礦 RS 值等改動（經由 ExoAE 語言包帶入）
+- **星際公民汉化组** — [starcitizenzw.com](https://starcitizenzw.com/)（[LocalizationData](https://github.com/StarCitizenToolBox/LocalizationData)）：飛船中文名稱
 - **CitizenWiki 中文社群（42kit 半漢化包）** — [CitizenWiki.cn 在地化](https://citizenwiki.cn/index.php?title=Localization&variant=zh-tw)：簡體中文翻譯
 - **OpenCC / opencc-js**（Apache-2.0）：簡轉繁；**JSZip**（MIT）：產生 zip
 

@@ -30,6 +30,12 @@
 - 內容：簡體中文翻譯（本工具再轉為繁體）
 - 如原作者不同意本專案保留此檔案，請開 Issue，會立即移除。
 
+### 星際公民汉化组 — 飛船中文名稱
+- 網站：<https://starcitizenzw.com/>
+- 資料：<https://github.com/StarCitizenToolBox/LocalizationData>（`main` 分支「简中全汉化」4.10.2(PU)_CN_V2，2026-10-25）
+- 使用範圍：只擷取 `vehicle_Name*` 的飛船名稱（628 條），存為 `src/ship_names_zh.txt`，由本工具轉成繁體並顯示成「中文 英文」
+- 如原作者不同意此使用方式，請開 Issue，會立即移除。
+
 ### 中文輸入解碼表
 - 檔案：`src/chinesedecode.txt`（7,020 條，`00=一` … `4EZ=龠`）
 - 用途：讓遊戲顯示其他玩家輸入的中文

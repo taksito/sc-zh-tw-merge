@@ -259,11 +259,21 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         e.from = e.cat; e.cat = 'loc'; e.out = v;
       }
     }
+    // 飛船：中文在前、英文在後（中文名來自星際公民汉化组）
+    if (opts.ships && opts.ships.size) {
+      for (const e of entries) {
+        if (!/^vehicle_Name/.test(e.k)) continue;
+        const z = (opts.ships.get(e.k) || '').trim(), en = (e.out || '').trim();
+        if (!z || !en || CJK.test(en) || z.includes(en)) continue;
+        stats[e.cat]--; stats.ship = (stats.ship || 0) + 1;
+        e.from = e.cat; e.cat = 'ship'; e.out = z + ' ' + en; e.shipZh = z;
+      }
+    }
     // 漢化固定不動、ExoAE 改版時：英文變了的條目，中文可能已過時
     if (opts.exoBase) {
       for (const e of entries) {
         // 輸出完全由 ExoAE 產生的分類（礦石、零件等級、未中文化）會自動跟著新版，不用列出
-        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force', 'fill'].includes(e.cat) || (e.cat === 'loc' && e.from !== 'zh')) continue;
+        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force', 'fill', 'ship'].includes(e.cat) || (e.cat === 'loc' && e.from !== 'zh')) continue;
         const bv = opts.exoBase.map.get(e.k);
         if (bv === undefined || bv === e.exo) continue;
         stats[e.cat]--; stats.updated = (stats.updated || 0) + 1;

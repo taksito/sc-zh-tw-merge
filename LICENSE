@@ -22,4 +22,4 @@ SOFTWARE.
 
 This license applies only to code authored for this project (src/*.html,
 src/*.js, installer/, build.py, test/, .github/). It does NOT cover the
-language-pack files in data/ or src/chinesedecode.txt; see CREDITS.md.
+language-pack files in data/, src/ship_names_zh.txt or src/chinesedecode.txt; see CREDITS.md.
