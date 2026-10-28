@@ -139,6 +139,24 @@ nav.cats .none{font-size:13px;color:var(--ok);padding:4px 10px 6px}
 .foot .wrap2{max-width:1400px;margin:0 auto;display:grid;gap:4px}
 .foot p{margin:0}
 .foot a{color:var(--accent)}
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.step{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px 18px 16px;display:grid;gap:8px;align-content:start;min-width:0}
+.step .num{font:600 13px/1 var(--f-mono);color:var(--accent);letter-spacing:.06em}
+.step .num::before{content:"STEP "}
+.step h2{font-size:18px;letter-spacing:0;text-transform:none;color:var(--fg)}
+.step p{margin:0;color:var(--muted);font-size:13.5px}
+.step.done{border-color:var(--ok)}
+.step.done .num::after{content:"　✓ 完成";color:var(--ok)}
+.step.ready{border-color:var(--accent)}
+.big{font-size:15px;padding:10px 16px;justify-self:start}
+.btn{display:inline-block;text-decoration:none;font-weight:500;border:1px solid var(--accent);color:var(--accent);background:var(--panel);border-radius:4px}
+.btn:hover{background:var(--accent-soft)}
+.qstat{font-size:12.5px!important;word-break:break-all}
+.adv{border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+.adv>summary{padding:14px 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;cursor:pointer;color:var(--fg);font-weight:400}
+.adv>summary .muted{font-size:13px}
+.adv[open]>summary{border-bottom:1px solid var(--line)}
+.advbody{display:grid;gap:16px;padding:16px;background:var(--bg);border-radius:0 0 var(--r) var(--r)}
 .savebar{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;align-items:center}
 #saveState{color:var(--ok)}
 nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:10px 10px 2px;font-weight:600}
@@ -152,8 +170,37 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
     <p>簡中漢化 ＋ ExoAE 詳細資料 → 繁體中文 global.ini（UTF-8 with BOM）</p>
   </header>
 
+  <section class="quick" aria-label="懶人包">
+    <div class="step" id="q1">
+      <span class="num">1</span>
+      <h2>匯入語言包</h2>
+      <p>自動讀取最新的繁中漢化與 ExoAE 資料，合併成繁體中文。</p>
+      <button class="pri big" id="qRun">一鍵匯入並合併</button>
+      <div class="prog" id="qprog" hidden><i></i></div>
+      <p class="qstat mono" id="qstat">尚未合併</p>
+    </div>
+    <div class="step" id="q2">
+      <span class="num">2</span>
+      <h2>下載 global.ini</h2>
+      <p>繁體中文、UTF-8 with BOM，已附中文輸入解碼表。</p>
+      <button class="pri big" id="qZip" disabled>下載 global.ini（.zip）</button>
+      <p class="qstat" id="qZipNote">完成第 1 步後就能下載</p>
+    </div>
+    <div class="step" id="q3">
+      <span class="num">3</span>
+      <h2>下載安裝器</h2>
+      <p>Windows 用。自動找到 StarCitizen\LIVE，放入語言包並備份舊檔。</p>
+      <a class="btn big" id="qExe" href="https://taksito.github.io/sc-zh-tw-merge/download/SC-zhTW-Installer.exe" target="_blank" rel="noopener">下載 SC-zhTW-Installer.exe</a>
+      <p class="qstat">只需下載一次。關閉遊戲後執行，會自動抓「下載」資料夾裡最新的 zip。</p>
+    </div>
+  </section>
+
+  <details class="adv" id="adv">
+    <summary><b>自訂介面</b><span class="muted">換檔案、修改詞彙表與礦石名稱、逐條修改翻譯、匯出審核紀錄</span></summary>
+    <div class="advbody">
+
   <section class="panel" id="loadPanel">
-    <h2>1　載入檔案</h2>
+    <h2>載入檔案</h2>
     <div class="online">
       <div class="row">
         <button class="pri" id="btnOnline">從網路取得最新版並合併</button>
@@ -203,7 +250,7 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
   </section>
 
   <section class="panel" id="sumPanel" hidden>
-    <h2>2　合併結果與匯出</h2>
+    <h2>合併結果與匯出</h2>
     <div class="stats" id="stats"></div>
     <div class="export">
       <button class="pri" id="btnZip">下載 global.ini（.zip）</button>
@@ -248,6 +295,8 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
       </div>
     </div>
   </section>
+    </div>
+  </details>
 </div>
 <footer class="foot">
   <div class="wrap2">
@@ -7736,8 +7785,20 @@ function oreOpts(){ return { zhNames: $('#oreZh').value, abbr: $('#oreAbbr').val
 $('#ccMode').value = LS.get('ccMode', 'twp');
 
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('on'),2600); }
-function log(msg){ $('#log').textContent += msg + '\n'; }
-function prog(p){ const b=$('#prog'); b.hidden = p==null; if(p!=null) b.firstElementChild.style.width = (p*100).toFixed(1)+'%'; }
+function log(msg){ $('#log').textContent += msg + '\n'; const q=$('#qstat'); if(q && !/^　/.test(msg)) q.textContent = msg; }
+function prog(p){ for (const id of ['#prog','#qprog']) { const b=$(id); if(!b) continue; b.hidden = p==null; if(p!=null) b.firstElementChild.style.width = (p*100).toFixed(1)+'%'; } }
+// 懶人包
+function updateQuick(){
+  const ok = !!result;
+  $('#qZip').disabled = !ok;
+  $('#q1').classList.toggle('done', ok); $('#q2').classList.toggle('ready', ok);
+  if (ok) {
+    const v = (parsed.exo.map.get('Frontend_PU_Version')||'').trim();
+    $('#qstat').textContent = `已合併 ${result.entries.length.toLocaleString()} 條${v ? '（' + v + '）' : ''}`;
+    const need = (result.stats.updated||0) + (result.stats.exo_only||0);
+    $('#qZipNote').textContent = need ? `有 ${need} 條英文更新或新增條目，可在下方「自訂介面」查看（不看也能直接下載）` : '可以下載了';
+  }
+}
 const tick = () => new Promise(r=>setTimeout(r,0));
 
 // ---------- IndexedDB：記住上次的檔案 ----------
@@ -7789,6 +7850,8 @@ async function fetchSources(){
   try { const t = await getText('data/exocomp.base.ini'); out.base = { name:'ExoAE 對照版', text:t }; log(`對照版 ExoAE：${verOf(t)}`); } catch(e) {}
   return out;
 }
+$('#qRun').onclick = () => $('#btnOnline').click();
+$('#qZip').onclick = () => $('#btnZip').click();
 $('#btnOnline').onclick = async () => {
   $('#log').textContent=''; $('#btnOnline').disabled = true; prog(0.03);
   try { const f = await fetchSources(); setFile('zh', f.zh); setFile('exo', f.exo); files.base = f.base || null; $('#updateNote').hidden = true; await run(true); }
@@ -7868,7 +7931,7 @@ async function run(resumed){
     }
     remerge();
     idbPut('last', {zh:files.zh, exo:files.exo, van:files.van, base:files.base||null});
-    log('完成。');
+    log('完成。'); updateQuick();
   }catch(e){ log('錯誤：' + (e.message||e)); }
   prog(null); $('#btnRun').disabled = !(files.zh && files.exo); $('#btnReapply').disabled = !zhT0;
 }
@@ -8072,7 +8135,7 @@ $('#btnPageOk').onclick = ()=>{
   for (const c of cards){ const e = byKey.get(c.dataset.k); if (status(e)==='todo'||status(e)==='stale') decisions[e.k] = {s:'ok', exo:e.exo}; }
   saveDecisions(); renderAll(); toast(`已確認 ${cards.length} 條`);
 };
-function renderAll(){ if (AUTO.has(view.cat) && view.st==='todo') view.st='all'; $('#stFilter').value = view.st; renderStats(); renderCats(); renderCards(); }
+function renderAll(){ updateQuick(); if (AUTO.has(view.cat) && view.st==='todo') view.st='all'; $('#stFilter').value = view.st; renderStats(); renderCats(); renderCards(); }
 
 // ---------- 匯出 ----------
 // 中文輸入解碼表（內嵌在頁面裡）
