@@ -20,7 +20,7 @@ jobs:
           go-version: '1.22'
       - name: 編譯 Windows 執行檔
         working-directory: installer
-        run: GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o ../download/SC-zhTW-Installer.exe .
+        run: GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags "-s -w -H=windowsgui" -o ../download/SC-zhTW-Installer.exe .
       - name: 有變動才提交
         run: |
           git config user.name 'github-actions[bot]'
