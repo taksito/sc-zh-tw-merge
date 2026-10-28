@@ -21,12 +21,14 @@
 
 網址：https://taksito.github.io/sc-zh-tw-merge/
 
-1. 按「從網路取得最新版並合併」，會自動下載：
-   - 漢化：[42kit 半漢化包](https://ini.42kit.com/half/global.ini)（[CitizenWiki 說明](https://citizenwiki.cn/index.php?title=Localization&variant=zh-tw)）
-   - ExoComp：[ScCompLangPackRemix2](https://github.com/ExoAE/ScCompLangPack/tree/main/ScCompLangPackRemix2)
+1. 按「從網路取得最新版並合併」，會讀網站上的：
+   - 漢化：`data/chinese.ini`，固定版本（2026-10-28 從 [42kit 半漢化包](https://citizenwiki.cn/index.php?title=Localization&variant=zh-tw) 下載一次，之後不再自動抓）
+   - ExoComp：`data/exocomp.ini`，[ScCompLangPackRemix2](https://github.com/ExoAE/ScCompLangPack/tree/main/ScCompLangPackRemix2) 的最新版
    
    也可以手動選擇檔案再按「開始合併」。
-2. 來源有新版時，頁面上方會提示「網路上有新版」，按一下就重新合併；你的修改會保留，原文有變的條目會標出來。
+2. ExoComp 改版後，工具會拿 `data/exocomp.base.ini`（漢化當時對照的版本）比對：
+   - **英文有更新**：英文變了，中文可能過時，請確認
+   - **新增條目**：新版才有、漢化沒有的條目
 3. 看完左側「需要你看的」分類。
 4. 按「下載 global.ini」。
 5. 放到 `StarCitizen\LIVE\Data\Localization\chinese_(traditional)\global.ini`，並在 `LIVE\user.cfg` 加上：
@@ -34,10 +36,10 @@
    g_language = chinese_(traditional)
    ```
 
-## 自動更新來源
+## 自動更新
 
-`.github/workflows/update-sources.yml` 每天台灣時間 04:17 會下載兩個來源，存到 `data/chinese.ini`、`data/exocomp.ini`，並把版本與 SHA-256 寫進 `data/sources.json`。有變動才會提交。
-要立刻更新：到 Actions →「更新語言包來源」→「Run workflow」。
+`.github/workflows/update-sources.yml` 每天台灣時間 04:17 檢查 ExoComp Remix2，有新版才更新 `data/exocomp.ini` 與 `data/sources.json`。
+漢化不會自動更新。要立刻檢查：Actions →「檢查 ExoComp 更新」→「Run workflow」。
 
 ## 共用修改（審核紀錄）
 

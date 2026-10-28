@@ -154,6 +154,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
    *   wrap      （有原版時）ExoComp 在原文前後加的內容，接到繁中
    *   check     ExoComp 有改動但無法自動接 → 需人工
    *   zh_only / exo_only  只存在於一邊
+   *   updated   （有 opts.exoBase 時）ExoComp 英文跟漢化當時對照的版本不同 → 中文可能過時
    */
   function merge(zhRaw, zhT, exo, van, opts) {
     opts = opts || {};
@@ -242,6 +243,17 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         const o = ores.get(e.k); if (!o) continue;
         stats[e.cat]--; stats.ore = (stats.ore || 0) + 1;
         e.from = e.cat; e.cat = 'ore'; e.out = o.out; e.note = o.note; e.len = o.len;
+      }
+    }
+    // 漢化固定不動、ExoComp 改版時：英文變了的條目，中文可能已過時
+    if (opts.exoBase) {
+      for (const e of entries) {
+        // 輸出完全由 ExoComp 產生的分類（礦石、零件等級、未中文化）會自動跟著新版，不用列出
+        if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same'].includes(e.cat)) continue;
+        const bv = opts.exoBase.map.get(e.k);
+        if (bv === undefined || bv === e.exo) continue;
+        stats[e.cat]--; stats.updated = (stats.updated || 0) + 1;
+        e.from = e.from || e.cat; e.cat = 'updated'; e.oldExo = bv;
       }
     }
     const seen = new Set(exo.keys);

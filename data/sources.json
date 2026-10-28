@@ -4,7 +4,8 @@
     "sha256": "54fafcd0474c614fb13119d9b5710ac0cb4667db347f61f6327ee8f95d057e1b",
     "size": 10126137,
     "version": "Alpha 4.10：奥里森之围",
-    "fetched_at": "2026-10-28T01:34:01Z"
+    "fetched_at": "2026-10-28T01:34:01Z",
+    "note": "固定版本：2026-10-28 從 42kit 半漢化包下載一次，之後不再自動更新"
   },
   "exo": {
     "file": "data/exocomp.ini",
@@ -12,5 +13,10 @@
     "size": 10715916,
     "version": "Alpha 4.10.2: Siege of Orison",
     "fetched_at": "2026-10-28T01:33:23Z"
+  },
+  "exo_base": {
+    "file": "data/exocomp.base.ini",
+    "version": "Alpha 4.10.2: Siege of Orison",
+    "note": "漢化對照用的 ExoComp 版本"
   }
 }

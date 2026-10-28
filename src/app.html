@@ -137,7 +137,7 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
     <div class="online">
       <div class="row">
         <button class="pri" id="btnOnline">從網路取得最新版並合併</button>
-        <span class="muted" id="onlineInfo">漢化：42kit 半漢化包（half）　ExoComp：ScCompLangPackRemix2</span>
+        <span class="muted" id="onlineInfo">漢化：網站上的固定版　ExoComp：ScCompLangPackRemix2（每天自動檢查更新）</span>
       </div>
       <div id="updateNote" class="upd" hidden></div>
     </div>
@@ -231,9 +231,10 @@ const LS = {
 };
 const CATS = [
   {id:'issue',  name:'問題項目', hint:'自動合併後檢查不通過（少了變數、標籤不成對等）', review:true},
+  {id:'updated', name:'英文有更新', hint:'ExoComp 改版後英文變了，中文可能過時', review:true},
+  {id:'exo_only',name:'新增條目', hint:'ExoComp 新版才有、漢化沒有的條目', review:true},
   {id:'check',  name:'需人工確認', hint:'ExoComp 有額外標記，但無法自動接上', review:true},
   {id:'ore',    name:'礦石', hint:'中文＋英文縮寫，每行不超過設定字數', review:true},
-  {id:'exo_only',name:'只有 ExoComp 有', hint:'漢化包沒有這個條目', review:true},
   {id:'zh_only',name:'只有漢化包有', hint:'ExoComp 沒有這個條目', review:true},
   {id:'comp',   name:'零件等級', hint:'MIL-1C "Bracer" → 軍規1C-Bracer', auto:true},
   {id:'en_exo', name:'未中文化 → ExoComp', hint:'漢化包本來就是英文，直接用 ExoComp', auto:true},
@@ -284,7 +285,7 @@ function setFile(slot, f){
 }
 for (const slot of ['zh','exo','van']) {
   const inp = $('#f-'+slot), box = document.querySelector(`.slot[data-slot="${slot}"]`);
-  const take = async file => { if(!file) return; setFile(slot, {name:file.name, text: await file.text()}); };
+  const take = async file => { if(!file) return; setFile(slot, {name:file.name, text: await file.text()}); if (slot!=='van') files.base = null; };
   inp.addEventListener('change', () => take(inp.files[0]));
   box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('drag'); });
   box.addEventListener('dragleave', () => box.classList.remove('drag'));
@@ -293,7 +294,7 @@ for (const slot of ['zh','exo','van']) {
 // ---------- 從網路取得 ----------
 // 優先讀同一個網站 data/ 底下的副本（GitHub Actions 每天自動更新），讀不到再直接抓來源
 const SOURCES = {
-  zh:  { label:'42kit 半漢化包', local:'data/chinese.ini',  remote:'https://ini.42kit.com/half/global.ini' },
+  zh:  { label:'漢化（固定版）', local:'data/chinese.ini' },
   exo: { label:'ExoComp Remix2', local:'data/exocomp.ini', remote:'https://raw.githubusercontent.com/ExoAE/ScCompLangPack/main/ScCompLangPackRemix2/data/Localization/english/global.ini' },
 };
 const verOf = t => ((t.match(/^Frontend_PU_Version=(.*)$/m) || [])[1] || '版本不明').trim();
@@ -307,7 +308,7 @@ async function fetchSources(){
   const man = await getManifest(), out = {};
   for (const id of ['zh','exo']) {
     const S = SOURCES[id]; let text = null, from = '';
-    for (const u of [S.local, S.remote]) {
+    for (const u of [S.local, S.remote].filter(Boolean)) {
       try { log(`下載 ${S.label}：${u}`); text = await getText(u); from = u; break; } catch(e) { log(`　讀取失敗（${e.message}）`); }
     }
     if (!text) throw new Error(`${S.label} 下載不到。請改用手動選擇檔案。`);
@@ -315,11 +316,13 @@ async function fetchSources(){
     out[id] = { name: `${S.label}（${verOf(text)}）`, text, sha: m && from===S.local ? m.sha256 : sigOf(text), fetched: m && m.fetched_at };
     log(`　完成：${(text.length/1048576).toFixed(1)} MB，${verOf(text)}`);
   }
+  // 漢化當時對照的 ExoComp 版本：拿來找出改版後英文有變的條目
+  try { const t = await getText('data/exocomp.base.ini'); out.base = { name:'ExoComp 對照版', text:t }; log(`對照版 ExoComp：${verOf(t)}`); } catch(e) {}
   return out;
 }
 $('#btnOnline').onclick = async () => {
   $('#log').textContent=''; $('#btnOnline').disabled = true; prog(0.03);
-  try { const f = await fetchSources(); setFile('zh', f.zh); setFile('exo', f.exo); $('#updateNote').hidden = true; await run(true); }
+  try { const f = await fetchSources(); setFile('zh', f.zh); setFile('exo', f.exo); files.base = f.base || null; $('#updateNote').hidden = true; await run(true); }
   catch(e){ log('錯誤：' + e.message); prog(null); }
   $('#btnOnline').disabled = false;
 };
@@ -344,7 +347,7 @@ async function checkUpdate(last){
 function sigOf(t){ let h=2166136261>>>0; for(let i=0;i<t.length;i+=97){ h^=t.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return t.length+'-'+h.toString(16); }
 // 打開頁面時，如果有上次的檔案就自動接續
 (async()=>{ const last = await idbGet('last'); if(last && last.zh && last.exo){
-  setFile('zh',last.zh); setFile('exo',last.exo); setFile('van',last.van||null);
+  setFile('zh',last.zh); setFile('exo',last.exo); setFile('van',last.van||null); files.base = last.base||null;
   log(`自動載入上次的檔案：${last.zh.name}、${last.exo.name}${last.van?'、'+last.van.name:''}（要換檔案就重新選擇後按「開始合併」）`);
   checkUpdate(last);
   run(true);
@@ -378,6 +381,7 @@ async function run(resumed){
   try{
     await tick();
     parsed = { zh: M.parseIni(files.zh.text), exo: M.parseIni(files.exo.text), van: files.van ? M.parseIni(files.van.text) : null };
+    parsed.base = files.base ? M.parseIni(files.base.text) : null;
     log(`簡中漢化包：${parsed.zh.keys.length.toLocaleString()} 條　ExoComp：${parsed.exo.keys.length.toLocaleString()} 條` + (parsed.van?`　原版英文：${parsed.van.keys.length.toLocaleString()} 條`:''));
     for (const n of ['zh','exo','van']) { const p=parsed[n]; if(!p) continue;
       if (p.repaired.length) log(`已修復 ${p.repaired.length} 條被斷行的值（${n}）：${p.repaired.slice(0,3).join(', ')}${p.repaired.length>3?' …':''}`);
@@ -394,7 +398,7 @@ async function run(resumed){
       idbPut('conv', {sig, pairs:[...zhT0]});
     }
     remerge();
-    idbPut('last', {zh:files.zh, exo:files.exo, van:files.van});
+    idbPut('last', {zh:files.zh, exo:files.exo, van:files.van, base:files.base||null});
     log('完成。');
   }catch(e){ log('錯誤：' + (e.message||e)); }
   prog(null); $('#btnRun').disabled = !(files.zh && files.exo); $('#btnReapply').disabled = !zhT0;
@@ -403,7 +407,7 @@ function remerge(){
   LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
   LS.set('oreZh', $('#oreZh').value); LS.set('oreAbbr', $('#oreAbbr').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
   const zhT = applyTerms(zhT0);
-  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts()});
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base});
   byKey = new Map(result.entries.map(e=>[e.k,e]));
   $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
   view.page=0; renderAll();
@@ -537,7 +541,7 @@ function cardHtml(e){
   return `<article class="card s-${s}" data-k="${esc(e.k)}">
     <div class="hd"><span class="k">${esc(e.k)}</span><span class="pill ${e.cat}">${CATNAME[e.cat]||e.cat}</span><span class="pill st-${s}">${stTxt}</span></div>
     <div class="cols">
-      <div class="col"><h3>ExoComp 英文</h3><div class="txt">${rich(e.exo)}</div>${e.van!==undefined&&e.van!==e.exo?`<h3>原版英文</h3><div class="txt">${rich(e.van)}</div>`:''}</div>
+      <div class="col"><h3>ExoComp 英文</h3><div class="txt">${rich(e.exo)}</div>${e.van!==undefined&&e.van!==e.exo?`<h3>原版英文</h3><div class="txt">${rich(e.van)}</div>`:''}${e.oldExo!==undefined?`<h3>舊版英文（漢化當時）</h3><div class="txt">${rich(e.oldExo)}</div>`:''}</div>
       <div class="col"><h3>繁中原譯（已轉繁）</h3><div class="txt">${rich(e.zh)}</div></div>
       <div class="col"><h3>輸出結果</h3><div class="txt out">${richOut(e, v)}</div>
         <textarea rows="2" aria-label="編輯輸出結果" spellcheck="false" ${s==='edit'?'':'hidden'}>${esc((v??'').replace(/\\n/g,'\n'))}</textarea></div>
