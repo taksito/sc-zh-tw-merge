@@ -263,7 +263,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     if (opts.ships && opts.ships.size) {
       for (const e of entries) {
         if (!/^vehicle_Name/.test(e.k)) continue;
-        const z = (opts.ships.get(e.k) || '').trim(), en = (e.out || '').replace(/(?:\\n|\s)+$/, '').trim();
+        const z = (opts.ships.get(e.k) || '').replace(/(?:\\n|\s)+$/, '').trim(), en = (e.out || '').replace(/(?:\\n|\s)+$/, '').trim();
         if (!z || !en || CJK.test(en) || z.includes(en)) continue;
         stats[e.cat]--; stats.ship = (stats.ship || 0) + 1;
         // 太長就把英文換到下一行（中文算 1 字、英文數字算半字）
