@@ -1,0 +1,962 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light dark}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<title>SC 語言包合併台</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+/* 版面：上方載入列 → 摘要與匯出 → 左側分類 / 右側審核卡片。冷色儀表板調性，像艦載 MFD */
+:root{
+  --bg:#eef2f5; --panel:#ffffff; --sunk:#e4eaef; --line:#cdd6de; --fg:#15212c; --muted:#5b6b78;
+  --accent:#0b7682; --accent-ink:#ffffff; --accent-soft:#d6eef0;
+  --em:#9a5b00; --em-soft:#fbefd9; --tok:#5a4bb0; --tok-soft:#e9e6f8;
+  --ok:#2c7a3f; --ok-soft:#dcf0e1; --warn:#a2580a; --warn-soft:#fbe9d6; --bad:#b3323a; --bad-soft:#f8dfe1;
+  --f-ui:"IBM Plex Sans","Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-zh:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+  --r:6px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0c1319; --panel:#131d26; --sunk:#0f1820; --line:#253543; --fg:#dbe5ec; --muted:#8798a6;
+  --accent:#46c0cc; --accent-ink:#06171a; --accent-soft:#163a40;
+  --em:#f0b75a; --em-soft:#3a2b12; --tok:#b2a6ff; --tok-soft:#262245;
+  --ok:#6cc985; --ok-soft:#163222; --warn:#f0a35a; --warn-soft:#3a2614; --bad:#ff8a8f; --bad-soft:#3b1a1d; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1319; --panel:#131d26; --sunk:#0f1820; --line:#253543; --fg:#dbe5ec; --muted:#8798a6;
+  --accent:#46c0cc; --accent-ink:#06171a; --accent-soft:#163a40;
+  --em:#f0b75a; --em-soft:#3a2b12; --tok:#b2a6ff; --tok-soft:#262245;
+  --ok:#6cc985; --ok-soft:#163222; --warn:#f0a35a; --warn-soft:#3a2614; --bad:#ff8a8f; --bad-soft:#3b1a1d; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font:14px/1.55 var(--f-ui);margin:0}
+.wrap{max-width:1400px;margin:0 auto;padding-block:20px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+h1{font-size:20px;margin:0;font-weight:600;letter-spacing:.01em}
+h2{font-size:13px;margin:0;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-size:12.5px}
+.muted{color:var(--muted)}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px 16px}
+header p{margin:0;color:var(--muted)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;grid-template-columns:minmax(0,1fr);gap:14px;min-width:0}
+select{max-width:100%}
+.slots{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.slot{border:1px dashed var(--line);border-radius:var(--r);padding:12px;display:grid;gap:6px;background:var(--sunk);min-width:0;cursor:pointer;transition:border-color .15s}
+.slot:hover,.slot.drag{border-color:var(--accent)}
+.slot.filled{border-style:solid}
+.slot b{font-weight:600}
+.slot .fn{font-family:var(--f-mono);font-size:12px;word-break:break-all}
+.slot input{display:none}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+label.inl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;min-width:0;max-width:100%}
+label.inl select{flex:1 1 200px;min-width:0}
+select,input[type=search],input[type=text]{font:inherit;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:6px 8px;min-width:0}
+textarea{font:13.5px/1.6 var(--f-zh);color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:8px;width:100%;resize:vertical}
+textarea.code{font:12.5px/1.5 var(--f-mono)}
+button{font:inherit;font-weight:500;border:1px solid var(--line);background:var(--panel);color:var(--fg);border-radius:4px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.pri:hover{filter:brightness(1.08)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.sm{padding:3px 9px;font-size:12.5px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+details summary{cursor:pointer;color:var(--muted);font-weight:500}
+.dicts{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-top:10px}
+.dicts label{display:grid;gap:4px;font-size:12.5px;color:var(--muted)}
+.prog{height:6px;background:var(--sunk);border-radius:3px;overflow:hidden}
+.prog>i{display:block;height:100%;background:var(--accent);width:0;transition:width .2s}
+.log{font:12px/1.5 var(--f-mono);color:var(--muted);white-space:pre-wrap;word-break:break-all;margin:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{background:var(--sunk);border-radius:var(--r);padding:10px 12px;display:grid;gap:2px}
+.stat .n{font:600 20px/1.2 var(--f-mono);font-variant-numeric:tabular-nums}
+.stat .l{font-size:12px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.layout{grid-template-columns:minmax(0,1fr)} nav.cats{position:static;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))} nav.cats button small{display:none}}
+nav.cats{display:grid;gap:4px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+nav.cats button{display:grid;grid-template-columns:1fr auto;gap:2px 8px;text-align:left;border-color:transparent;background:transparent;padding:8px 10px}
+nav.cats button small{grid-column:1/-1;color:var(--muted);font-size:11.5px;font-weight:400}
+nav.cats button.on{background:var(--panel);border-color:var(--line)}
+nav.cats button .c{font:500 12px var(--f-mono);font-variant-numeric:tabular-nums;color:var(--muted)}
+nav.cats .bar{grid-column:1/-1;height:3px;background:var(--sunk);border-radius:2px;overflow:hidden}
+nav.cats .bar i{display:block;height:100%;background:var(--ok)}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tools input[type=search]{flex:1 1 220px}
+.cards{display:grid;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--line);border-radius:var(--r);padding:12px 14px;display:grid;gap:10px;min-width:0}
+.card.s-ok{border-left-color:var(--ok)}
+.card.s-edit{border-left-color:var(--accent)}
+.card.s-stale{border-left-color:var(--warn)}
+.card .hd{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.card .k{font:500 12.5px var(--f-mono);word-break:break-all}
+.pill{font-size:11.5px;padding:1px 8px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.pill.ore{background:var(--tok-soft);color:var(--tok)}
+.pill.comp{background:var(--accent-soft);color:var(--accent)}
+.pill.issue,.pill.check{background:var(--bad-soft);color:var(--bad)}
+.pill.tail,.pill.title,.pill.wrap{background:var(--accent-soft);color:var(--accent)}
+.pill.en_exo,.pill.exo_only,.pill.zh_only{background:var(--warn-soft);color:var(--warn)}
+.pill.st-auto{background:var(--sunk);color:var(--muted)}
+.pill.st-ok{background:var(--ok-soft);color:var(--ok)}
+.pill.st-edit{background:var(--accent-soft);color:var(--accent)}
+.pill.st-stale{background:var(--warn-soft);color:var(--warn)}
+.cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:1100px){.cols{grid-template-columns:minmax(0,1fr)}}
+.col{display:grid;gap:4px;align-content:start;min-width:0}
+.col h3{margin:0;font-size:11.5px;font-weight:600;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.txt{font:13.5px/1.6 var(--f-zh);background:var(--sunk);border-radius:4px;padding:8px;white-space:pre-wrap;word-break:break-word;max-height:260px;overflow:auto}
+.txt .em{color:var(--em);background:var(--em-soft);border-radius:2px}
+.txt .tk{color:var(--tok);background:var(--tok-soft);border-radius:2px;font:12px var(--f-mono)}
+.txt .add{background:var(--accent-soft);box-shadow:inset 2px 0 0 var(--accent);border-radius:2px}
+.added{font:12px/1.5 var(--f-mono);color:var(--muted);word-break:break-word}
+.added b{color:var(--accent);font-weight:500}
+.acts{display:flex;flex-wrap:wrap;gap:6px}
+.pager{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap}
+.empty{padding:28px;text-align:center;color:var(--muted);background:var(--panel);border:1px dashed var(--line);border-radius:var(--r)}
+.export{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.toast{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:8px 14px;border-radius:4px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20;max-width:calc(100% - 32px)}
+.toast.on{opacity:1}
+.issues{font-size:13px;color:var(--bad);background:var(--bad-soft);border-radius:4px;padding:6px 10px}
+.ohead,.card.orow{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1.2fr) minmax(0,1.6fr) 7.5em auto;gap:10px;align-items:center}
+.ohead{font-size:11.5px;letter-spacing:.06em;color:var(--muted);font-weight:600;padding:0 14px}
+.card.orow{padding:8px 14px}
+.card.orow textarea{font-size:14px;padding:4px 8px;min-height:0;resize:none;overflow:hidden}
+.card.orow .over{color:var(--bad);font-weight:600}
+.card.orow .note{color:var(--warn);font-family:var(--f-ui)}
+@media (max-width:900px){.ohead{display:none}.card.orow{grid-template-columns:minmax(0,1fr) auto}.card.orow textarea{grid-column:1/-1}}
+.savebar{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;align-items:center}
+#saveState{color:var(--ok)}
+nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:10px 10px 2px;font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>SC 語言包合併台</h1>
+    <p>簡中漢化 ＋ ExoComp 詳細資料 → 繁體中文 global.ini（UTF-8 with BOM）</p>
+  </header>
+
+  <section class="panel" id="loadPanel">
+    <h2>1　載入檔案</h2>
+    <div class="slots">
+      <label class="slot" data-slot="zh"><b>簡中漢化包</b><span class="muted">例如 chinese.ini（必填）</span><span class="fn" id="fn-zh">尚未選擇</span><input type="file" id="f-zh" accept=".ini,.txt"></label>
+      <label class="slot" data-slot="exo"><b>ExoComp 英文包</b><span class="muted">有零件等級、聲望、藍圖資訊的版本（必填）</span><span class="fn" id="fn-exo">尚未選擇</span><input type="file" id="f-exo" accept=".ini,.txt"></label>
+      <label class="slot" data-slot="van"><b>原版英文 global.ini</b><span class="muted">選填。給了就能精確找出 ExoComp 改了哪裡</span><span class="fn" id="fn-van">尚未選擇</span><input type="file" id="f-van" accept=".ini,.txt"></label>
+    </div>
+    <div class="row">
+      <label class="inl">簡轉繁方式
+        <select id="ccMode">
+          <option value="twp">台灣正體＋台灣用語（激光→雷射、服务器→伺服器）</option>
+          <option value="tw">台灣正體（只轉字，不換用語）</option>
+          <option value="t">OpenCC 標準繁體</option>
+          <option value="hk">香港繁體</option>
+        </select>
+      </label>
+      <button class="pri" id="btnRun" disabled>開始合併</button>
+    </div>
+    <details>
+      <summary>詞彙表與規則（可修改，改完按「重新套用」）</summary>
+      <div class="dicts">
+        <label>ExoComp 附加資訊翻譯　<span>只套用在從 ExoComp 接過來的片段。<span class="mono">{$1}</span> 會自動查兩個檔案對照出來的中文名稱</span>
+          <textarea id="dictTail" class="code" rows="14" spellcheck="false"></textarea></label>
+        <label>全域自訂替換　<span>簡轉繁之後，套用到所有中文內容（例如修正遊戲專有名詞）</span>
+          <textarea id="dictTerm" class="code" rows="14" spellcheck="false"></textarea></label>
+        <label>礦石中文名　<span>漢化包裡有的會自動抓；標 * 的是建議譯名</span>
+          <textarea id="oreZh" class="code" rows="10" spellcheck="false"></textarea></label>
+        <label>礦石英文縮寫　<span>沒寫的會自動取能互相分辨的開頭 3–6 個字母</span>
+          <textarea id="oreAbbr" class="code" rows="10" spellcheck="false"></textarea></label>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <label class="inl">礦石每行最多 <input type="number" id="oreLimit" min="6" max="40" style="width:5em"> 字</label>
+        <label class="inl"><input type="checkbox" id="oreHalf"> 英文、數字算半個字</label>
+      </div>
+      <div class="row" style="margin-top:10px"><button id="btnReapply" disabled>重新套用詞彙表</button><button id="btnResetDict" class="sm">還原預設詞彙</button></div>
+    </details>
+    <div class="prog" id="prog" hidden><i></i></div>
+    <pre class="log" id="log"></pre>
+  </section>
+
+  <section class="panel" id="sumPanel" hidden>
+    <h2>2　合併結果與匯出</h2>
+    <div class="stats" id="stats"></div>
+    <div class="export">
+      <button class="pri" id="btnZip">下載 global.ini（.zip）</button>
+      <button id="btnTxt">下載為 global.ini.txt</button>
+      <button id="btnSaveProg">匯出審核紀錄</button>
+      <label class="slot" style="padding:6px 12px;display:inline-flex;border-style:solid"><span>匯入審核紀錄</span><input type="file" id="f-prog" accept=".json"></label>
+      <span class="muted" id="exportNote">未審核的項目會使用自動建議；你修改過的以修改為準。</span>
+    </div>
+  </section>
+
+  <section id="reviewPanel" hidden>
+    <div class="layout">
+      <nav class="cats" id="cats" aria-label="分類"></nav>
+      <div style="display:grid;gap:12px;min-width:0">
+        <div class="tools">
+          <input type="search" id="q" placeholder="搜尋鍵名、英文或中文…">
+          <select id="stFilter">
+            <option value="todo">未審核</option>
+            <option value="all">全部狀態</option>
+            <option value="done">已處理</option>
+          </select>
+          <button id="btnPageOk" class="sm">本頁全部確認</button>
+          <button id="btnCatOk" class="sm">此分類全部確認</button>
+        </div>
+        <div class="savebar"><span id="saveState" class="mono"></span><span class="muted">換電腦或清除瀏覽器資料前，記得「匯出審核紀錄」備份。</span></div>
+        <div class="legend"><span><span class="txt em" style="padding:0 4px">黃底</span> = 遊戲的 &lt;EM4&gt; 強調文字</span><span><span class="txt tk" style="padding:0 4px">紫底</span> = ~mission() 等變數</span><span><span class="txt" style="padding:0 4px;background:var(--accent-soft)">青底</span> = 從 ExoComp 接進來的內容</span></div>
+        <div class="cards" id="cards"></div>
+        <div class="pager" id="pager"></div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script>
+// ===== SC 語言包合併引擎（瀏覽器與 Node 共用）=====
+(function (root) {
+  const CJK = /[\u3400-\u9fff\uf900-\ufaff]/;
+  const KEY_LINE = /^[^\s=\\][^=]*?=/; // 鍵不以反斜線開頭；值內的斷行殘段（如 "\nCarrying..."）會接回上一行
+
+  function parseIni(text) {
+    if (text.charCodeAt(0) === 0xfeff) text = text.slice(1);
+    const crlf = text.indexOf('\r\n') !== -1;
+    text = text.replace(/\r\n?/g, '\n');
+    const keys = [], map = new Map(), repaired = new Set(), dups = [];
+    let last = null;
+    for (const line of text.split('\n')) {
+      if (line === '') continue;
+      const m = KEY_LINE.exec(line);
+      if (m && !/\s/.test(m[0].slice(0, -1))) {
+        const k = m[0].slice(0, -1), v = line.slice(m[0].length);
+        if (map.has(k)) dups.push(k); else keys.push(k);
+        map.set(k, v); last = k;
+      } else if (last !== null) {
+        map.set(last, map.get(last) + line); repaired.add(last);
+      }
+    }
+    return { keys, map, crlf, repaired: [...repaired], dups };
+  }
+
+  // ---------- 字典 ----------
+  // 每行： 英文 => 中文 ；以 / 開頭結尾的是正規式（可用 $1）；# 開頭為註解
+  const DEFAULT_TAIL_DICT = `# ExoComp 附加資訊的翻譯（只套用在從 ExoComp 接過來的片段）
+Reputation Awarded (by difficulty): => 獲得聲望（依難度）：
+Reputation Awarded: => 獲得聲望：
+Multiple Blueprint Pools => 多個藍圖池
+/Potential Blueprints \\((.+?) [Oo]nly\\)/ => 可能獲得的藍圖（僅限 {$1}）
+Potential Blueprints => 可能獲得的藍圖
+/Awarded from (.+?) level variants/ => {$1} 等級的任務變體可獲得
+/\\bPool (\\d+)/ => 藍圖池 $1
+Scenario Progress Points => 劇情進度點數
+Total => 總計
+Transport => 運輸
+Defense => 防禦
+Collection => 收集
+(Split) => （分攤）
+/\\[Regional Variants\\] example locations: ([^<]+)/ => [區域變體] 範例地點：{,$1}
+/ Rep\\]/ =>  聲望]
+[BP] => [藍圖]
+Warning: Some blueprint strings in this pool may have been assigned to the wrong item by CIG. Check scmdb.net for manually corrected pools => 警告：此藍圖池中部分藍圖可能被 CIG 對應到錯誤物品，修正後的清單請至 scmdb.net 查詢`;
+
+  const DEFAULT_TERM_DICT = `# 簡轉繁之後，再套用到所有中文內容的自訂替換（左邊寫繁體轉換後的結果）
+# 例：
+# 視頻 => 影片
+`;
+
+  function parseDict(txt) {
+    const out = [];
+    for (const raw of (txt || '').split('\n')) {
+      const line = raw.replace(/\s+$/, '');
+      if (!line.trim() || line.trim().startsWith('#')) continue;
+      const i = line.indexOf(' => ');
+      if (i < 0) continue;
+      const a = line.slice(0, i), b = line.slice(i + 4);
+      if (a.length > 2 && a.startsWith('/') && a.endsWith('/')) {
+        try { out.push({ re: new RegExp(a.slice(1, -1), 'g'), to: b }); } catch (e) { /* 忽略錯誤正規式 */ }
+      } else out.push({ s: a, to: b });
+    }
+    // 純文字依長度由長到短，避免短詞先吃掉長詞；正規式保持書寫順序並排在前面
+    const res = out.filter(x => x.re), str = out.filter(x => !x.re).sort((x, y) => y.s.length - x.s.length);
+    return res.concat(str);
+  }
+
+  function applyDict(s, dict, gloss) {
+    for (const d of dict) {
+      if (d.re) {
+        s = s.replace(d.re, (...m) => {
+          let t = d.to;
+          t = t.replace(/\{,\$(\d)\}/g, (_, n) => (m[+n] || '').split(/,\s*/).map(x => glossLookup(x.trim(), gloss)).join('、'));
+          t = t.replace(/\{\$(\d)\}/g, (_, n) => glossLookup(m[+n] || '', gloss));
+          t = t.replace(/\$(\d)/g, (_, n) => m[+n] || '');
+          return t;
+        });
+      } else if (s.includes(d.s)) s = s.split(d.s).join(d.to);
+    }
+    return s;
+  }
+  function glossLookup(en, gloss) { return (gloss && gloss.get(en)) || en; }
+
+  // 從兩個檔案自動建立「短英文 → 中文」詞彙表（例如 Jr. Contractor → 初級承包商）
+  function buildGlossary(zhT, exo) {
+    const votes = new Map();
+    for (const [k, ev] of exo.map) {
+      if (ev.length > 40 || CJK.test(ev) || /[<~\\]/.test(ev)) continue;
+      const zv = zhT.get(k);
+      if (!zv || !CJK.test(zv) || zv.length > 30) continue;
+      let m = votes.get(ev); if (!m) votes.set(ev, m = new Map());
+      m.set(zv, (m.get(zv) || 0) + 1);
+    }
+    const g = new Map();
+    for (const [en, m] of votes) g.set(en, [...m].sort((a, b) => b[1] - a[1])[0][0]);
+    return g;
+  }
+
+  // ---------- 規則 ----------
+  const P = '\\n\\n'; // ini 內的段落分隔（字面上的 \n\n）
+  const normPunct = s => s.replace(/：/g, ':').replace(/，/g, ',').replace(/（/g, '(').replace(/）/g, ')').replace(/\s+/g, '');
+  const trimTail = s => s.replace(/(?:\\n|\s)+$/, '');
+  const TITLE_SUFFIX = /\s*(<EM4>(?:\s*\[[^\]<]*\]\*?)+\s*<\/EM4>)\s*$/;
+
+  const EXO_MARK = /(?:\\n)+(?=<EM4>(?:Reputation Awarded|Potential Blueprints|Multiple Blueprint Pools|Scenario Progress Points|Pool \d|Awarded from))/;
+  function emTailCount(v) {
+    const ps = trimTail(v).split(P); let n = 0;
+    for (let i = ps.length - 1; i >= 0; i--) { if (/^(?:\s|\\n)*<EM4>/.test(ps[i])) n++; else break; }
+    return { n, ps };
+  }
+  const BR = /\[[^\]\n]{1,40}\]/g;
+  function tagDiff(ev, zv) {
+    // 只比「數量」：原版就有的 [Recon] 被翻成 [侦察] 不算差異；[ Groaning ] 這類語音標記忽略
+    const cnt = (v, re) => (v.match(re) || []).filter(t => !/^\[ /.test(t)).length;
+    const d = [];
+    const be = cnt(ev, BR), bz = cnt(zv, BR) + cnt(zv, /【[^】]{1,40}】/g);
+    if (be > bz) d.push('[標籤] ×' + (be - bz));
+    const ce = cnt(ev, /<EM\d>/g), cz = cnt(zv, /<EM\d>/g);
+    if (ce > cz) d.push('<EM> ×' + (ce - cz));
+    return d;
+  }
+
+  const ROUTE = /\s*\|\s*((?:from |to )?~mission\([^)]*\)(?:\s*>\s*~mission\([^)]*\))?)\s*$/;
+  const AUTO_CATS = new Set(['title', 'tail', 'wrap']);
+  const toks = v => (v || '').match(/~\w+\([^)]*\)|%l?[sdif]/g) || [];
+  function validate(e) {
+    const iss = [], out = e.out || '';
+    const open = (out.match(/<EM\d>/g) || []).length, close = (out.match(/<\/EM\d>/g) || []).length;
+    const bal = v => (v.match(/<EM\d>/g) || []).length - (v.match(/<\/EM\d>/g) || []).length;
+    if (open !== close && bal(out) !== bal(e.zh || '')) iss.push('<EM4> 標籤沒有成對');
+    const have = new Set(toks(out));
+    const miss = [...new Set(toks(e.exo))].filter(t => !have.has(t));
+    if (miss.length) iss.push('少了變數 ' + miss.slice(0, 3).join(' '));
+    // 從 ExoComp 接進來、翻譯後仍殘留的英文（物品清單「- xxx」和地名除外）
+    const tail = out.slice(Math.max(0, out.length - (e.added || '').length - 20));
+    const left = tail.split('\\n').filter(l => !/^\s*- /.test(l))
+      .map(l => l.replace(/<\/?EM\d>/g, '').replace(/~\w+\([^)]*\)/g, '').replace(/\[[^\]]*\]/g, ''))
+      .filter(l => /[A-Za-z]{4,}(?:\s+[A-Za-z]{2,}){1,}/.test(l) && !/[\u4e00-\u9fff]/.test(l.replace(/[A-Za-z].*$/, '')) );
+    if (left.length) iss.push('附加資訊有英文沒翻到：' + left[0].trim().slice(0, 40));
+    if (!e.zh || !e.zh.trim()) iss.push('繁中原譯是空的');
+    return iss;
+  }
+
+  /**
+   * 回傳 { entries: [...], stats }
+   * entry: { k, cat, out, zh, zhRaw, exo, van, added }
+   * cat：
+   *   same      兩邊一樣或只需繁化（不審核）
+   *   zh        採用繁中（不審核）
+   *   en_exo    繁中檔仍是英文 → 採用 ExoComp（含標籤）
+   *   title     任務標題補上 ExoComp 的 [聲望/藍圖] 標籤
+   *   tail      任務說明補上 ExoComp 的獎勵/藍圖清單
+   *   wrap      （有原版時）ExoComp 在原文前後加的內容，接到繁中
+   *   check     ExoComp 有改動但無法自動接 → 需人工
+   *   zh_only / exo_only  只存在於一邊
+   */
+  function merge(zhRaw, zhT, exo, van, opts) {
+    opts = opts || {};
+    const tailDict = parseDict(opts.tailDict != null ? opts.tailDict : DEFAULT_TAIL_DICT);
+    const gloss = buildGlossary(zhT, exo);
+    const tr = s => applyDict(s, tailDict, gloss);
+    const classMap = Object.assign({}, DEFAULT_CLASS_MAP, opts.classMap || {});
+    const entries = [], stats = {};
+    const add = (e) => { entries.push(e); stats[e.cat] = (stats[e.cat] || 0) + 1; };
+
+    for (const k of exo.keys) {
+      const ev = exo.map.get(k), zr = zhRaw.map.get(k), zv = zhT.get(k);
+      const vv = van ? van.map.get(k) : undefined;
+      const base = { k, zh: zv, zhRaw: zr, exo: ev, van: vv };
+      if (zr === undefined) { add({ ...base, cat: 'exo_only', out: ev }); continue; }
+      if (zv === ev) { add({ ...base, cat: 'same', out: zv }); continue; }
+
+      const zhIsCJK = CJK.test(zr);
+      const exoChanged = vv === undefined ? null : ev !== vv;
+
+      if (!zhIsCJK && (normPunct(zr) === normPunct(ev) || exoChanged === false)) { add({ ...base, cat: 'same', out: zv }); continue; }
+      if (zhIsCJK && exoChanged === false) { add({ ...base, cat: 'zh', out: zv }); continue; }
+
+      // 有原版英文：精確找出 ExoComp 在原文前/後加了什麼
+      if (vv !== undefined && vv.length > 0) {
+        const at = ev.indexOf(vv);
+        if (at >= 0) {
+          const pre = ev.slice(0, at), post = ev.slice(at + vv.length);
+          const out = (pre ? tr(pre) : '') + (post ? trimTail(zv) + tr(post) : zv);
+          add({ ...base, cat: 'wrap', out, added: pre + (pre && post ? ' … ' : '') + post });
+          continue;
+        }
+      }
+
+      // 規則 1：任務標題結尾的 <EM4>[100 Rep] [BP]*</EM4>
+      const mt = TITLE_SUFFIX.exec(ev);
+      if (mt && !/<\/EM4>\s*$/.test(zv)) {
+        // 貨運標題中間還有「| 起點 > 終點」路線，漢化沒有的話一起接上
+        const body = ev.slice(0, mt.index);
+        const mr = ROUTE.exec(body);
+        let route = '';
+        if (mr && !toks(mr[1]).every(t => zv.includes(t))) route = ' | ' + mr[1].replace(/^from\s+/, '自 ').replace(/^to\s+/, '至 ');
+        add({ ...base, cat: 'title', out: zv.replace(/\s+$/, '') + route + ' ' + tr(mt[1]), added: (mr && route ? mr[0].trim() + ' ' : '') + mt[1] });
+        continue;
+      }
+      // 規則 2a：ExoComp 的獎勵區塊（從第一個「Reputation Awarded / Potential Blueprints…」段落到結尾）
+      const mk = EXO_MARK.exec(ev);
+      if (mk && !EXO_MARK.test(zr)) {
+        const extra = ev.slice(mk.index).replace(/^(?:\s|\\n)+/, '').replace(/(?:\\n|\s)+$/, '');
+        add({ ...base, cat: 'tail', out: trimTail(zv) + P + tr(extra), added: extra });
+        continue;
+      }
+      // 規則 2b：說明結尾多出的其他 <EM4> 段落
+      const te = emTailCount(ev), tz = emTailCount(zv);
+      if (te.n > tz.n && te.n - tz.n < te.ps.length) {
+        const extra = te.ps.slice(te.ps.length - (te.n - tz.n)).join(P).replace(/^(?:\s|\\n)+/, '');
+        add({ ...base, cat: 'tail', out: trimTail(zv) + P + tr(extra), added: extra });
+        continue;
+      }
+      // 漢化本來就是英文的條目：零件等級翻成中文，其餘直接用 ExoComp
+      if (!zhIsCJK) {
+        const mc = COMP_RE.exec(ev);
+        if (mc && classMap[mc[1].toUpperCase()]) {
+          add({ ...base, cat: 'comp', out: classMap[mc[1].toUpperCase()] + mc[2] + mc[3].toUpperCase() + '-' + mc[4], added: mc[1] + '-' + mc[2] + mc[3] });
+        } else add({ ...base, cat: 'en_exo', out: ev });
+        continue;
+      }
+      // 其他：標籤數量不同，或（有原版時）ExoComp 確定有改
+      const d = tagDiff(ev, zv);
+      if (exoChanged === true || d.length) {
+        add({ ...base, cat: 'check', out: zv, added: d.join(' ') });
+        continue;
+      }
+      add({ ...base, cat: 'zh', out: zv });
+    }
+    // 自動合併的項目做檢查：有問題的改列「問題項目」，其餘直接採用、不必審核
+    for (const e of entries) {
+      if (!AUTO_CATS.has(e.cat)) continue;
+      const iss = validate(e);
+      if (iss.length) { stats[e.cat]--; stats.issue = (stats.issue || 0) + 1; e.from = e.cat; e.cat = 'issue'; e.issues = iss; }
+    }
+    // 礦石：壓成「中文＋英文縮寫」，每行不超過指定字數
+    if (opts.ore !== false) {
+      const ores = oreProposals(entries, zhT, exo, gloss, opts.ore || {});
+      for (const e of entries) {
+        const o = ores.get(e.k); if (!o) continue;
+        stats[e.cat]--; stats.ore = (stats.ore || 0) + 1;
+        e.from = e.cat; e.cat = 'ore'; e.out = o.out; e.note = o.note; e.len = o.len;
+      }
+    }
+    const seen = new Set(exo.keys);
+    for (const k of zhRaw.keys) if (!seen.has(k)) add({ k, cat: 'zh_only', out: zhT.get(k), zh: zhT.get(k), zhRaw: zhRaw.map.get(k), exo: undefined, van: van ? van.map.get(k) : undefined });
+    return { entries, stats, gloss };
+  }
+
+  // ---------- 零件等級 ----------
+  const DEFAULT_CLASS_MAP = { CIV: '民用', MIL: '軍規', IND: '工業', STL: '隱形', STH: '隱形', CMP: '競速' };
+  // MIL-1C "Bracer"  /  Mil/1/B Delphi RS-10
+  const COMP_RE = /^(CIV|MIL|IND|STL|STH|CMP)[-\/](\d+)\/?([A-Da-d])\s+"?(.+?)"?\s*$/i;
+
+  // ---------- 礦石 ----------
+  // 預設中文名（遊戲漢化沒有的才用；標 * 的是建議譯名，請自行確認）
+  const DEFAULT_ORE_ZH = `# 英文 => 中文（漢化包裡已有的礦石會自動抓，不用寫在這裡；寫了會優先用這裡的）
+Aluminum => 鋁
+Diamond => 鑽石
+Sadaryx => 薩達瑞晶
+Savrilium => 薩維里金屬
+Beradom => 貝拉頓石*
+Carinite => 卡里尼石*
+Feynmaline => 費曼電氣石*
+Glacosite => 格拉科石*
+Jaclium => 賈克金屬*
+Janalite => 賈納石*
+Saldynium => 薩迪尼金屬*`;
+  const DEFAULT_ORE_ABBR = `# 英文 => 縮寫（3–6 個字母）。沒寫的會自動取能互相分辨的開頭字母
+Quantainium => Quan
+`;
+  const ORE_SUFFIX = { ore: '礦', raw: '原', pure: '純' };
+  const ALIAS = { aluminium: 'aluminum', savrillium: 'savrilium' };
+
+  function textLen(s, half) {
+    let n = 0;
+    for (const ch of s) n += half && ch.charCodeAt(0) < 0x2e80 ? 0.5 : 1;
+    return n;
+  }
+  function oreProposals(entries, zhT, exo, gloss, o) {
+    const limit = o.limit || 14, half = !!o.halfWidth;
+    const zhOver = new Map(), abbrOver = new Map();
+    for (const d of parseDict(o.zhNames != null ? o.zhNames : DEFAULT_ORE_ZH)) if (d.s) zhOver.set(d.s.toLowerCase(), d.to);
+    for (const d of parseDict(o.abbr != null ? o.abbr : DEFAULT_ORE_ABBR)) if (d.s) abbrOver.set(d.s.toLowerCase(), d.to);
+
+    // 1. 找出所有礦石條目
+    const scan = [], comm = [];
+    for (const k of exo.keys) {
+      let m = /^mineabletype_primary_([a-z]+)$/i.exec(k);
+      if (m) { scan.push({ k, base: ALIAS[m[1].toLowerCase()] || m[1].toLowerCase() }); continue; }
+      m = /^items_commodities_(raw_)?([a-z]+?)(_ore|_raw|_pure)?(,P)?$/i.exec(k);
+      if (m) comm.push({ k, base: m[2].toLowerCase(), suf: (m[3] || (m[1] ? '_raw' : '')).slice(1).toLowerCase() });
+    }
+    const scanBases = new Set(scan.map(x => x.base));
+    const oreBases = new Set(scanBases);
+    for (const c of comm) if (c.suf) oreBases.add(ALIAS[c.base] || c.base);
+    for (const c of comm) c.base = ALIAS[c.base] || c.base;
+    const commOres = comm.filter(c => oreBases.has(c.base));
+
+    // 2. 英文全名、中文名
+    const en = new Map(), zh = new Map(), sug = new Set();
+    const cap = b => b[0].toUpperCase() + b.slice(1);
+    for (const c of commOres) if (!c.suf) { const v = exo.map.get(c.k); if (v && !/[()]/.test(v)) en.set(c.base, v.trim()); }
+    for (const s of scan) {
+      const v = (exo.map.get(s.k) || '').replace(/\s*\(.*$/, '').trim(); if (v && !en.has(s.base)) en.set(s.base, v);
+      const z = zhT.get(s.k); if (z && CJK.test(z)) zh.set(s.base, z.trim());
+    }
+    for (const b of oreBases) {
+      if (!en.has(b)) en.set(b, cap(b));
+      const over = zhOver.get(en.get(b).toLowerCase()) || zhOver.get(b);
+      if (over) { zh.set(b, over.replace(/\*$/, '')); if (/\*$/.test(over)) sug.add(b); }
+      else if (!zh.has(b)) { const g = gloss.get(en.get(b)); if (g) zh.set(b, g); }
+    }
+    // 3. 縮寫：取能互相分辨的最短開頭（至少 3 個字母）
+    const names = [...oreBases].map(b => en.get(b).replace(/[^A-Za-z]/g, ''));
+    const minLen = new Map();
+    for (const b of oreBases) {
+      const w = en.get(b).replace(/[^A-Za-z]/g, '');
+      let L = 3;
+      while (L < w.length && names.some(x => x !== w && x.slice(0, L).toLowerCase() === w.slice(0, L).toLowerCase())) L++;
+      minLen.set(b, Math.min(L, 6));
+    }
+    const abbrs = b => {
+      const full = en.get(b), w = full.replace(/[^A-Za-z]/g, '');
+      const o2 = abbrOver.get(full.toLowerCase()) || abbrOver.get(b);
+      const list = [full];
+      if (o2) list.push(o2);
+      for (let n = 6; n >= minLen.get(b); n--) if (n < w.length) list.push(w.slice(0, n));
+      return [...new Set(list)];
+    };
+    const fit = s => s.split('\\n').every(l => textLen(l, half) <= limit);
+    const out = new Map();
+    const put = (k, s, b, extra) => out.set(k, { out: s, len: s.split('\\n').map(l => textLen(l, half)), note: (sug.has(b) ? '中文是建議譯名，請確認' : '') + (extra || '') });
+
+    // 每種礦石的所有條目（掃描、原礦、精煉…）用同一個縮寫：取能讓「全部條目」都放得下的最長寫法
+    const jobs = new Map(); // base -> [{k, one: a=>str, two: a=>str, plain}]
+    const job = (b, j) => { if (!jobs.has(b)) jobs.set(b, []); jobs.get(b).push(j); };
+    for (const s of scan) {
+      const b = s.base, c = zh.get(b) || en.get(b), rs = ((exo.map.get(s.k) || '').match(/RS\s*([\d,]+)/) || [])[1];
+      job(b, { k: s.k, one: a => `${c} ${a}${rs ? ' ' + rs : ''}`, two: a => rs ? `${c} ${a}\\nRS ${rs}` : `${c}\\n${a}`, plain: rs ? `${c}\\nRS ${rs}` : c });
+    }
+    for (const x of commOres) {
+      const b = x.base, c0 = zh.get(b) || en.get(b), c = x.suf ? `${c0}(${ORE_SUFFIX[x.suf] || x.suf})` : c0;
+      job(b, { k: x.k, one: a => `${c} ${a}`, two: a => `${c}\\n${a}`, plain: c });
+    }
+    for (const [b, js] of jobs) {
+      const cands = abbrs(b);
+      let pick = cands.find(a => js.every(j => fit(j.one(a))));
+      if (pick) { for (const j of js) put(j.k, j.one(pick), b, !zh.has(b) ? '找不到中文名' : ''); continue; }
+      // 一行放不下：英文縮到最短仍超過 → 改兩行（中文優先）
+      pick = cands[cands.length - 1];
+      for (const j of js) {
+        const t = fit(j.one(pick)) ? j.one(pick) : fit(j.two(pick)) ? j.two(pick) : j.plain;
+        put(j.k, t, b, (!zh.has(b) ? '找不到中文名 ' : '') + (t === j.one(pick) ? '' : '已改成兩行'));
+      }
+    }
+    return out;
+  }
+
+  function buildIni(entries, pick, eol) {
+    const lines = new Array(entries.length);
+    for (let i = 0; i < entries.length; i++) {
+      const e = entries[i];
+      lines[i] = e.k + '=' + String(pick(e)).replace(/\r?\n/g, '\\n');
+    }
+    return '\ufeff' + lines.join(eol || '\n') + (eol || '\n');
+  }
+
+  const api = { parseIni, merge, buildIni, parseDict, applyDict, textLen, CJK, DEFAULT_TAIL_DICT, DEFAULT_TERM_DICT, DEFAULT_ORE_ZH, DEFAULT_ORE_ABBR, DEFAULT_CLASS_MAP };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SCMerge = api;
+})(this);
+
+</script>
+<script>
+(function(){
+const $ = s => document.querySelector(s);
+const M = window.SCMerge;
+const LS = {
+  get(k, d){ try{ const v = localStorage.getItem('scm.'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('scm.'+k, JSON.stringify(v)); }catch(e){} }
+};
+const CATS = [
+  {id:'issue',  name:'問題項目', hint:'自動合併後檢查不通過（少了變數、標籤不成對等）', review:true},
+  {id:'check',  name:'需人工確認', hint:'ExoComp 有額外標記，但無法自動接上', review:true},
+  {id:'ore',    name:'礦石', hint:'中文＋英文縮寫，每行不超過設定字數', review:true},
+  {id:'exo_only',name:'只有 ExoComp 有', hint:'漢化包沒有這個條目', review:true},
+  {id:'zh_only',name:'只有漢化包有', hint:'ExoComp 沒有這個條目', review:true},
+  {id:'comp',   name:'零件等級', hint:'MIL-1C "Bracer" → 軍規1C-Bracer', auto:true},
+  {id:'en_exo', name:'未中文化 → ExoComp', hint:'漢化包本來就是英文，直接用 ExoComp', auto:true},
+  {id:'title',  name:'標題標籤', hint:'任務標題的 [聲望] [藍圖] 與貨運路線', auto:true},
+  {id:'tail',   name:'說明補充', hint:'任務說明尾端的聲望、藍圖清單', auto:true},
+  {id:'wrap',   name:'前後補充', hint:'對照原版，ExoComp 在前後加的內容', auto:true},
+  {id:'*',      name:'全部條目', hint:'搜尋並修改任何一條', review:false},
+];
+const AUTO = new Set(CATS.filter(c=>c.auto).map(c=>c.id));
+const CATNAME = Object.fromEntries(CATS.map(c=>[c.id,c.name]));
+CATNAME.same='相同'; CATNAME.zh='繁中';
+
+let files = {zh:null, exo:null, van:null};   // {name, text}
+let parsed = null;     // {zh, exo, van}
+let zhT0 = null;       // OpenCC 轉換後（未套用自訂替換）
+let result = null;     // merge 結果
+let byKey = new Map();
+let decisions = LS.get('decisions', {});    // key -> {s:'ok'|'edit', v?, exo}
+let view = {cat: LS.get('cat','issue'), q:'', st:'todo', page:0};
+const PER = 25;
+
+const dictTail = $('#dictTail'), dictTerm = $('#dictTerm');
+dictTail.value = LS.get('dictTail', M.DEFAULT_TAIL_DICT);
+dictTerm.value = LS.get('dictTerm', M.DEFAULT_TERM_DICT);
+$('#oreZh').value = LS.get('oreZh', M.DEFAULT_ORE_ZH);
+$('#oreAbbr').value = LS.get('oreAbbr', M.DEFAULT_ORE_ABBR);
+$('#oreLimit').value = LS.get('oreLimit', 14);
+$('#oreHalf').checked = LS.get('oreHalf', false);
+function oreOpts(){ return { zhNames: $('#oreZh').value, abbr: $('#oreAbbr').value, limit: +$('#oreLimit').value || 14, halfWidth: $('#oreHalf').checked }; }
+$('#ccMode').value = LS.get('ccMode', 'twp');
+
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('on'),2600); }
+function log(msg){ $('#log').textContent += msg + '\n'; }
+function prog(p){ const b=$('#prog'); b.hidden = p==null; if(p!=null) b.firstElementChild.style.width = (p*100).toFixed(1)+'%'; }
+const tick = () => new Promise(r=>setTimeout(r,0));
+
+// ---------- IndexedDB：記住上次的檔案 ----------
+function idb(){ return new Promise((res,rej)=>{ try{ const r=indexedDB.open('scmerge',1); r.onupgradeneeded=()=>r.result.createObjectStore('f'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);}catch(e){rej(e)} }); }
+async function idbPut(k,v){ try{ const db=await idb(); await new Promise((res,rej)=>{const tx=db.transaction('f','readwrite'); tx.objectStore('f').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error);}); }catch(e){} }
+async function idbGet(k){ try{ const db=await idb(); return await new Promise((res)=>{const r=db.transaction('f').objectStore('f').get(k); r.onsuccess=()=>res(r.result); r.onerror=()=>res(null);}); }catch(e){ return null; } }
+
+// ---------- 檔案選擇 ----------
+function setFile(slot, f){
+  files[slot] = f;
+  $('#fn-'+slot).textContent = f ? `${f.name}（${(f.text.length/1048576).toFixed(1)} MB）` : '尚未選擇';
+  document.querySelector(`.slot[data-slot="${slot}"]`).classList.toggle('filled', !!f);
+  $('#btnRun').disabled = !(files.zh && files.exo);
+}
+for (const slot of ['zh','exo','van']) {
+  const inp = $('#f-'+slot), box = document.querySelector(`.slot[data-slot="${slot}"]`);
+  const take = async file => { if(!file) return; setFile(slot, {name:file.name, text: await file.text()}); };
+  inp.addEventListener('change', () => take(inp.files[0]));
+  box.addEventListener('dragover', e => { e.preventDefault(); box.classList.add('drag'); });
+  box.addEventListener('dragleave', () => box.classList.remove('drag'));
+  box.addEventListener('drop', e => { e.preventDefault(); box.classList.remove('drag'); take(e.dataTransfer.files[0]); });
+}
+function sigOf(t){ let h=2166136261>>>0; for(let i=0;i<t.length;i+=97){ h^=t.charCodeAt(i); h=Math.imul(h,16777619)>>>0; } return t.length+'-'+h.toString(16); }
+// 打開頁面時，如果有上次的檔案就自動接續
+(async()=>{ const last = await idbGet('last'); if(last && last.zh && last.exo){
+  setFile('zh',last.zh); setFile('exo',last.exo); setFile('van',last.van||null);
+  log(`自動載入上次的檔案：${last.zh.name}、${last.exo.name}${last.van?'、'+last.van.name:''}（要換檔案就重新選擇後按「開始合併」）`);
+  run(true);
+} })();
+
+// ---------- 簡轉繁 ----------
+async function convertAll(map, mode){
+  if (!window.OpenCC) throw new Error('簡繁轉換元件（OpenCC）沒有載入成功，請確認網路連線後重新整理頁面。');
+  const conv = OpenCC.Converter({from:'cn', to:mode});
+  const keys = [], vals = [];
+  for (const [k,v] of map) if (M.CJK.test(v)) { keys.push(k); vals.push(v); }
+  const out = new Map(map), CH = 1500;
+  for (let i=0;i<vals.length;i+=CH){
+    const part = vals.slice(i,i+CH), joined = conv(part.join('\n')).split('\n');
+    if (joined.length === part.length) for (let j=0;j<part.length;j++) out.set(keys[i+j], joined[j]);
+    else for (let j=0;j<part.length;j++) out.set(keys[i+j], conv(part[j]));
+    prog(0.1 + 0.75*(i+CH)/vals.length); await tick();
+  }
+  return out;
+}
+function applyTerms(map){
+  const d = M.parseDict(dictTerm.value);
+  if (!d.length) return map;
+  const out = new Map();
+  for (const [k,v] of map) out.set(k, M.CJK.test(v) ? M.applyDict(v, d, null) : v);
+  return out;
+}
+
+async function run(resumed){
+  if (!resumed) $('#log').textContent=''; $('#btnRun').disabled=true; prog(0.02);
+  try{
+    await tick();
+    parsed = { zh: M.parseIni(files.zh.text), exo: M.parseIni(files.exo.text), van: files.van ? M.parseIni(files.van.text) : null };
+    log(`簡中漢化包：${parsed.zh.keys.length.toLocaleString()} 條　ExoComp：${parsed.exo.keys.length.toLocaleString()} 條` + (parsed.van?`　原版英文：${parsed.van.keys.length.toLocaleString()} 條`:''));
+    for (const n of ['zh','exo','van']) { const p=parsed[n]; if(!p) continue;
+      if (p.repaired.length) log(`已修復 ${p.repaired.length} 條被斷行的值（${n}）：${p.repaired.slice(0,3).join(', ')}${p.repaired.length>3?' …':''}`);
+      if (p.dups.length) log(`發現 ${p.dups.length} 個重複鍵（${n}），以最後一個為準`); }
+    prog(0.08); await tick();
+    const mode = $('#ccMode').value; LS.set('ccMode', mode);
+    // 同一份漢化檔＋同一種轉換方式，直接用上次轉好的結果（省下幾十秒）
+    const sig = mode + ':' + sigOf(files.zh.text);
+    const cached = await idbGet('conv');
+    if (cached && cached.sig === sig) { zhT0 = new Map(cached.pairs); log('使用上次的簡轉繁結果。'); }
+    else {
+      log('正在簡轉繁…');
+      zhT0 = await convertAll(parsed.zh.map, mode);
+      idbPut('conv', {sig, pairs:[...zhT0]});
+    }
+    remerge();
+    idbPut('last', {zh:files.zh, exo:files.exo, van:files.van});
+    log('完成。');
+  }catch(e){ log('錯誤：' + (e.message||e)); }
+  prog(null); $('#btnRun').disabled = !(files.zh && files.exo); $('#btnReapply').disabled = !zhT0;
+}
+function remerge(){
+  LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
+  LS.set('oreZh', $('#oreZh').value); LS.set('oreAbbr', $('#oreAbbr').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
+  const zhT = applyTerms(zhT0);
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts()});
+  byKey = new Map(result.entries.map(e=>[e.k,e]));
+  $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
+  view.page=0; renderAll();
+}
+$('#btnRun').onclick = () => run(false);
+$('#btnReapply').onclick = () => { if(zhT0){ remerge(); toast('已重新套用詞彙表'); } };
+$('#btnResetDict').onclick = () => { dictTail.value = M.DEFAULT_TAIL_DICT; dictTerm.value = M.DEFAULT_TERM_DICT; $('#oreZh').value = M.DEFAULT_ORE_ZH; $('#oreAbbr').value = M.DEFAULT_ORE_ABBR; $('#oreLimit').value = 14; $('#oreHalf').checked = false; toast('已還原預設，按「重新套用」生效'); };
+
+// ---------- 審核狀態 ----------
+function status(e){
+  const d = decisions[e.k];
+  if (!d) return AUTO.has(e.cat) ? 'auto' : 'todo';
+  if (d.exo !== undefined && d.exo !== e.exo) return 'stale';
+  return d.s;
+}
+function finalValue(e){ const d = decisions[e.k]; return d && d.s==='edit' ? d.v : e.out; }
+// 審核進度：同時寫進 localStorage 與 IndexedDB，任一邊被清掉都還有另一份
+let saveT, savedAt = null;
+function saveDecisions(now){
+  clearTimeout(saveT);
+  const go = () => { LS.set('decisions', decisions); idbPut('decisions', decisions); savedAt = new Date(); showSaved(); };
+  if (now) go(); else saveT = setTimeout(go, 300);
+}
+function showSaved(){
+  const n = Object.keys(decisions).length, el = $('#saveState'); if(!el) return;
+  el.textContent = savedAt ? `進度已自動儲存（${n} 筆）· ${savedAt.toLocaleTimeString('zh-TW',{hour12:false})}` : `已載入先前的進度（${n} 筆）`;
+}
+window.addEventListener('pagehide', () => { if (saveT) saveDecisions(true); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState==='hidden' && saveT) saveDecisions(true); });
+(async()=>{ // localStorage 沒資料時從 IndexedDB 找回
+  const d = await idbGet('decisions');
+  if (d && typeof d==='object') { let add=0; for (const k in d) if(!(k in decisions)){ decisions[k]=d[k]; add++; } if(add && result) renderAll(); }
+  showSaved();
+})();
+
+// ---------- 畫面 ----------
+function esc(s){ return String(s??'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function rich(s, added){
+  if (s == null) return '<span class="muted">（無此條目）</span>';
+  let h = esc(s);
+  h = h.replace(/&lt;EM\d&gt;([\s\S]*?)&lt;\/EM\d&gt;/g, '<span class="em">$1</span>');
+  h = h.replace(/~mission\([^)]*\)|%[sdi]|%ls/g, m=>`<span class="tk">${m}</span>`);
+  h = h.replace(/\\n/g, '\n');
+  return h;
+}
+function richOut(e, v){
+  // 把接進來的內容框起來（尾段或標題標籤）
+  const h = rich(v);
+  const c = e.from || e.cat;
+  if (!e.added || !(c==='tail'||c==='title'||c==='wrap')) return h;
+  const zh = e.zh ? rich(e.zh.replace(/(?:\\n|\s)+$/,'')) : '';
+  if (zh && h.startsWith(zh)) return zh + '<span class="add">' + h.slice(zh.length) + '</span>';
+  return h;
+}
+
+function renderStats(){
+  const st = result.stats, n = result.entries.length;
+  let edited=0, ok=0; for (const k in decisions){ if(!byKey.has(k)) continue; decisions[k].s==='edit'?edited++:ok++; }
+  const fromExo = (st.title||0)+(st.tail||0)+(st.wrap||0)+(st.en_exo||0)+(st.exo_only||0)+(st.issue||0);
+  $('#stats').innerHTML = [
+    [n.toLocaleString(),'輸出條目總數'],
+    [((st.zh||0)+(st.same||0)).toLocaleString(),'直接採用繁中（或兩邊相同）'],
+    [fromExo.toLocaleString(),'接上 ExoComp 資料'],
+    [((st.issue||0)+(st.check||0)).toLocaleString(),'問題＋需人工確認'],
+    [ok.toLocaleString(),'已確認'],
+    [edited.toLocaleString(),'已手動修改'],
+  ].map(([a,b])=>`<div class="stat"><span class="n">${a}</span><span class="l">${b}</span></div>`).join('');
+}
+function renderCats(){
+  const counts = {}, done = {};
+  for (const e of result.entries){ counts[e.cat]=(counts[e.cat]||0)+1; const s=status(e); if(s!=='todo'&&s!=='stale') done[e.cat]=(done[e.cat]||0)+1; }
+  let lastGroup = null;
+  $('#cats').innerHTML = CATS.filter(c=>c.id==='*'||counts[c.id]).map(c=>{
+    const n = c.id==='*' ? result.entries.length : counts[c.id], d = done[c.id]||0;
+    const g = c.auto ? '已自動套用（不用審核）' : c.id==='*' ? '' : '需要你看的';
+    const head = g && g!==lastGroup ? `<div class="grp">${g}</div>` : ''; lastGroup = g || lastGroup;
+    if (c.auto) return head + `<button data-cat="${c.id}" class="${view.cat===c.id?'on':''}"><span>${c.name}</span><span class="c">${n}</span><small>${c.hint}</small></button>`;
+    return head + `<button data-cat="${c.id}" class="${view.cat===c.id?'on':''}"><span>${c.name}</span><span class="c">${c.id==='*'?n.toLocaleString():d+'/'+n}</span><small>${c.hint}</small>${c.id==='*'?'':`<span class="bar"><i style="width:${n?d/n*100:0}%"></i></span>`}</button>`;
+  }).join('');
+  if (!counts[view.cat] && view.cat!=='*') { const first = CATS.find(c=>counts[c.id]); view.cat = first?first.id:'*'; renderCats(); }
+}
+$('#cats').addEventListener('click', e=>{ const b=e.target.closest('button[data-cat]'); if(!b) return; view.cat=b.dataset.cat; view.page=0; LS.set('cat',view.cat); view.st = (view.cat==='*'||AUTO.has(view.cat)) ? 'all' : 'todo'; renderAll(); });
+
+function filtered(){
+  const q = view.q.trim().toLowerCase();
+  let list = view.cat==='*' ? result.entries : result.entries.filter(e=>e.cat===view.cat);
+  if (view.cat==='*' && !q) list = list.filter(e=>decisions[e.k] || CATS.find(c=>c.id===e.cat&&c.review));
+  if (view.st==='todo') list = list.filter(e=>status(e)==='todo'||status(e)==='stale');
+  else if (view.st==='done' && AUTO.has(view.cat)) list = list.filter(e=>status(e)!=='auto');
+  else if (view.st==='done') list = list.filter(e=>{const s=status(e); return s==='ok'||s==='edit';});
+  if (view.cat==='ore') { // 同一種礦石排在一起，掃描名稱在前
+    const sk = k => { const sc = /^mineabletype_primary_/.test(k); let b = k.replace(/^mineabletype_primary_|^items_commodities_(raw_)?/,'').replace(/(_ore|_raw|_pure)?(,P)?$/,'').toLowerCase();
+      b = {aluminium:'aluminum', savrillium:'savrilium'}[b] || b; return b + (sc ? ' 0' : ' 1' + k); };
+    list = [...list].sort((x,y) => sk(x.k) < sk(y.k) ? -1 : 1);
+  }
+  if (q) list = list.filter(e => e.k.toLowerCase().includes(q) || (e.exo||'').toLowerCase().includes(q) || (e.zh||'').toLowerCase().includes(q) || finalValue(e).toLowerCase().includes(q));
+  return list;
+}
+function renderCards(){
+  const list = filtered(), per = view.cat==='ore' ? 200 : PER, pages = Math.max(1, Math.ceil(list.length/per));
+  if (view.page >= pages) view.page = pages-1;
+  const slice = list.slice(view.page*per, view.page*per+per);
+  const box = $('#cards');
+  if (!slice.length){
+    box.innerHTML = `<div class="empty">${view.cat==='*'&&!view.q?'輸入關鍵字搜尋任何條目（例如鍵名、英文原文或中文）。':'這個分類目前沒有符合的項目。'}${view.st==='todo'&&view.cat!=='*'?'<br>把狀態切到「全部狀態」可以回頭看已處理的項目。':''}</div>`;
+  } else box.innerHTML = (view.cat==='ore' ? oreHead() : '') + slice.map(e => e.cat==='ore' && view.cat==='ore' ? oreRow(e) : cardHtml(e)).join('');
+  box.querySelectorAll('textarea:not([hidden])').forEach(autosize);
+  box.querySelectorAll('.card').forEach(pinBottom);
+  const pg = $('#pager');
+  pg.innerHTML = list.length ? `<button class="sm" data-p="-1" ${view.page?'':'disabled'}>上一頁</button><span class="mono muted">${view.page+1} / ${pages}　共 ${list.length.toLocaleString()} 條</span><button class="sm" data-p="1" ${view.page<pages-1?'':'disabled'}>下一頁</button>` : '';
+}
+// 礦石：一行一條的精簡表格
+function oreHead(){ const o=oreOpts(); return `<div class="ohead"><span>條目</span><span>ExoComp 英文</span><span>輸出（\\n 代表換行）</span><span>字數（上限 ${o.limit}）</span><span></span></div>`; }
+function oreRow(e){
+  const s = status(e), v = finalValue(e), o = oreOpts();
+  const lens = v.split('\\n').map(l => M.textLen(l, o.halfWidth));
+  const over = lens.length > 2 || lens.some(n => n > o.limit);
+  return `<article class="card orow s-${s}" data-k="${esc(e.k)}">
+    <span class="k">${esc(e.k.replace(/^items_commodities_/,'商品 ').replace(/^mineabletype_primary_/,'掃描 '))}</span>
+    <span class="mono">${esc(e.exo)}</span>
+    <textarea rows="1" spellcheck="false" aria-label="礦石輸出">${esc(v.replace(/\\n/g,'\n'))}</textarea>
+    <span class="mono ${over?'over':''}">${lens.join(' + ')}${e.note?`<br><small class="note">${esc(e.note)}</small>`:''}</span>
+    <span class="acts"><button class="sm ${s==='todo'?'pri':''}" data-a="ok">${s==='ok'||s==='edit'?'已確認':'確認'}</button><button class="sm" data-a="reset">還原</button></span>
+  </article>`;
+}
+function cardHtml(e){
+  const s = status(e), v = finalValue(e);
+  const stTxt = {todo:'未審核', ok:'已確認', edit:'已修改', stale:'ExoComp 原文已變更，請重看', auto:'自動採用'}[s];
+  const issueLine = e.issues ? `<div class="issues">${e.issues.map(esc).join('<br>')}</div>` : '';
+  const addedLine = e.added ? `<div class="added">接入的 ExoComp 內容：<b>${esc(e.added.replace(/\\n/g,' ⏎ ')).slice(0,400)}</b></div>` : '';
+  return `<article class="card s-${s}" data-k="${esc(e.k)}">
+    <div class="hd"><span class="k">${esc(e.k)}</span><span class="pill ${e.cat}">${CATNAME[e.cat]||e.cat}</span><span class="pill st-${s}">${stTxt}</span></div>
+    <div class="cols">
+      <div class="col"><h3>ExoComp 英文</h3><div class="txt">${rich(e.exo)}</div>${e.van!==undefined&&e.van!==e.exo?`<h3>原版英文</h3><div class="txt">${rich(e.van)}</div>`:''}</div>
+      <div class="col"><h3>繁中原譯（已轉繁）</h3><div class="txt">${rich(e.zh)}</div></div>
+      <div class="col"><h3>輸出結果</h3><div class="txt out">${richOut(e, v)}</div>
+        <textarea rows="2" aria-label="編輯輸出結果" spellcheck="false" ${s==='edit'?'':'hidden'}>${esc((v??'').replace(/\\n/g,'\n'))}</textarea></div>
+    </div>
+    ${issueLine}${addedLine}
+    <div class="acts">
+      <button class="sm pri" data-a="ok">確認</button>
+      <button class="sm" data-a="zh" ${e.zh==null?'disabled':''}>改用繁中原譯</button>
+      <button class="sm" data-a="exo" ${e.exo==null?'disabled':''}>改用 ExoComp 英文</button>
+      <button class="sm" data-a="edit">編輯</button>
+      <button class="sm" data-a="reset">還原自動建議</button>
+    </div>
+  </article>`;
+}
+// 補充內容在結尾的分類，預覽直接捲到最底，讓接進來的部分一眼看到
+function pinBottom(card){ const e = byKey.get(card.dataset.k); const c = e && (e.from||e.cat); if(!e || !(c==='tail'||c==='wrap')) return;
+  card.querySelectorAll('.txt').forEach((t,i)=>{ if(i!==1 || c==='tail') t.scrollTop = t.scrollHeight; }); }
+function autosize(t){ t.style.height='auto'; t.style.height = Math.min(320, t.scrollHeight+2)+'px'; }
+function refreshCard(card, e){
+  const tmp = document.createElement('div'); tmp.innerHTML = card.classList.contains('orow') ? oreRow(e) : cardHtml(e);
+  const n = tmp.firstElementChild; card.replaceWith(n); n.querySelectorAll('textarea:not([hidden])').forEach(autosize); pinBottom(n);
+}
+$('#cards').addEventListener('click', ev=>{
+  const b = ev.target.closest('button[data-a]'); if(!b) return;
+  const card = b.closest('.card'), e = byKey.get(card.dataset.k), a = b.dataset.a;
+  if (a==='ok' && card.classList.contains('orow')){ const t = card.querySelector('textarea').value.replace(/\r?\n/g,'\\n'); decisions[e.k] = t===e.out ? {s:'ok', exo:e.exo} : {s:'edit', v:t, exo:e.exo}; saveDecisions(); refreshCard(card,e); renderStats(); renderCats(); return; }
+  if (a==='edit'){ const t=card.querySelector('textarea'); t.hidden=!t.hidden; if(!t.hidden){ autosize(t); t.focus(); } return; }
+  if (a==='ok'){ const t = card.querySelector('textarea').value.replace(/\r?\n/g,'\\n'); decisions[e.k] = t===e.out ? {s:'ok', exo:e.exo} : {s:'edit', v:t, exo:e.exo}; }
+  else if (a==='zh') decisions[e.k] = e.zh===e.out ? {s:'ok',exo:e.exo} : {s:'edit', v:e.zh, exo:e.exo};
+  else if (a==='exo') decisions[e.k] = e.exo===e.out ? {s:'ok',exo:e.exo} : {s:'edit', v:e.exo, exo:e.exo};
+  else if (a==='reset') delete decisions[e.k];
+  saveDecisions();
+  refreshCard(card, e); renderStats(); renderCats();
+});
+$('#cards').addEventListener('input', ev=>{ if(ev.target.tagName==='TEXTAREA') autosize(ev.target); });
+$('#cards').addEventListener('change', ev=>{
+  if (ev.target.tagName!=='TEXTAREA') return;
+  const card = ev.target.closest('.card'), e = byKey.get(card.dataset.k);
+  const t = ev.target.value.replace(/\r?\n/g,'\\n');
+  if (t === finalValue(e)) return;
+  decisions[e.k] = t===e.out ? {s:'ok', exo:e.exo} : {s:'edit', v:t, exo:e.exo};
+  saveDecisions(); refreshCard(card, e); renderStats(); renderCats(); toast('已儲存修改');
+});
+$('#pager').addEventListener('click', ev=>{ const b=ev.target.closest('button[data-p]'); if(!b) return; view.page += +b.dataset.p; renderCards(); $('#reviewPanel').scrollIntoView({block:'start'}); });
+let qT; $('#q').addEventListener('input', ev=>{ clearTimeout(qT); qT=setTimeout(()=>{ view.q=ev.target.value; view.page=0; renderCards(); }, 250); });
+$('#stFilter').addEventListener('change', ev=>{ view.st=ev.target.value; view.page=0; renderCards(); });
+let catOkArmed = 0;
+$('#btnCatOk').onclick = ()=>{
+  const list = result.entries.filter(e=>e.cat===view.cat && (status(e)==='todo'||status(e)==='stale'));
+  if (!list.length || view.cat==='*') { toast('這個分類沒有未審核的項目'); return; }
+  if (Date.now()-catOkArmed > 4000) { catOkArmed = Date.now(); toast(`再按一次，確認「${CATNAME[view.cat]}」剩下的 ${list.length} 條`); return; }
+  catOkArmed = 0;
+  for (const e of list) decisions[e.k] = {s:'ok', exo:e.exo};
+  saveDecisions(); renderAll(); toast(`已確認 ${list.length} 條`);
+};
+$('#btnPageOk').onclick = ()=>{
+  const cards = [...document.querySelectorAll('#cards .card')];
+  for (const c of cards){ const e = byKey.get(c.dataset.k); if (status(e)==='todo'||status(e)==='stale') decisions[e.k] = {s:'ok', exo:e.exo}; }
+  saveDecisions(); renderAll(); toast(`已確認 ${cards.length} 條`);
+};
+function renderAll(){ $('#stFilter').value = view.st; renderStats(); renderCats(); renderCards(); }
+
+// ---------- 匯出 ----------
+function buildOutput(){ return M.buildIni(result.entries, finalValue, parsed.exo.crlf ? '\r\n' : '\n'); }
+async function offer(filename, data){
+  let dl = null;
+  try { dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch(e){ dl = null; }
+  if (dl) {
+    try { await dl.save({filename, data}); toast('已下載 ' + filename); }
+    catch(e){ toast(e && e.code==='declined' ? '已取消下載' : '下載失敗：' + (e.message||e.code)); }
+    return;
+  }
+  // 在本機直接開啟這個 HTML 時的備援
+  const url = URL.createObjectURL(data instanceof Blob ? data : new Blob([data]));
+  const a = document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 5000);
+}
+$('#btnZip').onclick = async ()=>{
+  if (!window.JSZip) { toast('壓縮元件沒有載入，請改用「下載為 .txt」'); return; }
+  toast('正在產生檔案…'); await tick();
+  const zip = new JSZip();
+  zip.file('global.ini', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'}));
+  zip.file('說明.txt', '把 global.ini 放到：\r\nStarCitizen\\LIVE\\Data\\Localization\\<語言資料夾>\\global.ini\r\n例如 chinese_(traditional)，並在 LIVE\\user.cfg 加上：\r\ng_language = chinese_(traditional)\r\n');
+  const blob = await zip.generateAsync({type:'blob', compression:'DEFLATE', compressionOptions:{level:6}});
+  offer('global_zh-TW.zip', blob);
+};
+$('#btnTxt').onclick = async ()=>{ toast('正在產生檔案…'); await tick(); offer('global.ini.txt', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'})); };
+$('#btnSaveProg').onclick = ()=> offer('sc-merge-review.json', JSON.stringify({version:2, decisions, dictTail:dictTail.value, dictTerm:dictTerm.value, ore:oreOpts()}, null, 0));
+$('#f-prog').addEventListener('change', async ev=>{
+  const f = ev.target.files[0]; if(!f) return;
+  try { const j = JSON.parse(await f.text());
+    Object.assign(decisions, j.decisions||{}); saveDecisions();
+    if (j.dictTail) dictTail.value=j.dictTail; if (j.dictTerm) dictTerm.value=j.dictTerm;
+    if (j.ore) { $('#oreZh').value=j.ore.zhNames; $('#oreAbbr').value=j.ore.abbr; $('#oreLimit').value=j.ore.limit; $('#oreHalf').checked=!!j.ore.halfWidth; }
+    if (zhT0) remerge(); toast(`已匯入 ${Object.keys(j.decisions||{}).length} 筆審核紀錄`);
+  } catch(e){ toast('這個檔案不是審核紀錄 JSON'); }
+  ev.target.value='';
+});
+})();
+</script>
+
+</body>
+</html>
