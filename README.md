@@ -40,6 +40,18 @@
    g_language = chinese_(traditional)
    ```
 
+## 手動安裝（不用安裝器）
+
+1. 在網站按「直接下載 global.ini」（或下載 zip 後解壓縮）
+2. 找到遊戲的 `LIVE` 資料夾：預設 `C:\Program Files\Roberts Space Industries\StarCitizen\LIVE`（裡面有 `Data.p4k`）；裝在別處時看 RSI 啟動器 → Settings → Games → Library Folder
+3. 在 `LIVE` 裡建立 `data\Localization\chinese_(traditional)\`，把 `global.ini` 放進去
+4. 在 `LIVE\user.cfg` 加入（沒有就新建，注意不是 `user.cfg.txt`；已有 `g_language` 就改掉）：
+   ```
+   g_language = chinese_(traditional)
+   g_languageAudio = english
+   ```
+5. 重新啟動遊戲。想變回英文：改成 `g_language = english`
+
 ## 一鍵安裝到遊戲（Windows）
 
 下載 [`download/SC-zhTW-Installer.exe`](https://taksito.github.io/sc-zh-tw-merge/download/SC-zhTW-Installer.exe) 後雙擊，會打開安裝視窗（可選遊戲資料夾、語言包，也能把 zip 拖進視窗）：

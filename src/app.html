@@ -152,6 +152,20 @@ nav.cats .none{font-size:13px;color:var(--ok);padding:4px 10px 6px}
 .adv>summary .muted{font-size:13px}
 .adv[open]>summary{border-bottom:1px solid var(--line)}
 .advbody{display:grid;gap:16px;padding:16px;background:var(--bg);border-radius:0 0 var(--r) var(--r)}
+.manual{border:1px solid var(--line);border-radius:var(--r);background:var(--panel)}
+.manual>summary{padding:14px 16px;display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;cursor:pointer}
+.manual>summary .muted{font-size:13px}
+.manual[open]>summary{border-bottom:1px solid var(--line)}
+.manualbody{padding:16px 20px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px;max-width:860px}
+.manualbody .mono{word-break:break-all}
+.steps li{min-width:0}
+.steps{margin:0;padding-left:1.4em;display:grid;gap:14px}
+.steps li b{font-size:15px}
+.steps p{margin:4px 0 0;color:var(--fg);font-size:14px}
+pre.code{margin:6px 0 0;background:var(--sunk);border-radius:4px;padding:8px 10px;overflow-x:auto;white-space:pre}
+.codebox{display:flex;gap:8px;align-items:flex-start}
+.codebox pre{flex:1;min-width:0;margin:6px 0 0}
+.codebox button{margin-top:6px}
 .savebar{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;align-items:center}
 #saveState{color:var(--ok)}
 nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:10px 10px 2px;font-weight:600}
@@ -178,7 +192,10 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
       <span class="num">2</span>
       <h2>下載 global.ini</h2>
       <p>繁體中文、UTF-8 with BOM，已附中文輸入解碼表。</p>
-      <button class="pri big" id="qZip" disabled>下載 global.ini（.zip）</button>
+      <div class="row">
+        <button class="pri big" id="qZip" disabled>下載 global.ini（.zip）</button>
+        <button class="btn big" id="qIni" disabled>直接下載 global.ini</button>
+      </div>
       <p class="qstat" id="qZipNote">完成第 1 步後就能下載</p>
     </div>
     <div class="step" id="q3">
@@ -189,6 +206,46 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
       <p class="qstat">只需下載一次。關閉遊戲後執行，會自動抓「下載」資料夾裡最新的 zip。已安裝過中文時，可選「更新中文化」或「移除中文化（變回英文）」。</p>
     </div>
   </section>
+
+  <details class="manual" id="manual">
+    <summary><b>不想用安裝器？手動安裝步驟</b><span class="muted">放置 global.ini、設定 user.cfg、還原成英文</span></summary>
+    <div class="manualbody">
+      <ol class="steps">
+        <li>
+          <b>下載語言包</b>
+          <p>按上面的「直接下載 global.ini」。如果下載的是 zip，先解壓縮，裡面就是 <span class="mono">global.ini</span>。</p>
+        </li>
+        <li>
+          <b>找到遊戲的 LIVE 資料夾</b>
+          <p>預設位置是 <span class="mono">C:\Program Files\Roberts Space Industries\StarCitizen\LIVE</span>。裝在別的地方時，打開 RSI 啟動器 → 設定（Settings）→ Games，看「Library Folder」的路徑，再進入裡面的 <span class="mono">StarCitizen\LIVE</span>。LIVE 資料夾裡會看到 <span class="mono">Data.p4k</span> 和 <span class="mono">Bin64</span>。</p>
+        </li>
+        <li>
+          <b>建立語言資料夾</b>
+          <p>在 LIVE 裡依序建立資料夾（已經有的就直接進去）：</p>
+          <pre class="mono code">LIVE\data\Localization\chinese_(traditional)\</pre>
+          <p>資料夾名稱要完全一樣，包含括號和底線。</p>
+        </li>
+        <li>
+          <b>放入 global.ini</b>
+          <p>把 <span class="mono">global.ini</span> 放進剛建立的 <span class="mono">chinese_(traditional)</span> 資料夾，完整路徑會是：</p>
+          <pre class="mono code">LIVE\data\Localization\chinese_(traditional)\global.ini</pre>
+          <p>舊的檔案可以先改名備份。不要用記事本另存這個檔案，以免編碼被改掉（必須是 UTF-8 with BOM）。</p>
+        </li>
+        <li>
+          <b>設定 user.cfg</b>
+          <p>在 <b>LIVE 資料夾</b>（和 Data.p4k 同一層）打開 <span class="mono">user.cfg</span>；沒有這個檔案就新增一個文字檔並命名為 <span class="mono">user.cfg</span>（請先在檔案總管開啟「副檔名」顯示，確認不是 <span class="mono">user.cfg.txt</span>）。加入下面兩行；如果已經有 <span class="mono">g_language</span> 那一行，就把它改掉：</p>
+          <div class="codebox"><pre class="mono code" id="cfgLines">g_language = chinese_(traditional)
+g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></div>
+          <p>第二行讓語音維持英文。其他原本的設定都保留不動。</p>
+        </li>
+        <li>
+          <b>啟動遊戲</b>
+          <p>重新啟動遊戲就會是繁體中文。遊戲改版後，重新下載 global.ini 並覆蓋第 4 步的檔案即可。</p>
+        </li>
+      </ol>
+      <p class="muted"><b>想變回英文：</b>把 user.cfg 的那一行改成 <span class="mono">g_language = english</span>（或刪掉那一行），中文語言包可以留著。</p>
+    </div>
+  </details>
 
   <details class="adv" id="adv">
     <summary><b>自訂介面</b><span class="muted">換檔案、修改詞彙表與礦石名稱、逐條修改翻譯、匯出審核紀錄</span></summary>
@@ -383,7 +440,7 @@ function prog(p){ for (const id of ['#prog','#qprog']) { const b=$(id); if(!b) c
 // 懶人包
 function updateQuick(){
   const ok = !!result;
-  $('#qZip').disabled = !ok;
+  $('#qZip').disabled = !ok; $('#qIni').disabled = !ok;
   $('#q1').classList.toggle('done', ok); $('#q2').classList.toggle('ready', ok);
   if (ok) {
     const v = (parsed.exo.map.get('Frontend_PU_Version')||'').trim();
@@ -445,6 +502,12 @@ async function fetchSources(){
 }
 $('#qRun').onclick = () => $('#btnOnline').click();
 $('#qZip').onclick = () => $('#btnZip').click();
+$('#qIni').onclick = async () => { toast('正在產生檔案…'); await tick(); offer('global.ini', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'})); };
+$('#copyCfg').onclick = async () => {
+  const t = $('#cfgLines').textContent;
+  try { await navigator.clipboard.writeText(t); toast('已複製'); }
+  catch(e) { const r = document.createRange(); r.selectNodeContents($('#cfgLines')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('已選取，請按 Ctrl+C 複製'); }
+};
 $('#btnOnline').onclick = async () => {
   $('#log').textContent=''; $('#btnOnline').disabled = true; prog(0.03);
   try { const f = await fetchSources(); setFile('zh', f.zh); setFile('exo', f.exo); files.base = f.base || null; $('#updateNote').hidden = true; await run(true); }
@@ -761,7 +824,10 @@ async function offer(filename, data){
   try { dl = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch(e){ dl = null; }
   if (dl) {
     try { await dl.save({filename, data}); toast('已下載 ' + filename); }
-    catch(e){ toast(e && e.code==='declined' ? '已取消下載' : '下載失敗：' + (e.message||e.code)); }
+    catch(e){
+      if (e && (e.code==='rejected_extension' || e.code==='extension_not_enabled') && /\.ini$/i.test(filename)) toast('這裡不能直接存 .ini：請改按「下載 global.ini（.zip）」，或到 GitHub 網站版下載');
+      else toast(e && e.code==='declined' ? '已取消下載' : '下載失敗：' + (e.message||e.code));
+    }
     return;
   }
   // 在本機直接開啟這個 HTML 時的備援
@@ -774,7 +840,21 @@ $('#btnZip').onclick = async ()=>{
   toast('正在產生檔案…'); await tick();
   const zip = new JSZip();
   zip.file('global.ini', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'}));
-  zip.file('說明.txt', '最簡單：下載 https://taksito.github.io/sc-zh-tw-merge/download/SC-zhTW-Installer.exe 並執行，會自動安裝這個 zip。\r\n\r\n手動安裝：把 global.ini 放到：\r\nStarCitizen\\LIVE\\Data\\Localization\\<語言資料夾>\\global.ini\r\n例如 chinese_(traditional)，並在 LIVE\\user.cfg 加上：\r\ng_language = chinese_(traditional)\r\n');
+  zip.file('安裝說明.txt', [
+    '【最簡單】下載並執行安裝器：https://taksito.github.io/sc-zh-tw-merge/download/SC-zhTW-Installer.exe',
+    '　它會自動找到遊戲、放入這個 zip 的 global.ini、設定 user.cfg，並備份舊檔。',
+    '',
+    '【手動安裝】',
+    '1. 找到遊戲的 LIVE 資料夾（預設 C:\\Program Files\\Roberts Space Industries\\StarCitizen\\LIVE，裡面有 Data.p4k）',
+    '2. 在 LIVE 裡建立資料夾：data\\Localization\\chinese_(traditional)\\',
+    '3. 把 global.ini 放進去：LIVE\\data\\Localization\\chinese_(traditional)\\global.ini',
+    '4. 在 LIVE 資料夾的 user.cfg 加入（沒有就新建，注意不是 user.cfg.txt；已有 g_language 就改掉）：',
+    '   g_language = chinese_(traditional)',
+    '   g_languageAudio = english',
+    '5. 重新啟動遊戲',
+    '',
+    '【變回英文】把 user.cfg 那一行改成 g_language = english',
+  ].join('\r\n') + '\r\n');
   const blob = await zip.generateAsync({type:'blob', compression:'DEFLATE', compressionOptions:{level:6}});
   offer('global_zh-TW.zip', blob);
 };
