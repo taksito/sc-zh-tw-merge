@@ -1,4 +1,11 @@
 {
+  "zh": {
+    "file": "data/chinese.ini",
+    "sha256": "54fafcd0474c614fb13119d9b5710ac0cb4667db347f61f6327ee8f95d057e1b",
+    "size": 10126137,
+    "version": "Alpha 4.10：奥里森之围",
+    "fetched_at": "2026-10-28T01:34:01Z"
+  },
   "exo": {
     "file": "data/exocomp.ini",
     "sha256": "f752d0db021da1b216e0423f264b40c669a471faf9131e9d239668fb0980c7f5",
