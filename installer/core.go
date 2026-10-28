@@ -107,7 +107,7 @@ func loadPack(path string) (*pack, error) {
 		return nil, fmt.Errorf("這個檔案不像是語言包")
 	}
 	v := "版本不明"
-	if m := regexp.MustCompile(`(?m)^Frontend_PU_Version=(.*)$`).FindSubmatch(b); m != nil {
+	if m := regexp.MustCompile(`(?m)^(?:\x{FEFF})?Frontend_PU_Version=(.*?)\r?$`).FindSubmatch(b); m != nil {
 		v = strings.TrimSpace(string(m[1]))
 	}
 	return &pack{Path: path, Data: b, Version: v, Lines: bytes.Count(b, []byte("\n")) + 1}, nil

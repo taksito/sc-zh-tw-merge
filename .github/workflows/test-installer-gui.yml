@@ -1,6 +1,6 @@
 name: 測試安裝器視窗
 
-# 在 Windows 上實際打開安裝器並截圖（手動執行）
+# 在 Windows 上實際打開安裝器、按安裝與移除，截圖存到 ci-shots 分支（手動執行）
 on:
   workflow_dispatch:
 
@@ -32,10 +32,10 @@ jobs:
           $lines = @('Frontend_PU_Version=Alpha 4.10.2: Siege of Orison') + (1..20000 | ForEach-Object { "test_key_$_=測試文字 $_" })
           [IO.File]::WriteAllLines("$tmp\global.ini", $lines, (New-Object Text.UTF8Encoding $true))
           Compress-Archive -Path "$tmp\global.ini" -DestinationPath "$dl\global_zh-TW.zip" -Force
-      - name: 打開視窗、按安裝、截圖
+      - name: 打開視窗、按安裝與移除、截圖
         shell: pwsh
         run: |
-          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing, UIAutomationClient, UIAutomationTypes
           $out = Join-Path $env:RUNNER_TEMP 'shots'; New-Item -ItemType Directory -Force -Path $out | Out-Null
           function Shot($name) {
             $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
@@ -44,28 +44,64 @@ jobs:
             $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
             $bmp.Save("$out\$name.png"); $g.Dispose(); $bmp.Dispose()
           }
-          $ws = New-Object -ComObject WScript.Shell
+          $A = [System.Windows.Automation.AutomationElement]
+          $Scope = [System.Windows.Automation.TreeScope]
+          function Find($root, $names) {
+            for ($i = 0; $i -lt 20; $i++) {
+              foreach ($n in $names) {
+                $c = New-Object System.Windows.Automation.PropertyCondition($A::NameProperty, $n)
+                $e = $root.FindFirst($Scope::Descendants, $c)
+                if ($e) { return $e }
+              }
+              Start-Sleep -Milliseconds 300
+            }
+            Write-Host "找不到 $($names -join ' / ')"; return $null
+          }
+          function Press($e) {
+            if (-not $e) { return }
+            try { $e.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke() }
+            catch { $e.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ') }
+          }
           $p = Start-Process -FilePath .\SC-zhTW-Installer.exe -PassThru
           Start-Sleep -Seconds 6; Shot '1-open'
           if ($p.HasExited) { Write-Host "程式已結束，代碼 $($p.ExitCode)"; exit 1 }
-          [void]$ws.AppActivate($p.Id); Start-Sleep 1
-          [System.Windows.Forms.SendKeys]::SendWait('{ENTER}'); Start-Sleep 2; Shot '2-confirm'
-          [System.Windows.Forms.SendKeys]::SendWait('{ENTER}'); Start-Sleep 3; Shot '3-done'
-          [System.Windows.Forms.SendKeys]::SendWait('{ENTER}'); Start-Sleep 2; Shot '4-after'
+          $root = $A::RootElement
+          # 安裝：按鈕 → 確認「是」→ 完成「確定」
+          $btn = Find $root @('安裝中文化')
+          $btn.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ')
+          Start-Sleep 2; Shot '2-confirm'
+          Press (Find $root @('是(Y)', 'Yes', '是'))
+          Start-Sleep 3; Shot '3-done'
+          Press (Find $root @('確定', 'OK'))
+          Start-Sleep 2; Shot '4-after-install'
           $live = 'C:\Program Files\Roberts Space Industries\StarCitizen\LIVE'
-          Get-Content "$live\user.cfg" | Out-File "$out\user.cfg.txt"
+          "── 安裝後 user.cfg ──" | Out-File -Encoding utf8 "$out\result.txt"
+          Get-Content "$live\user.cfg" | Out-File -Encoding utf8 -Append "$out\result.txt"
           $ini = "$live\Data\Localization\chinese_(traditional)\global.ini"
-          if (Test-Path $ini) { $bytes = [IO.File]::ReadAllBytes($ini); "global.ini bytes=$($bytes.Length) bom=$($bytes[0]) $($bytes[1]) $($bytes[2])" | Out-File "$out\result.txt" } else { "global.ini 不存在" | Out-File "$out\result.txt" }
-          Get-ChildItem -Recurse "$live\語言包備份" -ErrorAction SilentlyContinue | Select-Object FullName | Out-File -Append "$out\result.txt"
+          if (Test-Path $ini) { $bytes = [IO.File]::ReadAllBytes($ini); "global.ini bytes=$($bytes.Length) bom=$($bytes[0]),$($bytes[1]),$($bytes[2])" | Out-File -Encoding utf8 -Append "$out\result.txt" }
+          else { "global.ini 不存在" | Out-File -Encoding utf8 -Append "$out\result.txt" }
+          # 移除：按鈕 → 確認「是」→ 完成「確定」
+          $rm = Find $root @('移除中文化（變回英文）')
+          if ($rm) { $rm.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ') }
+          Start-Sleep 2
+          Press (Find $root @('是(Y)', 'Yes', '是'))
+          Start-Sleep 2
+          Press (Find $root @('確定', 'OK'))
+          Start-Sleep 2; Shot '5-after-remove'
+          "── 移除後 user.cfg ──" | Out-File -Encoding utf8 -Append "$out\result.txt"
+          Get-Content "$live\user.cfg" | Out-File -Encoding utf8 -Append "$out\result.txt"
+          Get-ChildItem -Recurse -File "$live\語言包備份" -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | Out-File -Encoding utf8 -Append "$out\result.txt"
           Stop-Process -Id $p.Id -ErrorAction SilentlyContinue
       - name: 把截圖存到 ci-shots 分支
+        if: always()
         shell: pwsh
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git switch --orphan ci-shots
           git rm -rf --quiet . 2>$null
+          Remove-Item -Recurse -Force installer, src, data, download, test -ErrorAction SilentlyContinue
           Copy-Item "$env:RUNNER_TEMP\shots\*" .
-          git add -A
+          git add *.png result.txt
           git commit -m "安裝器截圖 $(Get-Date -Format s)"
           git push -f origin ci-shots
