@@ -37,6 +37,17 @@
    g_language = chinese_(traditional)
    ```
 
+## 一鍵安裝到遊戲（Windows）
+
+下載 [`download/SC-zhTW-Installer.exe`](https://taksito.github.io/sc-zh-tw-merge/download/SC-zhTW-Installer.exe) 後執行：
+
+1. 自動找語言包：拖曳到程式上的檔案 → 程式旁邊 → 「下載」資料夾裡最新的 `global*.zip` / `global.ini`
+2. 自動找遊戲：讀 RSI 啟動器紀錄＋各磁碟常見安裝位置，LIVE 優先；找不到可手動輸入
+3. 確認後寫入 `LIVE\Data\Localization\chinese_(traditional)\global.ini`（UTF-8 with BOM），並把 `user.cfg` 的 `g_language` 設為 `chinese_(traditional)`（其他設定保留）
+4. 舊的 `global.ini`、`user.cfg` 先備份到 `LIVE\語言包備份\日期時間\`
+
+原始碼在 `installer/`（Go，只用標準函式庫）；修改後 `.github/workflows/build-installer.yml` 會自動重新編譯。
+
 ## 自動更新
 
 `.github/workflows/update-sources.yml` 每天台灣時間 04:17 檢查 ExoComp Remix2，有新版才更新 `data/exocomp.ini` 與 `data/sources.json`。

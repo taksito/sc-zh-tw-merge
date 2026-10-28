@@ -120,6 +120,10 @@ nav.cats .bar i{display:block;height:100%;background:var(--ok)}
 @media (max-width:900px){.ohead{display:none}.card.orow{grid-template-columns:minmax(0,1fr) auto}.card.orow textarea{grid-column:1/-1}}
 .online{display:grid;gap:8px}
 .upd{background:var(--warn-soft);color:var(--warn);border-radius:4px;padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.install{display:grid;gap:4px;border-top:1px solid var(--line);padding-top:12px}
+.install ol{margin:0;padding-left:1.4em;display:grid;gap:2px;font-size:13.5px}
+.install p{margin:0;font-size:13px}
+.install a{color:var(--accent)}
 .decode{display:grid;gap:4px;border-top:1px solid var(--line);padding-top:12px}
 .decode p{margin:0;font-size:13px}
 nav.cats .none{font-size:13px;color:var(--ok);padding:4px 10px 6px}
@@ -195,6 +199,15 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
       <button id="btnSaveProg">匯出審核紀錄</button>
       <label class="slot" style="padding:6px 12px;display:inline-flex;border-style:solid"><span>匯入審核紀錄</span><input type="file" id="f-prog" accept=".json"></label>
       <span class="muted" id="exportNote">未審核的項目會使用自動建議；你修改過的以修改為準。</span>
+    </div>
+    <div class="install">
+      <b>一鍵安裝到遊戲</b>
+      <ol>
+        <li>按上面的「下載 global.ini（.zip）」。</li>
+        <li>下載 <a href="https://taksito.github.io/sc-zh-tw-merge/download/SC-zhTW-Installer.exe" target="_blank" rel="noopener">SC-zhTW-Installer.exe</a>（Windows，只需下載一次）。</li>
+        <li>關閉遊戲，執行安裝器。它會在「下載」資料夾找最新的 zip、自動找到 StarCitizen\LIVE，確認後放入 <span class="mono">Data\Localization\chinese_(traditional)\global.ini</span> 並設定 <span class="mono">user.cfg</span>；舊檔案會備份到 <span class="mono">LIVE\語言包備份\</span>。</li>
+      </ol>
+      <p class="muted">第一次執行若出現「Windows 已保護您的電腦」，按「其他資訊」→「仍要執行」。寫入失敗時，對安裝器按右鍵「以系統管理員身分執行」。</p>
     </div>
     <div class="decode">
       <label class="inl"><input type="checkbox" id="addDecode" checked> <b>在 global.ini 最後加上「中文輸入解碼表」</b></label>
@@ -655,7 +668,7 @@ $('#btnZip').onclick = async ()=>{
   toast('正在產生檔案…'); await tick();
   const zip = new JSZip();
   zip.file('global.ini', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'}));
-  zip.file('說明.txt', '把 global.ini 放到：\r\nStarCitizen\\LIVE\\Data\\Localization\\<語言資料夾>\\global.ini\r\n例如 chinese_(traditional)，並在 LIVE\\user.cfg 加上：\r\ng_language = chinese_(traditional)\r\n');
+  zip.file('說明.txt', '最簡單：下載 https://taksito.github.io/sc-zh-tw-merge/download/SC-zhTW-Installer.exe 並執行，會自動安裝這個 zip。\r\n\r\n手動安裝：把 global.ini 放到：\r\nStarCitizen\\LIVE\\Data\\Localization\\<語言資料夾>\\global.ini\r\n例如 chinese_(traditional)，並在 LIVE\\user.cfg 加上：\r\ng_language = chinese_(traditional)\r\n');
   const blob = await zip.generateAsync({type:'blob', compression:'DEFLATE', compressionOptions:{level:6}});
   offer('global_zh-TW.zip', blob);
 };

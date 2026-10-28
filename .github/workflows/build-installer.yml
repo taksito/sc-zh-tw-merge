@@ -1,0 +1,31 @@
+name: 建置安裝器
+
+# installer/ 的程式有改動時，自動重新產生 download/SC-zhTW-Installer.exe
+on:
+  push:
+    paths:
+      - 'installer/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: 編譯 Windows 執行檔
+        working-directory: installer
+        run: GOOS=windows GOARCH=amd64 CGO_ENABLED=0 go build -trimpath -ldflags "-s -w" -o ../download/SC-zhTW-Installer.exe .
+      - name: 有變動才提交
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add download/SC-zhTW-Installer.exe
+          if git diff --cached --quiet; then echo '沒有變動'; exit 0; fi
+          git commit -m '重新建置安裝器'
+          git push
