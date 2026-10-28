@@ -266,7 +266,11 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         const z = (opts.ships.get(e.k) || '').trim(), en = (e.out || '').trim();
         if (!z || !en || CJK.test(en) || z.includes(en)) continue;
         stats[e.cat]--; stats.ship = (stats.ship || 0) + 1;
-        e.from = e.cat; e.cat = 'ship'; e.out = z + ' ' + en; e.shipZh = z;
+        // 太長就把英文換到下一行（中文算 1 字、英文數字算半字）
+        const wrap = opts.shipWrap == null ? 15 : +opts.shipWrap;
+        const one = z + ' ' + en;
+        e.from = e.cat; e.cat = 'ship'; e.shipZh = z;
+        e.out = wrap > 0 && textLen(one, true) > wrap ? z + '\\n' + en : one;
       }
     }
     // 漢化固定不動、ExoAE 改版時：英文變了的條目，中文可能已過時
@@ -294,6 +298,10 @@ mission_items_QTRendezvousBeacon => 會合信標
 mission_items_BlackBox => 飛行記錄器
 mission_items_Confidential => 機密
 mission_items_Derelict => 殘骸
+item_NameBRAA_groundturret_AA => AAT-34 砲台
+item_NameBRAA_groundturret_AA_short => AAT-34 砲台
+item_NameBEHR_groundturret_AA_S4 => AAT-21 砲台
+item_NameBEHR_groundturret_AA_S4_short => AAT-21 砲台
 `;
 
   // 一律用 ExoAE 原文、不翻譯的條目（一行一個鍵名）
