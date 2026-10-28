@@ -25,7 +25,7 @@
 
   // ---------- 字典 ----------
   // 每行： 英文 => 中文 ；以 / 開頭結尾的是正規式（可用 $1）；# 開頭為註解
-  const DEFAULT_TAIL_DICT = `# ExoComp 附加資訊的翻譯（只套用在從 ExoComp 接過來的片段）
+  const DEFAULT_TAIL_DICT = `# ExoAE 附加資訊的翻譯（只套用在從 ExoAE 接過來的片段）
 Reputation Awarded (by difficulty): => 獲得聲望（依難度）：
 Reputation Awarded: => 獲得聲望：
 Multiple Blueprint Pools => 多個藍圖池
@@ -132,7 +132,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     const have = new Set(toks(out));
     const miss = [...new Set(toks(e.exo))].filter(t => !have.has(t));
     if (miss.length) iss.push('少了變數 ' + miss.slice(0, 3).join(' '));
-    // 從 ExoComp 接進來、翻譯後仍殘留的英文（物品清單「- xxx」和地名除外）
+    // 從 ExoAE 接進來、翻譯後仍殘留的英文（物品清單「- xxx」和地名除外）
     const tail = out.slice(Math.max(0, out.length - (e.added || '').length - 20));
     const left = tail.split('\\n').filter(l => !/^\s*- /.test(l))
       .map(l => l.replace(/<\/?EM\d>/g, '').replace(/~\w+\([^)]*\)/g, '').replace(/\[[^\]]*\]/g, ''))
@@ -148,13 +148,13 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
    * cat：
    *   same      兩邊一樣或只需繁化（不審核）
    *   zh        採用繁中（不審核）
-   *   en_exo    繁中檔仍是英文 → 採用 ExoComp（含標籤）
-   *   title     任務標題補上 ExoComp 的 [聲望/藍圖] 標籤
-   *   tail      任務說明補上 ExoComp 的獎勵/藍圖清單
-   *   wrap      （有原版時）ExoComp 在原文前後加的內容，接到繁中
-   *   check     ExoComp 有改動但無法自動接 → 需人工
+   *   en_exo    繁中檔仍是英文 → 採用 ExoAE（含標籤）
+   *   title     任務標題補上 ExoAE 的 [聲望/藍圖] 標籤
+   *   tail      任務說明補上 ExoAE 的獎勵/藍圖清單
+   *   wrap      （有原版時）ExoAE 在原文前後加的內容，接到繁中
+   *   check     ExoAE 有改動但無法自動接 → 需人工
    *   zh_only / exo_only  只存在於一邊
-   *   updated   （有 opts.exoBase 時）ExoComp 英文跟漢化當時對照的版本不同 → 中文可能過時
+   *   updated   （有 opts.exoBase 時）ExoAE 英文跟漢化當時對照的版本不同 → 中文可能過時
    */
   function merge(zhRaw, zhT, exo, van, opts) {
     opts = opts || {};
@@ -180,7 +180,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
       if (!zhIsCJK && (normPunct(zr) === normPunct(ev) || exoChanged === false)) { add({ ...base, cat: 'same', out: zv }); continue; }
       if (zhIsCJK && exoChanged === false) { add({ ...base, cat: 'zh', out: zv }); continue; }
 
-      // 有原版英文：精確找出 ExoComp 在原文前/後加了什麼
+      // 有原版英文：精確找出 ExoAE 在原文前/後加了什麼
       if (vv !== undefined && vv.length > 0) {
         const at = ev.indexOf(vv);
         if (at >= 0) {
@@ -202,7 +202,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         add({ ...base, cat: 'title', out: zv.replace(/\s+$/, '') + route + ' ' + tr(mt[1]), added: (mr && route ? mr[0].trim() + ' ' : '') + mt[1] });
         continue;
       }
-      // 規則 2a：ExoComp 的獎勵區塊（從第一個「Reputation Awarded / Potential Blueprints…」段落到結尾）
+      // 規則 2a：ExoAE 的獎勵區塊（從第一個「Reputation Awarded / Potential Blueprints…」段落到結尾）
       const mk = EXO_MARK.exec(ev);
       if (mk && !EXO_MARK.test(zr)) {
         const extra = ev.slice(mk.index).replace(/^(?:\s|\\n)+/, '').replace(/(?:\\n|\s)+$/, '');
@@ -216,7 +216,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         add({ ...base, cat: 'tail', out: trimTail(zv) + P + tr(extra), added: extra });
         continue;
       }
-      // 漢化本來就是英文的條目：零件等級翻成中文，其餘直接用 ExoComp
+      // 漢化本來就是英文的條目：零件等級翻成中文，其餘直接用 ExoAE
       if (!zhIsCJK) {
         const mc = COMP_RE.exec(ev);
         if (mc && classMap[mc[1].toUpperCase()]) {
@@ -224,7 +224,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         } else add({ ...base, cat: 'en_exo', out: ev });
         continue;
       }
-      // 其他：標籤數量不同，或（有原版時）ExoComp 確定有改
+      // 其他：標籤數量不同，或（有原版時）ExoAE 確定有改
       const d = tagDiff(ev, zv);
       if (exoChanged === true || d.length) {
         add({ ...base, cat: 'check', out: zv, added: d.join(' ') });
@@ -247,10 +247,10 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         e.from = e.cat; e.cat = 'ore'; e.out = o.out; e.note = o.note; e.len = o.len;
       }
     }
-    // 漢化固定不動、ExoComp 改版時：英文變了的條目，中文可能已過時
+    // 漢化固定不動、ExoAE 改版時：英文變了的條目，中文可能已過時
     if (opts.exoBase) {
       for (const e of entries) {
-        // 輸出完全由 ExoComp 產生的分類（礦石、零件等級、未中文化）會自動跟著新版，不用列出
+        // 輸出完全由 ExoAE 產生的分類（礦石、零件等級、未中文化）會自動跟著新版，不用列出
         if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force'].includes(e.cat)) continue;
         const bv = opts.exoBase.map.get(e.k);
         if (bv === undefined || bv === e.exo) continue;
@@ -263,8 +263,8 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     return { entries, stats, gloss };
   }
 
-  // 一律用 ExoComp 原文、不翻譯的條目（一行一個鍵名）
-  const DEFAULT_FORCE_EXO = `# 一行一個條目鍵名，這些一律用 ExoComp 原文
+  // 一律用 ExoAE 原文、不翻譯的條目（一行一個鍵名）
+  const DEFAULT_FORCE_EXO = `# 一行一個條目鍵名，這些一律用 ExoAE 原文
 comm_HackedConnection
 `;
 

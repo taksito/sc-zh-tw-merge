@@ -1,8 +1,8 @@
-name: 檢查 ExoComp 更新
+name: 檢查 ExoAE 更新
 
 # 漢化（data/chinese.ini）是固定版本，不再自動下載。
-# 這裡只追蹤 ExoComp Remix2；有新版就更新 data/exocomp.ini。
-# data/exocomp.base.ini 是漢化當時對照的 ExoComp 版本，用來找出「英文有更新」的條目，不會自動改。
+# 這裡只追蹤 ExoAE Remix2；有新版就更新 data/exocomp.ini。
+# data/exocomp.base.ini 是漢化當時對照的 ExoAE 版本，用來找出「英文有更新」的條目，不會自動改。
 
 on:
   schedule:
@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 下載 ExoComp Remix2
+      - name: 下載 ExoAE Remix2
         run: |
           set -e
           curl -fsSL --retry 3 -o data/exocomp.ini.new 'https://raw.githubusercontent.com/ExoAE/ScCompLangPack/main/ScCompLangPackRemix2/data/Localization/english/global.ini'
@@ -49,6 +49,6 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data
-          if git diff --cached --quiet; then echo 'ExoComp 沒有新版本'; exit 0; fi
-          git commit -m "ExoComp 更新 $(date -u +%F)"
+          if git diff --cached --quiet; then echo 'ExoAE 沒有新版本'; exit 0; fi
+          git commit -m "ExoAE 更新 $(date -u +%F)"
           git push
