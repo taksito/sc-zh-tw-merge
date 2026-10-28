@@ -41,7 +41,7 @@
 
 ## 一鍵安裝到遊戲（Windows）
 
-下載 [`download/SC-zhTW-Installer.exe`](https://taksito.github.io/sc-zh-tw-merge/download/SC-zhTW-Installer.exe) 後執行：
+下載 [`download/SC-zhTW-Installer.exe`](https://taksito.github.io/sc-zh-tw-merge/download/SC-zhTW-Installer.exe) 後雙擊，會打開安裝視窗（可選遊戲資料夾、語言包，也能把 zip 拖進視窗）：
 
 1. 自動找語言包：拖曳到程式上的檔案 → 程式旁邊 → 「下載」資料夾裡最新的 `global*.zip` / `global.ini`
 2. 自動找遊戲：讀 RSI 啟動器紀錄＋各磁碟常見安裝位置，LIVE 優先；找不到可手動輸入
@@ -53,7 +53,9 @@
 - **更新中文化**：照上面步驟寫入新的語言包
 - **移除中文化（變回英文）**：備份 `user.cfg` 後只把 `g_language` 改成 `english`，中文 `global.ini` 保留，之後可隨時再換回中文
 
-原始碼在 `installer/`（Go，只用標準函式庫）；修改後 `.github/workflows/build-installer.yml` 會自動重新編譯。
+原始碼在 `installer/`（Go，只用標準函式庫與 Windows 內建視窗元件）：`core.go` 是共用邏輯、`gui_windows.go` 是視窗介面。修改後 `.github/workflows/build-installer.yml` 會自動重新編譯；`test-installer-gui.yml` 可在 Windows 上實際按安裝／移除並截圖。
+
+權限不足（遊戲裝在 Program Files）時，安裝器會詢問是否以系統管理員身分重新開啟。
 
 ## 自動更新
 
