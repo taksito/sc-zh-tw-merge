@@ -37,9 +37,10 @@ jobs:
         continue-on-error: true
         run: |
           $ErrorActionPreference = 'Continue'
-          Add-Type -AssemblyName System.Windows.Forms, System.Drawing, UIAutomationClient, UIAutomationTypes
+          Add-Type -AssemblyName System.Windows.Forms, System.Drawing
           $out = Join-Path $env:RUNNER_TEMP 'shots'; New-Item -ItemType Directory -Force -Path $out | Out-Null
-          trap { "錯誤：$_  @ $($_.InvocationInfo.ScriptLineNumber)" | Out-File -Encoding utf8 -Append "$out\error.txt"; continue }
+          function Note($t) { $t | Out-File -Encoding utf8 -Append "$out\result.txt" }
+          trap { Note "錯誤：$_ （第 $($_.InvocationInfo.ScriptLineNumber) 行）"; continue }
           function Shot($name) {
             $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
             $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
@@ -47,64 +48,63 @@ jobs:
             $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
             $bmp.Save("$out\$name.png"); $g.Dispose(); $bmp.Dispose()
           }
-          $A = [System.Windows.Automation.AutomationElement]
-          $Scope = [System.Windows.Automation.TreeScope]
-          function Find($root, $names) {
+          Add-Type -TypeDefinition @"
+          using System; using System.Runtime.InteropServices;
+          public static class W {
+            [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern IntPtr FindWindowW(string c, string t);
+            [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern IntPtr FindWindowExW(IntPtr p, IntPtr a, string c, string t);
+            [DllImport("user32.dll")] public static extern IntPtr GetDlgItem(IntPtr d, int id);
+            [DllImport("user32.dll")] public static extern bool PostMessageW(IntPtr h, uint m, IntPtr w, IntPtr l);
+            public static IntPtr Child(IntPtr p, string text) { return FindWindowExW(p, IntPtr.Zero, "Button", text); }
+            public static void Click(IntPtr h) { PostMessageW(h, 0x00F5, IntPtr.Zero, IntPtr.Zero); }
+          }
+          "@
+          $title = 'SC 繁中語言包安裝器'
+          function DlgButton($ids) {
             for ($i = 0; $i -lt 20; $i++) {
-              foreach ($n in $names) {
-                $c = New-Object System.Windows.Automation.PropertyCondition($A::NameProperty, $n)
-                $e = $root.FindFirst($Scope::Descendants, $c)
-                if ($e) { return $e }
+              $d = [W]::FindWindowW('#32770', $title)
+              if ($d -ne [IntPtr]::Zero) {
+                foreach ($id in $ids) { $b = [W]::GetDlgItem($d, $id); if ($b -ne [IntPtr]::Zero) { return $b } }
               }
               Start-Sleep -Milliseconds 300
             }
-            Write-Host "找不到 $($names -join ' / ')"; return $null
+            Note "找不到對話框按鈕 $ids"; return [IntPtr]::Zero
           }
-          function Press($e) {
-            if (-not $e) { return }
-            try { $e.GetCurrentPattern([System.Windows.Automation.InvokePattern]::Pattern).Invoke() }
-            catch { $e.SetFocus(); [System.Windows.Forms.SendKeys]::SendWait(' ') }
-          }
+          $live = 'C:\Program Files\Roberts Space Industries\StarCitizen\LIVE'
           $p = Start-Process -FilePath .\SC-zhTW-Installer.exe -PassThru
           Start-Sleep -Seconds 6; Shot '1-open'
-          if ($p.HasExited) { Write-Host "程式已結束，代碼 $($p.ExitCode)"; exit 1 }
-          $root = $A::RootElement
-          # 安裝：按鈕 → 確認「是」→ 完成「確定」
-          $win = $root.FindFirst($Scope::Children, (New-Object System.Windows.Automation.PropertyCondition($A::ProcessIdProperty, $p.Id)))
-          "視窗：$($win.Current.Name)" | Out-File -Encoding utf8 -Append "$out\error.txt"
-          if ($win) { $win.FindAll($Scope::Descendants, [System.Windows.Automation.Condition]::TrueCondition) | ForEach-Object { "  $($_.Current.ControlType.ProgrammaticName) | $($_.Current.Name)" } | Out-File -Encoding utf8 -Append "$out\error.txt" }
-          $btn = Find $win @('安裝中文化')
-          Press $btn
+          if ($p.HasExited) { Note "程式已結束，代碼 $($p.ExitCode)"; exit 0 }
+          $main = [W]::FindWindowW('SCzhTWInstaller', $null)
+          Note "主視窗：$main"
+          # 安裝：按鈕 → 確認「是」(6) → 完成「確定」(1/2)
+          [W]::Click([W]::Child($main, '安裝中文化'))
           Start-Sleep 2; Shot '2-confirm'
-          Press (Find $root @('是(Y)', 'Yes', '是'))
+          [W]::Click((DlgButton @(6)))
           Start-Sleep 3; Shot '3-done'
-          Press (Find $root @('確定', 'OK'))
+          [W]::Click((DlgButton @(2, 1)))
           Start-Sleep 2; Shot '4-after-install'
-          $live = 'C:\Program Files\Roberts Space Industries\StarCitizen\LIVE'
-          "── 安裝後 user.cfg ──" | Out-File -Encoding utf8 "$out\result.txt"
-          Get-Content "$live\user.cfg" | Out-File -Encoding utf8 -Append "$out\result.txt"
+          Note "── 安裝後 user.cfg ──"
+          Get-Content "$live\user.cfg" | ForEach-Object { Note $_ }
           $ini = "$live\Data\Localization\chinese_(traditional)\global.ini"
-          if (Test-Path $ini) { $bytes = [IO.File]::ReadAllBytes($ini); "global.ini bytes=$($bytes.Length) bom=$($bytes[0]),$($bytes[1]),$($bytes[2])" | Out-File -Encoding utf8 -Append "$out\result.txt" }
-          else { "global.ini 不存在" | Out-File -Encoding utf8 -Append "$out\result.txt" }
+          if (Test-Path $ini) { $bytes = [IO.File]::ReadAllBytes($ini); Note "global.ini bytes=$($bytes.Length) bom=$($bytes[0]),$($bytes[1]),$($bytes[2])" } else { Note "global.ini 不存在" }
           # 移除：按鈕 → 確認「是」→ 完成「確定」
-          $rm = Find $root @('移除中文化（變回英文）')
-          Press $rm
+          [W]::Click([W]::Child($main, '移除中文化（變回英文）'))
           Start-Sleep 2
-          Press (Find $root @('是(Y)', 'Yes', '是'))
+          [W]::Click((DlgButton @(6)))
           Start-Sleep 2
-          Press (Find $root @('確定', 'OK'))
+          [W]::Click((DlgButton @(2, 1)))
           Start-Sleep 2; Shot '5-after-remove'
-          "── 移除後 user.cfg ──" | Out-File -Encoding utf8 -Append "$out\result.txt"
-          Get-Content "$live\user.cfg" | Out-File -Encoding utf8 -Append "$out\result.txt"
-          Get-ChildItem -Recurse -File "$live\語言包備份" -ErrorAction SilentlyContinue | ForEach-Object { $_.FullName } | Out-File -Encoding utf8 -Append "$out\result.txt"
+          Note "── 移除後 user.cfg ──"
+          Get-Content "$live\user.cfg" | ForEach-Object { Note $_ }
+          Get-ChildItem -Recurse -File "$live\語言包備份" -ErrorAction SilentlyContinue | ForEach-Object { Note $_.FullName }
           Stop-Process -Id $p.Id -ErrorAction SilentlyContinue
       - name: 把截圖存到 ci-shots 分支
         if: always()
         shell: pwsh
         run: |
+          $ErrorActionPreference = 'Continue'
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          $ErrorActionPreference = 'Continue'
           Remove-Item -Force SC-zhTW-Installer.exe -ErrorAction SilentlyContinue
           git switch --orphan ci-shots
           git rm -rf --quiet . 2>$null
