@@ -328,8 +328,9 @@ hud_gimbal_mode_short_fixed
 hud_gimbal_mode_short_manual
 hud_gimbal_mode_short_ads_fixed
 hud_gimbal_mode_short_ads_manual
-# HUD 武器萬向節狀態（固定／解鎖）：同樣會變亂碼，一律用英文
+# HUD 武器瞄準區（萬向節狀態、瞄準方式）：這個位置的字型沒有中文字，一律用英文
 hud_aimable_gimbal*
+hud_aimable_*
 `;
 
   // ---------- 地點 ----------

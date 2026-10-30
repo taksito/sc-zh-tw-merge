@@ -383,7 +383,7 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
     <h2>更新紀錄</h2>
     <dl>
       <dt><time datetime="2026-10-31">2026-10-31</time></dt>
-      <dd><b>萬向節顯示修正</b>：HUD 武器萬向節狀態（hud_aimable_gimbal，固定／解鎖）在遊戲裡會變成亂碼，全部改用英文 Fixed、Unlocked、FXD、MAN。萬向節模式縮寫（AUTO、FXD、MAN、FXD-PRE、MAN-PRE）也維持英文。另外修正：以前開過網頁的瀏覽器會擋住新版預設，現在會自動補上。</dd>
+      <dd><b>萬向節顯示修正</b>：HUD 武器瞄準區（hud_aimable_*）在遊戲裡會變成亂碼，全部改用英文：萬向節狀態 FXD、MAN（Fixed、Unlocked），瞄準方式 AUTO、PIP、PRE（Auto、Default、Precision）。萬向節模式縮寫（AUTO、FXD、MAN、FXD-PRE、MAN-PRE）也維持英文。另外修正：以前開過網頁的瀏覽器會擋住新版預設，現在會自動補上。</dd>
       <dt><time datetime="2026-10-29">2026-10-29</time></dt>
       <dd>任務地點（mission_location）加上中文：英文 3 個詞以上只用中文，1～2 個詞顯示「英文 中文」，PYAM 等縮寫保留。飛船名稱改為中文一行、英文下一行。</dd>
       <dt><time datetime="2026-10-28">2026-10-28</time></dt>
@@ -10237,8 +10237,9 @@ hud_gimbal_mode_short_fixed
 hud_gimbal_mode_short_manual
 hud_gimbal_mode_short_ads_fixed
 hud_gimbal_mode_short_ads_manual
-# HUD 武器萬向節狀態（固定／解鎖）：同樣會變亂碼，一律用英文
+# HUD 武器瞄準區（萬向節狀態、瞄準方式）：這個位置的字型沒有中文字，一律用英文
 hud_aimable_gimbal*
+hud_aimable_*
 `;
 
   // ---------- 地點 ----------

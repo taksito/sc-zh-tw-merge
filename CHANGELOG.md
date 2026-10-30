@@ -1,7 +1,7 @@
 # 更新紀錄
 
 ## 2026-10-31
-- **萬向節顯示修正**：HUD 武器萬向節狀態 `hud_aimable_gimbal*`（固定／解鎖）在遊戲裡會變成亂碼，全部改用英文 Fixed、Unlocked、FXD、MAN。
+- **萬向節顯示修正**：HUD 武器瞄準區 `hud_aimable_*` 在遊戲裡會變成亂碼，全部改用英文：萬向節狀態 FXD、MAN（Fixed、Unlocked），瞄準方式 AUTO、PIP、PRE（Auto、Default、Precision）。
 - 萬向節模式縮寫 `hud_gimbal_mode_short_*` 也維持英文（AUTO、FXD、MAN、FXD-PRE、MAN-PRE）。
 - 「固定用 ExoAE 原文」清單支援結尾 `*`，代表該開頭的所有條目。
 - 修正：之前開過網頁的人，瀏覽器存的舊詞彙表會擋住新版預設（例如這次的萬向節、AAT-34 砲台）。現在會自動補上新的預設條目，你自己的修改保留。
