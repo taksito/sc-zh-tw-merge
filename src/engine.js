@@ -320,6 +320,12 @@ item_NameBEHR_groundturret_AA_S4_short => AAT-21 砲台
   // 一律用 ExoAE 原文、不翻譯的條目（一行一個鍵名）
   const DEFAULT_FORCE_EXO = `# 一行一個條目鍵名，這些一律用 ExoAE 原文
 comm_HackedConnection
+# HUD 萬向節模式縮寫：這個位置的字型沒有中文字，中文會變成亂碼
+hud_gimbal_mode_short_auto
+hud_gimbal_mode_short_fixed
+hud_gimbal_mode_short_manual
+hud_gimbal_mode_short_ads_fixed
+hud_gimbal_mode_short_ads_manual
 `;
 
   // ---------- 地點 ----------
