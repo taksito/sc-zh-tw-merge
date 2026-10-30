@@ -1,7 +1,9 @@
 # 更新紀錄
 
 ## 2026-10-31
-- **萬向節顯示修正**：HUD 上「萬向節」後面的模式文字在遊戲裡會變成亂碼（該位置的字型沒有中文字），`hud_gimbal_mode_short_*` 改回英文縮寫 AUTO、FXD、MAN、FXD-PRE、MAN-PRE，顯示為「萬向節 FXD」。
+- **萬向節顯示修正**：HUD 武器萬向節狀態 `hud_aimable_gimbal*`（固定／解鎖）在遊戲裡會變成亂碼，全部改用英文 Fixed、Unlocked、FXD、MAN。
+- 萬向節模式縮寫 `hud_gimbal_mode_short_*` 也維持英文（AUTO、FXD、MAN、FXD-PRE、MAN-PRE）。
+- 「固定用 ExoAE 原文」清單支援結尾 `*`，代表該開頭的所有條目。
 
 ## 2026-10-29
 - 任務地點（`mission_location*`）加上中文：英文 3 個詞以上只用中文，1～2 個詞顯示「英文 中文」，PYAM 等縮寫保留。

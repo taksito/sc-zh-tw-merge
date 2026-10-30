@@ -165,6 +165,8 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     const fill = new Map();
     for (const d of parseDict(opts.fill != null ? opts.fill : DEFAULT_FILL)) if (d.s) fill.set(d.s.trim(), d.to);
     const forceExo = new Set((opts.forceExo != null ? opts.forceExo : DEFAULT_FORCE_EXO).split(/\r?\n/).map(x => x.replace(/#.*/, '').trim()).filter(Boolean));
+    // 結尾加 * 代表「這個開頭的所有條目」
+    const forcePrefix = [...forceExo].filter(x => x.endsWith('*')).map(x => x.slice(0, -1));
     const entries = [], stats = {};
     const add = (e) => { entries.push(e); stats[e.cat] = (stats[e.cat] || 0) + 1; };
 
@@ -172,7 +174,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
       const ev = exo.map.get(k), zr = zhRaw.map.get(k), zv = zhT.get(k);
       const vv = van ? van.map.get(k) : undefined;
       const base = { k, zh: zv, zhRaw: zr, exo: ev, van: vv };
-      if (forceExo.has(k)) { add({ ...base, cat: 'force', out: ev }); continue; }
+      if (forceExo.has(k) || forcePrefix.some(p => k.startsWith(p))) { add({ ...base, cat: 'force', out: ev }); continue; }
       if (fill.has(k)) { add({ ...base, cat: 'fill', out: fill.get(k) }); continue; }
       if (zr === undefined) { add({ ...base, cat: 'exo_only', out: ev }); continue; }
       if (zv === ev) { add({ ...base, cat: 'same', out: zv }); continue; }
@@ -326,6 +328,8 @@ hud_gimbal_mode_short_fixed
 hud_gimbal_mode_short_manual
 hud_gimbal_mode_short_ads_fixed
 hud_gimbal_mode_short_ads_manual
+# HUD 武器萬向節狀態（固定／解鎖）：同樣會變亂碼，一律用英文
+hud_aimable_gimbal*
 `;
 
   // ---------- 地點 ----------

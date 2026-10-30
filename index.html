@@ -307,7 +307,7 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
           <textarea id="locZh" class="code" rows="8" spellcheck="false"></textarea></label>
         <label>補充翻譯　<span>漢化包漏翻的條目：一行一個「鍵名 => 中文」，鍵名可在「全部條目」搜尋英文找到</span>
           <textarea id="fillZh" class="code" rows="8" spellcheck="false"></textarea></label>
-        <label>固定用 ExoAE 原文的條目　<span>一行一個鍵名，這些不翻譯</span>
+        <label>固定用 ExoAE 原文的條目　<span>一行一個鍵名，這些不翻譯；結尾加 * 代表這個開頭的所有條目</span>
           <textarea id="forceExo" class="code" rows="6" spellcheck="false"></textarea></label>
       </div>
       <div class="row" style="margin-top:10px">
@@ -383,7 +383,7 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
     <h2>更新紀錄</h2>
     <dl>
       <dt><time datetime="2026-10-31">2026-10-31</time></dt>
-      <dd><b>萬向節顯示修正</b>：HUD 上「萬向節」後面的模式文字在遊戲裡會變成亂碼（該位置的字型沒有中文字），改回英文縮寫 AUTO、FXD、MAN、FXD-PRE、MAN-PRE，顯示為「萬向節 FXD」。</dd>
+      <dd><b>萬向節顯示修正</b>：HUD 武器萬向節狀態（hud_aimable_gimbal，固定／解鎖）在遊戲裡會變成亂碼，全部改用英文 Fixed、Unlocked、FXD、MAN。萬向節模式縮寫（AUTO、FXD、MAN、FXD-PRE、MAN-PRE）也維持英文。</dd>
       <dt><time datetime="2026-10-29">2026-10-29</time></dt>
       <dd>任務地點（mission_location）加上中文：英文 3 個詞以上只用中文，1～2 個詞顯示「英文 中文」，PYAM 等縮寫保留。飛船名稱改為中文一行、英文下一行。</dd>
       <dt><time datetime="2026-10-28">2026-10-28</time></dt>
@@ -10074,6 +10074,8 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     const fill = new Map();
     for (const d of parseDict(opts.fill != null ? opts.fill : DEFAULT_FILL)) if (d.s) fill.set(d.s.trim(), d.to);
     const forceExo = new Set((opts.forceExo != null ? opts.forceExo : DEFAULT_FORCE_EXO).split(/\r?\n/).map(x => x.replace(/#.*/, '').trim()).filter(Boolean));
+    // 結尾加 * 代表「這個開頭的所有條目」
+    const forcePrefix = [...forceExo].filter(x => x.endsWith('*')).map(x => x.slice(0, -1));
     const entries = [], stats = {};
     const add = (e) => { entries.push(e); stats[e.cat] = (stats[e.cat] || 0) + 1; };
 
@@ -10081,7 +10083,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
       const ev = exo.map.get(k), zr = zhRaw.map.get(k), zv = zhT.get(k);
       const vv = van ? van.map.get(k) : undefined;
       const base = { k, zh: zv, zhRaw: zr, exo: ev, van: vv };
-      if (forceExo.has(k)) { add({ ...base, cat: 'force', out: ev }); continue; }
+      if (forceExo.has(k) || forcePrefix.some(p => k.startsWith(p))) { add({ ...base, cat: 'force', out: ev }); continue; }
       if (fill.has(k)) { add({ ...base, cat: 'fill', out: fill.get(k) }); continue; }
       if (zr === undefined) { add({ ...base, cat: 'exo_only', out: ev }); continue; }
       if (zv === ev) { add({ ...base, cat: 'same', out: zv }); continue; }
@@ -10235,6 +10237,8 @@ hud_gimbal_mode_short_fixed
 hud_gimbal_mode_short_manual
 hud_gimbal_mode_short_ads_fixed
 hud_gimbal_mode_short_ads_manual
+# HUD 武器萬向節狀態（固定／解鎖）：同樣會變亂碼，一律用英文
+hud_aimable_gimbal*
 `;
 
   // ---------- 地點 ----------
