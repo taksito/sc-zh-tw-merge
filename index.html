@@ -383,7 +383,7 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
     <h2>更新紀錄</h2>
     <dl>
       <dt><time datetime="2026-10-31">2026-10-31</time></dt>
-      <dd><b>萬向節顯示修正</b>：HUD 武器萬向節狀態（hud_aimable_gimbal，固定／解鎖）在遊戲裡會變成亂碼，全部改用英文 Fixed、Unlocked、FXD、MAN。萬向節模式縮寫（AUTO、FXD、MAN、FXD-PRE、MAN-PRE）也維持英文。</dd>
+      <dd><b>萬向節顯示修正</b>：HUD 武器萬向節狀態（hud_aimable_gimbal，固定／解鎖）在遊戲裡會變成亂碼，全部改用英文 Fixed、Unlocked、FXD、MAN。萬向節模式縮寫（AUTO、FXD、MAN、FXD-PRE、MAN-PRE）也維持英文。另外修正：以前開過網頁的瀏覽器會擋住新版預設，現在會自動補上。</dd>
       <dt><time datetime="2026-10-29">2026-10-29</time></dt>
       <dd>任務地點（mission_location）加上中文：英文 3 個詞以上只用中文，1～2 個詞顯示「英文 中文」，PYAM 等縮寫保留。飛船名稱改為中文一行、英文下一行。</dd>
       <dt><time datetime="2026-10-28">2026-10-28</time></dt>
@@ -10469,13 +10469,21 @@ let view = {cat: LS.get('cat','issue'), q:'', st:'todo', page:0};
 const PER = 25;
 
 const dictTail = $('#dictTail'), dictTerm = $('#dictTerm');
-dictTail.value = LS.get('dictTail', M.DEFAULT_TAIL_DICT);
+// 之前存過的詞彙表：保留你的修改，並自動補上新版預設的條目（以鍵名／左邊文字判斷）
+function withNewDefaults(stored, def){
+  if (stored == null) return def;
+  const keyOf = l => { const t = l.trim(); if (!t || t.startsWith('#')) return null; const i = t.indexOf(' => '); return i >= 0 ? t.slice(0, i) : t; };
+  const have = new Set(stored.split('\n').map(keyOf).filter(Boolean));
+  const add = def.split('\n').filter(l => { const k = keyOf(l); return k && !have.has(k); });
+  return add.length ? stored.replace(/\s*$/, '\n') + add.join('\n') + '\n' : stored;
+}
+dictTail.value = withNewDefaults(LS.get('dictTail', null), M.DEFAULT_TAIL_DICT);
 dictTerm.value = LS.get('dictTerm', M.DEFAULT_TERM_DICT);
-$('#oreZh').value = LS.get('oreZh2', M.DEFAULT_ORE_ZH);
-$('#oreAbbr').value = LS.get('oreAbbr2', M.DEFAULT_ORE_ABBR);
-$('#forceExo').value = LS.get('forceExo', M.DEFAULT_FORCE_EXO);
-$('#locZh').value = LS.get('locZh', M.DEFAULT_LOC_ZH);
-$('#fillZh').value = LS.get('fillZh', M.DEFAULT_FILL);
+$('#oreZh').value = withNewDefaults(LS.get('oreZh2', null), M.DEFAULT_ORE_ZH);
+$('#oreAbbr').value = withNewDefaults(LS.get('oreAbbr2', null), M.DEFAULT_ORE_ABBR);
+$('#forceExo').value = withNewDefaults(LS.get('forceExo', null), M.DEFAULT_FORCE_EXO);
+$('#locZh').value = withNewDefaults(LS.get('locZh', null), M.DEFAULT_LOC_ZH);
+$('#fillZh').value = withNewDefaults(LS.get('fillZh', null), M.DEFAULT_FILL);
 $('#locOn').checked = LS.get('locOn', true);
 $('#shipOn').checked = LS.get('shipOn', true);
 $('#mlocOn').checked = LS.get('mlocOn', true);
