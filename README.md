@@ -101,6 +101,10 @@ node test/merge-test.js chinese.ini exocomp.ini
 
 Repository → Settings → Pages → Source 選 **Deploy from a branch**，Branch 選 `main`、資料夾 `/ (root)`。
 
+## 更新紀錄
+
+見 **[CHANGELOG.md](CHANGELOG.md)**。
+
 ## 資料來源與致謝
 
 - **ExoAE** — [ScCompLangPack](https://github.com/ExoAE/ScCompLangPack)（使用 Remix2）：零件類別／尺寸／等級前綴

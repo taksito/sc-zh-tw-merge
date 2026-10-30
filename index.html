@@ -175,6 +175,12 @@ pre.code{margin:6px 0 0;background:var(--sunk);border-radius:4px;padding:8px 10p
 .codebox{display:flex;gap:8px;align-items:flex-start}
 .codebox pre{flex:1;min-width:0;margin:6px 0 0}
 .codebox button{margin-top:6px}
+.changelog{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:grid;gap:10px}
+.changelog dl{margin:0;display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:8px 14px;font-size:13.5px}
+.changelog dt{font:500 12.5px/1.6 var(--f-mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.changelog dd{margin:0}
+.changelog dd:first-of-type b{color:var(--accent)}
+@media (max-width:520px){.changelog dl{grid-template-columns:minmax(0,1fr)}.changelog dd{margin-bottom:6px}}
 .savebar{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;align-items:center}
 #saveState{color:var(--ok)}
 nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:10px 10px 2px;font-weight:600}
@@ -372,6 +378,18 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
   </section>
     </div>
   </details>
+
+  <section class="changelog" aria-label="更新紀錄">
+    <h2>更新紀錄</h2>
+    <dl>
+      <dt><time datetime="2026-10-31">2026-10-31</time></dt>
+      <dd><b>萬向節顯示修正</b>：HUD 上「萬向節」後面的模式文字在遊戲裡會變成亂碼（該位置的字型沒有中文字），改回英文縮寫 AUTO、FXD、MAN、FXD-PRE、MAN-PRE，顯示為「萬向節 FXD」。</dd>
+      <dt><time datetime="2026-10-29">2026-10-29</time></dt>
+      <dd>任務地點（mission_location）加上中文：英文 3 個詞以上只用中文，1～2 個詞顯示「英文 中文」，PYAM 等縮寫保留。飛船名稱改為中文一行、英文下一行。</dd>
+      <dt><time datetime="2026-10-28">2026-10-28</time></dt>
+      <dd>飛船名稱加上中文；AAT-34、AAT-21 Turret 改為砲台；補上漏翻的任務標記（量子信標等）；地點改為「英文 中文」；新增手動安裝說明與「直接下載 global.ini」；安裝器改為視窗版，可更新或移除中文化；global.ini 附加中文輸入解碼表；首頁改為三步驟懶人包。</dd>
+    </dl>
+  </section>
 </div>
 <footer class="foot">
   <div class="wrap2">
