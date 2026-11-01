@@ -1,4 +1,4 @@
-name: 檢查 ExoAE 更新
+name: 檢查 ExoAE 與 PTU 更新
 
 # 漢化（data/chinese.ini）是固定版本，不再自動下載。
 # 這裡只追蹤 ExoAE Remix2；有新版就更新 data/exocomp.ini。
@@ -26,22 +26,36 @@ jobs:
           if [ "$size" -lt 1000000 ]; then echo "只有 $size bytes，可能下載失敗，略過"; rm data/exocomp.ini.new; exit 0; fi
           mv data/exocomp.ini.new data/exocomp.ini
 
+      - name: 下載 MrKraken StarStrings（PTU 與正式版對照）
+        run: |
+          set -e
+          mkdir -p data/ptu
+          for pair in "sc-ptu:starstrings-ptu" "master:starstrings-live"; do
+            br=${pair%%:*}; name=${pair##*:}
+            curl -fsSL --retry 3 -o data/ptu/$name.ini.new "https://raw.githubusercontent.com/MrKraken/StarStrings/$br/src/For_Players/Data/Localization/english/global.ini" || { echo "$br 下載失敗"; continue; }
+            size=$(stat -c%s data/ptu/$name.ini.new)
+            if [ "$size" -lt 1000000 ]; then echo "$name 只有 $size bytes，略過"; rm data/ptu/$name.ini.new; else mv data/ptu/$name.ini.new data/ptu/$name.ini; fi
+          done
+
       - name: 寫入版本資訊
         run: |
           python3 - <<'PY'
           import hashlib, json, re, datetime, pathlib
           src = pathlib.Path('data/sources.json')
           man = json.loads(src.read_text()) if src.exists() else {}
-          b = pathlib.Path('data/exocomp.ini').read_bytes()
-          sha = hashlib.sha256(b).hexdigest()
-          if man.get('exo', {}).get('sha256') != sha:
-              m = re.search(rb'^Frontend_PU_Version=(.*)$', b, re.M)
-              man['exo'] = {
-                  'file': 'data/exocomp.ini', 'sha256': sha, 'size': len(b),
-                  'version': m.group(1).decode('utf-8', 'replace').strip() if m else '',
-                  'fetched_at': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
-              }
-              src.write_text(json.dumps(man, ensure_ascii=False, indent=2) + '\n')
+          for id, f in (('exo', 'data/exocomp.ini'), ('ptu', 'data/ptu/starstrings-ptu.ini'), ('ptu_base', 'data/ptu/starstrings-live.ini')):
+              p = pathlib.Path(f)
+              if not p.exists(): continue
+              b = p.read_bytes()
+              sha = hashlib.sha256(b).hexdigest()
+              if man.get(id, {}).get('sha256') != sha:
+                  m = re.search(rb'^Frontend_PU_Version=(.*)$', b, re.M)
+                  man[id] = {
+                      'file': f, 'sha256': sha, 'size': len(b),
+                      'version': m.group(1).decode('utf-8', 'replace').strip() if m else '',
+                      'fetched_at': datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ'),
+                  }
+          src.write_text(json.dumps(man, ensure_ascii=False, indent=2) + '\n')
           PY
 
       - name: 有變動才提交
@@ -50,5 +64,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data
           if git diff --cached --quiet; then echo 'ExoAE 沒有新版本'; exit 0; fi
-          git commit -m "ExoAE 更新 $(date -u +%F)"
+          git commit -m "來源更新 $(date -u +%F)"
           git push

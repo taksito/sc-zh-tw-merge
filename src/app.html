@@ -173,6 +173,11 @@ pre.code{margin:6px 0 0;background:var(--sunk);border-radius:4px;padding:8px 10p
 .changelog dd{margin:0}
 .changelog dd:first-of-type b{color:var(--accent)}
 @media (max-width:520px){.changelog dl{grid-template-columns:minmax(0,1fr)}.changelog dd{margin-bottom:6px}}
+.modes{display:flex;gap:6px;flex-wrap:wrap}
+.modes a{padding:8px 16px;border:1px solid var(--line);border-radius:999px;color:var(--fg);text-decoration:none;background:var(--panel);font-weight:500}
+.modes a.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.ptunote{background:var(--warn-soft);color:var(--fg);border-left:3px solid var(--warn);border-radius:4px;padding:10px 14px;font-size:13.5px;line-height:1.7}
+.ptunote a{color:var(--accent)}
 .savebar{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12.5px;align-items:center}
 #saveState{color:var(--ok)}
 nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:10px 10px 2px;font-weight:600}
@@ -183,8 +188,16 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
 <div class="wrap">
   <header>
     <h1>SC 語言包合併台</h1>
-    <p>簡中漢化 ＋ ExoAE 詳細資料 → 繁體中文 global.ini（UTF-8 with BOM）</p>
+    <p id="subtitle">簡中漢化 ＋ ExoAE 詳細資料 → 繁體中文 global.ini（UTF-8 with BOM）</p>
   </header>
+  <nav class="modes" aria-label="版本">
+    <a href="#" id="tabLive">LIVE 正式版</a>
+    <a href="#ptu" id="tabPtu">PTU 搶先體驗版</a>
+  </nav>
+  <div class="ptunote" id="ptuNote" hidden>
+    <b>PTU 搶先體驗版</b>：英文來源是 <a href="https://github.com/MrKraken/StarStrings/tree/sc-ptu" target="_blank" rel="noopener">MrKraken StarStrings 的 PTU 版</a>，中文仍是正式版的漢化。PTU 新增或改過的條目會先顯示英文，列在下方「自訂介面」的「新增條目」「英文有更新」。
+    安裝時請選 <span class="mono">StarCitizen\PTU</span> 資料夾（手動安裝時把步驟裡的 LIVE 換成 PTU）。審核紀錄和正式版分開保存。
+  </div>
 
   <section class="quick" aria-label="懶人包">
     <div class="step" id="q1">
@@ -374,6 +387,8 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
   <section class="changelog" aria-label="更新紀錄">
     <h2>更新紀錄</h2>
     <dl>
+      <dt><time datetime="2026-11-01">2026-11-01</time></dt>
+      <dd><b>新增 PTU 搶先體驗版</b>：頁面上方可切換正式版／PTU。PTU 英文來自 MrKraken StarStrings（4.10.3 PTU），新增或改過的條目先顯示英文，下載檔名加上 _PTU，請安裝到 StarCitizen\PTU。</dd>
       <dt><time datetime="2026-10-31">2026-10-31</time></dt>
       <dd><b>萬向節顯示修正</b>：HUD 武器瞄準區（hud_aimable_*）在遊戲裡會變成亂碼，全部改用英文：萬向節狀態 FXD、MAN（Fixed、Unlocked），瞄準方式 AUTO、PIP、PRE（Auto、Default、Precision）。萬向節模式縮寫（AUTO、FXD、MAN、FXD-PRE、MAN-PRE）也維持英文。另外修正：以前開過網頁的瀏覽器會擋住新版預設，現在會自動補上。</dd>
       <dt><time datetime="2026-10-29">2026-10-29</time></dt>
@@ -410,16 +425,21 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
 (function(){
 const $ = s => document.querySelector(s);
 const M = window.SCMerge;
+// 兩個區：LIVE 正式版（預設）與 PTU 搶先體驗版（網址加 #ptu）。審核紀錄、上次的檔案分開存
+const MODE = location.hash === '#ptu' ? 'ptu' : 'live';
+const NS = MODE === 'ptu' ? 'ptu.' : '';
+const NS_KEYS = new Set(['decisions', 'cat', 'last']);
 const LS = {
-  get(k, d){ try{ const v = localStorage.getItem('scm.'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
-  set(k, v){ try{ localStorage.setItem('scm.'+k, JSON.stringify(v)); }catch(e){} }
+  get(k, d){ if (NS_KEYS.has(k)) k = NS + k; try{ const v = localStorage.getItem('scm.'+k); return v==null ? d : JSON.parse(v); }catch(e){ return d; } },
+  set(k, v){ if (NS_KEYS.has(k)) k = NS + k; try{ localStorage.setItem('scm.'+k, JSON.stringify(v)); }catch(e){} }
 };
+window.addEventListener('hashchange', () => { if ((location.hash === '#ptu') !== (MODE === 'ptu')) location.reload(); });
 const CATS = [
 
-  {id:'updated', name:'英文有更新', hint:'ExoAE 改版後英文變了，中文可能過時', review:true},
-  {id:'exo_only',name:'新增條目', hint:'ExoAE 新版才有、漢化沒有的條目', review:true},
+  {id:'updated', name:'英文有更新', hint:'英文來源改版後原文變了，中文可能過時', review:true},
+  {id:'exo_only',name:'新增條目', hint:'英文來源新版才有、漢化沒有的條目（先顯示英文）', review:true},
 
-  {id:'zh_only',name:'只有漢化包有', hint:'ExoAE 沒有這個條目', review:true},
+  {id:'zh_only',name:'只有漢化包有', hint:'新版已移除的條目，保留著不影響遊戲', auto:true},
   {id:'ore',    name:'礦石', hint:'中文＋英文縮寫，每行不超過設定字數', auto:true},
   {id:'issue',  name:'問題項目', hint:'自動合併後檢查不通過，仍照建議採用', auto:true},
   {id:'check',  name:'需人工確認', hint:'ExoAE 有額外標記但接不上，採用繁中', auto:true},
@@ -493,8 +513,8 @@ const tick = () => new Promise(r=>setTimeout(r,0));
 
 // ---------- IndexedDB：記住上次的檔案 ----------
 function idb(){ return new Promise((res,rej)=>{ try{ const r=indexedDB.open('scmerge',1); r.onupgradeneeded=()=>r.result.createObjectStore('f'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);}catch(e){rej(e)} }); }
-async function idbPut(k,v){ try{ const db=await idb(); await new Promise((res,rej)=>{const tx=db.transaction('f','readwrite'); tx.objectStore('f').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error);}); }catch(e){} }
-async function idbGet(k){ try{ const db=await idb(); return await new Promise((res)=>{const r=db.transaction('f').objectStore('f').get(k); r.onsuccess=()=>res(r.result); r.onerror=()=>res(null);}); }catch(e){ return null; } }
+async function idbPut(k,v){ if (NS_KEYS.has(k)) k = NS + k; try{ const db=await idb(); await new Promise((res,rej)=>{const tx=db.transaction('f','readwrite'); tx.objectStore('f').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error);}); }catch(e){} }
+async function idbGet(k){ if (NS_KEYS.has(k)) k = NS + k; try{ const db=await idb(); return await new Promise((res)=>{const r=db.transaction('f').objectStore('f').get(k); r.onsuccess=()=>res(r.result); r.onerror=()=>res(null);}); }catch(e){ return null; } }
 
 // ---------- 檔案選擇 ----------
 function setFile(slot, f){
@@ -515,8 +535,22 @@ for (const slot of ['zh','exo','van']) {
 // 優先讀同一個網站 data/ 底下的副本（GitHub Actions 每天自動更新），讀不到再直接抓來源
 const SOURCES = {
   zh:  { label:'漢化（固定版）', local:'data/chinese.ini' },
-  exo: { label:'ExoAE Remix2', local:'data/exocomp.ini', remote:'https://raw.githubusercontent.com/ExoAE/ScCompLangPack/main/ScCompLangPackRemix2/data/Localization/english/global.ini' },
+  exo: MODE === 'ptu'
+    ? { label:'MrKraken StarStrings PTU', local:'data/ptu/starstrings-ptu.ini', remote:'https://raw.githubusercontent.com/MrKraken/StarStrings/sc-ptu/src/For_Players/Data/Localization/english/global.ini', man:'ptu' }
+    : { label:'ExoAE Remix2', local:'data/exocomp.ini', remote:'https://raw.githubusercontent.com/ExoAE/ScCompLangPack/main/ScCompLangPackRemix2/data/Localization/english/global.ini', man:'exo' },
 };
+(function(){
+  $('#tabLive').classList.toggle('on', MODE === 'live'); $('#tabPtu').classList.toggle('on', MODE === 'ptu');
+  if (MODE === 'ptu') {
+    $('#ptuNote').hidden = false;
+    $('#subtitle').textContent = 'PTU 搶先體驗版：簡中漢化 ＋ MrKraken StarStrings PTU → 繁體中文 global.ini（UTF-8 with BOM）';
+    $('#onlineInfo').textContent = '漢化：網站上的固定版　英文：MrKraken StarStrings PTU（每天自動檢查更新）';
+    document.title = 'SC 語言包合併台 PTU';
+  }
+})();
+// 對照版：用來找出「英文有更新」「新增條目」。PTU 對照 MrKraken 的正式版
+const BASE_FILE = MODE === 'ptu' ? 'data/ptu/starstrings-live.ini' : 'data/exocomp.base.ini';
+const SUFFIX = MODE === 'ptu' ? '_PTU' : '';
 const verOf = t => ((t.match(/^Frontend_PU_Version=(.*)$/m) || [])[1] || '版本不明').trim();
 async function getText(url){
   const r = await fetch(url, {cache:'no-cache'});
@@ -537,12 +571,12 @@ async function fetchSources(){
     log(`　完成：${(text.length/1048576).toFixed(1)} MB，${verOf(text)}`);
   }
   // 漢化當時對照的 ExoAE 版本：拿來找出改版後英文有變的條目
-  try { const t = await getText('data/exocomp.base.ini'); out.base = { name:'ExoAE 對照版', text:t }; log(`對照版 ExoAE：${verOf(t)}`); } catch(e) {}
+  try { const t = await getText(BASE_FILE); out.base = { name:'對照版', text:t }; log(`對照版（找出新增與修改）：${verOf(t)}`); } catch(e) {}
   return out;
 }
 $('#qRun').onclick = () => $('#btnOnline').click();
 $('#qZip').onclick = () => $('#btnZip').click();
-$('#qIni').onclick = async () => { toast('正在產生檔案…'); await tick(); offer('global.ini', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'})); };
+$('#qIni').onclick = async () => { toast('正在產生檔案…'); await tick(); offer(MODE === 'ptu' ? 'global_PTU.ini' : 'global.ini', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'})); };
 $('#copyCfg').onclick = async () => {
   const t = $('#cfgLines').textContent;
   try { await navigator.clipboard.writeText(t); toast('已複製'); }
@@ -557,7 +591,8 @@ $('#btnOnline').onclick = async () => {
 // 有上次的檔案時，看看網路上是不是有新版
 async function checkUpdate(last){
   const man = await getManifest(); if (!man) return;
-  const changed = ['zh','exo'].filter(id => man[id] && last[id] && last[id].sha && man[id].sha256 !== last[id].sha);
+  const mk = id => id === 'exo' ? SOURCES.exo.man : id;
+  const changed = ['zh','exo'].filter(id => man[mk(id)] && last[id] && last[id].sha && man[mk(id)].sha256 !== last[id].sha);
   if (!changed.length) return;
   const n = $('#updateNote'); n.hidden = false;
   n.innerHTML = `網路上有新版：${changed.map(id=>SOURCES[id].label + '（' + esc(man[id].version||'') + '）').join('、')}。你的審核紀錄會保留，原文有變的條目會標示出來。<button class="sm pri" id="btnUpd">更新並重新合併</button>`;
@@ -898,7 +933,7 @@ $('#btnZip').onclick = async ()=>{
     '【變回英文】把 user.cfg 那一行改成 g_language = english',
   ].join('\r\n') + '\r\n');
   const blob = await zip.generateAsync({type:'blob', compression:'DEFLATE', compressionOptions:{level:6}});
-  offer('global_zh-TW.zip', blob);
+  offer('global_zh-TW' + SUFFIX + '.zip', blob);
 };
 $('#btnTxt').onclick = async ()=>{ toast('正在產生檔案…'); await tick(); offer('global.ini.txt', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'})); };
 $('#btnSaveProg').onclick = ()=> offer('sc-merge-review.json', JSON.stringify({version:3, decisions, dictTail:dictTail.value, dictTerm:dictTerm.value, ore:oreOpts(), forceExo:$('#forceExo').value, locZh:$('#locZh').value, locOn:$('#locOn').checked, shipOn:$('#shipOn').checked, mlocOn:$('#mlocOn').checked, shipWrap:+$('#shipWrap').value, shipLayout:$('#shipLayout').value, fillZh:$('#fillZh').value}, null, 0));

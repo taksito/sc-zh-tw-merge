@@ -23,6 +23,7 @@
   - 礦物掃描的 RS 值、`Heph (Raw)` 等採礦文字縮短
   - 飛彈類型前綴（如 `[EM]`）、違禁品 `[!]` 標記
 - ExoAE 的說明中表示 MrKraken 做了大部分的工作，如果想支持，請支持 MrKraken。
+- **PTU 搶先體驗版**直接使用 StarStrings 的 `sc-ptu` 分支（`data/ptu/starstrings-ptu.ini`），並以 `master` 分支（`data/ptu/starstrings-live.ini`）作為對照。
 
 ### CitizenWiki 中文社群 — 42kit 半漢化包
 - 頁面：[CitizenWiki.cn 在地化（Localization）](https://citizenwiki.cn/index.php?title=Localization&variant=zh-tw)

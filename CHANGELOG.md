@@ -1,5 +1,9 @@
 # 更新紀錄
 
+## 2026-11-01
+- **新增 PTU 搶先體驗版**：頁面上方可切換「LIVE 正式版／PTU 搶先體驗版」。PTU 的英文來自 MrKraken StarStrings `sc-ptu`（4.10.3 PTU），對照正式版找出新增 95 條、英文有更新 24 條，先顯示英文待翻譯。
+- 「英文有更新」只看原文本體，藍圖清單或聲望標籤的變動不再列入。
+
 ## 2026-10-31
 - **萬向節顯示修正**：HUD 武器瞄準區 `hud_aimable_*` 在遊戲裡會變成亂碼，全部改用英文：萬向節狀態 FXD、MAN（Fixed、Unlocked），瞄準方式 AUTO、PIP、PRE（Auto、Default、Precision）。
 - 萬向節模式縮寫 `hud_gimbal_mode_short_*` 也維持英文（AUTO、FXD、MAN、FXD-PRE、MAN-PRE）。

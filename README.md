@@ -41,6 +41,16 @@
    g_language = chinese_(traditional)
    ```
 
+## PTU 搶先體驗版
+
+網址：https://taksito.github.io/sc-zh-tw-merge/#ptu （頁面上方切換「LIVE 正式版／PTU 搶先體驗版」）
+
+- 英文來源：[MrKraken StarStrings](https://github.com/MrKraken/StarStrings/tree/sc-ptu) 的 `sc-ptu` 分支（`data/ptu/starstrings-ptu.ini`）
+- 對照版：StarStrings 正式版 `master`（`data/ptu/starstrings-live.ini`），用來找出 PTU「新增條目」「英文有更新」
+- 中文仍是正式版的漢化；PTU 新增或改過的條目先顯示英文，可在「自訂介面」逐條翻譯
+- 下載檔名加上 `_PTU`；安裝到 `StarCitizen\PTU`（安裝器的下拉選單可選 PTU）
+- 審核紀錄與正式版分開保存；每天的自動排程也會檢查 PTU 更新
+
 ## 手動安裝（不用安裝器）
 
 1. 在網站按「直接下載 global.ini」（或下載 zip 後解壓縮）

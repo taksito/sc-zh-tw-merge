@@ -122,6 +122,12 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
   }
 
   const ROUTE = /\s*\|\s*((?:from |to )?~mission\([^)]*\)(?:\s*>\s*~mission\([^)]*\))?)\s*$/;
+  // 去掉 ExoAE／MrKraken 加的標題標籤與獎勵區塊，只留原文本體
+  function coreText(v) {
+    v = v || '';
+    const m = EXO_MARK.exec(v); if (m) v = v.slice(0, m.index);
+    return v.replace(TITLE_SUFFIX, '').replace(/(?:\\n|\s)+$/, '');
+  }
   const AUTO_CATS = new Set(['title', 'tail', 'wrap']);
   const toks = v => (v || '').match(/~\w+\([^)]*\)|%l?[sdif]/g) || [];
   function validate(e) {
@@ -294,7 +300,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         // 輸出完全由 ExoAE 產生的分類（礦石、零件等級、未中文化）會自動跟著新版，不用列出
         if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force', 'fill', 'ship', 'mloc'].includes(e.cat) || (e.cat === 'loc' && e.from !== 'zh')) continue;
         const bv = opts.exoBase.map.get(e.k);
-        if (bv === undefined || bv === e.exo) continue;
+        if (bv === undefined || bv === e.exo || coreText(bv) === coreText(e.exo)) continue; // 只差在藍圖清單、聲望標籤的不算
         stats[e.cat]--; stats.updated = (stats.updated || 0) + 1;
         e.from = e.from || e.cat; e.cat = 'updated'; e.oldExo = bv;
       }

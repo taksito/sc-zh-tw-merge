@@ -18,5 +18,19 @@
     "file": "data/exocomp.base.ini",
     "version": "Alpha 4.10.2: Siege of Orison",
     "note": "漢化對照用的 ExoAE 版本"
+  },
+  "ptu": {
+    "file": "data/ptu/starstrings-ptu.ini",
+    "sha256": "e8c0456de581ccf1e81b42d69b8fc448e4fb24e296d6cee1d6bd552420a52dab",
+    "size": 10754028,
+    "version": "MrKraken StarStrings sc-ptu (4.10.3 PTU 13055118)",
+    "fetched_at": "2026-11-01T04:01:11Z"
+  },
+  "ptu_base": {
+    "file": "data/ptu/starstrings-live.ini",
+    "sha256": "a9e6e4b126c61a97fd6ccbe7ad846f2d6522534eb347a90cab276853c36023ec",
+    "size": 10715737,
+    "version": "MrKraken StarStrings master (4.10.2 LIVE)",
+    "fetched_at": "2026-11-01T04:01:11Z"
   }
 }
