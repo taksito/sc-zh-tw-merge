@@ -334,6 +334,16 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         e.from = e.from || e.cat; e.cat = 'updated'; e.oldExo = bv;
       }
     }
+    // 另外翻譯的條目（PTU）：單獨列成「新增（已翻譯）」「更新（已翻譯）」，方便查看
+    if (extra) {
+      for (const e of entries) {
+        if (!extra.has(e.k) || e.cat === 'issue') continue;
+        const c = opts.exoBase && opts.exoBase.map.has(e.k) ? 'tr_upd' : 'tr_new';
+        stats[e.cat]--; stats[c] = (stats[c] || 0) + 1;
+        e.from = e.from || e.cat; e.cat = c;
+        if (c === 'tr_upd') e.oldExo = opts.exoBase.map.get(e.k);
+      }
+    }
     const seen = new Set(exo.keys);
     for (const k of zhRaw.keys) if (!seen.has(k)) add({ k, cat: 'zh_only', out: zhT.get(k), zh: zhT.get(k), zhRaw: zhRaw.map.get(k), exo: undefined, van: van ? van.map.get(k) : undefined });
     return { entries, stats, gloss };
