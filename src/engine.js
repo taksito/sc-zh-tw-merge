@@ -34,6 +34,25 @@ Potential Blueprints => 可能獲得的藍圖
 /Awarded from (.+?) level variants/ => {$1} 等級的任務變體可獲得
 /\\bPool (\\d+)/ => 藍圖池 $1
 Scenario Progress Points => 劇情進度點數
+Ships to Expect => 預計出現的艦船
+/Final Wave: ?/ => 最終波：
+/Wave (\\d+): ?/ => 第 $1 波：
+Medium Criminal Fighter Bomber => 中型不法分子戰鬥轟炸機
+Medium Criminal Distortion Ship => 中型不法分子干擾型飛船
+Criminal Distortion Ship => 不法分子干擾型飛船
+Heavy Criminal Interceptor => 重型不法分子攔截機
+Medium Criminal Interceptor => 中型不法分子攔截機
+Light Criminal Interceptor => 輕型不法分子攔截機
+Heavy Criminal Fighter => 重型不法分子戰鬥機
+Medium Criminal Fighter => 中型不法分子戰鬥機
+Light Criminal Fighter => 輕型不法分子戰鬥機
+Criminal Gun Boat => 不法分子砲艇
+Criminal Snub Fighter => 不法分子短程戰機
+Criminal VeryHard Combat Ship => 不法分子高難度戰鬥艦
+(any variant) => （任意型號）
+Any Vanduul Ship => 任意剜度飛船
+Any Criminal Ship => 任意不法分子飛船
+/ ?\\(Target\\)/ => （目標）
 Total => 總計
 Transport => 運輸
 Defense => 防禦
@@ -103,7 +122,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
   const trimTail = s => s.replace(/(?:\\n|\s)+$/, '');
   const TITLE_SUFFIX = /\s*(<EM4>(?:\s*\[[^\]<]*\]\*?)+\s*<\/EM4>)\s*$/;
 
-  const EXO_MARK = /(?:\\n)+(?=<EM4>(?:Reputation Awarded|Potential Blueprints|Multiple Blueprint Pools|Scenario Progress Points|Pool \d|Awarded from))/;
+  const EXO_MARK = /(?:\\n)+(?=<EM4>(?:Reputation Awarded|Ships to Expect|Potential Blueprints|Multiple Blueprint Pools|Scenario Progress Points|Pool \d|Awarded from))/;
   function emTailCount(v) {
     const ps = trimTail(v).split(P); let n = 0;
     for (let i = ps.length - 1; i >= 0; i--) { if (/^(?:\s|\\n)*<EM4>/.test(ps[i])) n++; else break; }
@@ -139,7 +158,9 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     const miss = [...new Set(toks(e.exo))].filter(t => !have.has(t));
     if (miss.length) iss.push('少了變數 ' + miss.slice(0, 3).join(' '));
     // 從 ExoAE 接進來、翻譯後仍殘留的英文（物品清單「- xxx」和地名除外）
-    const tail = out.slice(Math.max(0, out.length - (e.added || '').length - 20));
+    let from = Math.max(0, out.length - (e.added || '').length - 20);
+    if (from > 0) { const nl = out.indexOf('\\n', from); from = nl >= 0 ? nl + 2 : from; } // 跳過切到一半的那行（那是漢化原文）
+    const tail = out.slice(from);
     const left = tail.split('\\n').filter(l => !/^\s*- /.test(l))
       .map(l => l.replace(/<\/?EM\d>/g, '').replace(/~\w+\([^)]*\)/g, '').replace(/\[[^\]]*\]/g, ''))
       .filter(l => /[A-Za-z]{4,}(?:\s+[A-Za-z]{2,}){1,}/.test(l) && !/[\u4e00-\u9fff]/.test(l.replace(/[A-Za-z].*$/, '')) );
@@ -164,6 +185,13 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
    */
   function merge(zhRaw, zhT, exo, van, opts) {
     opts = opts || {};
+    // 額外的繁中翻譯（例如 PTU 新增／更新條目）：直接放進漢化資料，之後照一般規則處理
+    const extra = opts.zhExtra && opts.zhExtra.size ? opts.zhExtra : null;
+    if (extra) {
+      const map = new Map(zhRaw.map), keys = zhRaw.keys.slice(), t = new Map(zhT);
+      for (const [k, v] of extra) { if (!map.has(k)) keys.push(k); map.set(k, v); t.set(k, v); }
+      zhRaw = Object.assign({}, zhRaw, { map, keys }); zhT = t;
+    }
     const tailDict = parseDict(opts.tailDict != null ? opts.tailDict : DEFAULT_TAIL_DICT);
     const gloss = buildGlossary(zhT, exo);
     const tr = s => applyDict(s, tailDict, gloss);
@@ -299,6 +327,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
       for (const e of entries) {
         // 輸出完全由 ExoAE 產生的分類（礦石、零件等級、未中文化）會自動跟著新版，不用列出
         if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force', 'fill', 'ship', 'mloc'].includes(e.cat) || (e.cat === 'loc' && e.from !== 'zh')) continue;
+        if (extra && extra.has(e.k)) { e.extra = true; continue; } // 已另外翻譯
         const bv = opts.exoBase.map.get(e.k);
         if (bv === undefined || bv === e.exo || coreText(bv) === coreText(e.exo)) continue; // 只差在藍圖清單、聲望標籤的不算
         stats[e.cat]--; stats.updated = (stats.updated || 0) + 1;

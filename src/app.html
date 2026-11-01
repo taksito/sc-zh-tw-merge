@@ -195,7 +195,7 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
     <a href="#ptu" id="tabPtu">PTU 搶先體驗版</a>
   </nav>
   <div class="ptunote" id="ptuNote" hidden>
-    <b>PTU 搶先體驗版</b>：英文來源是 <a href="https://github.com/MrKraken/StarStrings/tree/sc-ptu" target="_blank" rel="noopener">MrKraken StarStrings 的 PTU 版</a>，中文仍是正式版的漢化。PTU 新增或改過的條目會先顯示英文，列在下方「自訂介面」的「新增條目」「英文有更新」。
+    <b>PTU 搶先體驗版</b>：英文來源是 <a href="https://github.com/MrKraken/StarStrings/tree/sc-ptu" target="_blank" rel="noopener">MrKraken StarStrings 的 PTU 版</a>，中文仍是正式版的漢化。PTU 新增的 95 條和英文有更新的 24 條已翻成繁中（物品名稱照正式版慣例保留英文）；之後 PTU 再有新條目，會先顯示英文，列在下方「自訂介面」的「新增條目」「英文有更新」。PTU 移除的條目仍保留在輸出裡。
     安裝時請選 <span class="mono">StarCitizen\PTU</span> 資料夾（手動安裝時把步驟裡的 LIVE 換成 PTU）。審核紀錄和正式版分開保存。
   </div>
 
@@ -388,6 +388,8 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
     <h2>更新紀錄</h2>
     <dl>
       <dt><time datetime="2026-11-01">2026-11-01</time></dt>
+      <dd><b>PTU 條目翻譯</b>：PTU 新增 95 條、英文有更新 24 條全部翻成繁中（尼克斯星系互安防務任務、登船救援、斯卡諾夫步槍、奧馬洛夫瞄準鏡、劫掠者迷彩裝備等；ShipSelector 的「飛船」改為「載具」）。物品名稱照正式版慣例保留英文。PTU 移除的 12 條仍保留。任務說明新增的「預計出現的艦船」波次清單也會翻成中文。</dd>
+      <dt><time datetime="2026-11-01">2026-11-01</time></dt>
       <dd><b>新增 PTU 搶先體驗版</b>：頁面上方可切換正式版／PTU。PTU 英文來自 MrKraken StarStrings（4.10.3 PTU），新增或改過的條目先顯示英文，下載檔名加上 _PTU，請安裝到 StarCitizen\PTU。</dd>
       <dt><time datetime="2026-10-31">2026-10-31</time></dt>
       <dd><b>萬向節顯示修正</b>：HUD 武器瞄準區（hud_aimable_*）在遊戲裡會變成亂碼，全部改用英文：萬向節狀態 FXD、MAN（Fixed、Unlocked），瞄準方式 AUTO、PIP、PRE（Auto、Default、Precision）。萬向節模式縮寫（AUTO、FXD、MAN、FXD-PRE、MAN-PRE）也維持英文。另外修正：以前開過網頁的瀏覽器會擋住新版預設，現在會自動補上。</dd>
@@ -407,6 +409,9 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
 </footer>
 <div class="toast" id="toast" role="status"></div>
 
+<script type="text/plain" id="ptuZh">
+/*PTUZH*/
+</script>
 <script type="text/plain" id="mlocNames">
 /*MLOCS*/
 </script>
@@ -635,6 +640,8 @@ async function convertAll(map, mode){
 function readEmbedded(id){ const m = new Map(), el = document.getElementById(id); if (!el) return m;
   for (const l of el.textContent.split(/\r?\n/)) { const i = l.indexOf('='); if (i > 0 && !l.startsWith('#')) m.set(l.slice(0, i).trim(), l.slice(i + 1).trim()); } return m; }
 const SHIPS_RAW = readEmbedded('shipNames'), MLOCS_RAW = readEmbedded('mlocNames');
+// PTU 新增／更新條目的繁中翻譯（只在 PTU 模式使用）
+const PTU_ZH = readEmbedded('ptuZh');
 let shipsT = null, mlocsT = null;
 function convertMap(raw, mode){
   if (!window.OpenCC || !raw.size) return new Map(raw);
@@ -683,7 +690,7 @@ function remerge(){
   LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
   LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('locZh', $('#locZh').value); LS.set('fillZh', $('#fillZh').value); LS.set('locOn', $('#locOn').checked); LS.set('shipOn', $('#shipOn').checked); LS.set('mlocOn', $('#mlocOn').checked); LS.set('shipWrap', +$('#shipWrap').value); LS.set('shipLayout', $('#shipLayout').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
   const zhT = applyTerms(zhT0);
-  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value});
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value, zhExtra: MODE === 'ptu' ? PTU_ZH : null});
   byKey = new Map(result.entries.map(e=>[e.k,e]));
   $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
   view.page=0; renderAll();
