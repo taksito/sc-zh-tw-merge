@@ -322,6 +322,16 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         e.from = e.cat; e.cat = 'mloc'; e.out = out;
       }
     }
+    // 聲望等級：前面加上 LV.1～LV.N（第 0 級「申請者／中立」不加）
+    if (opts.rankLv !== false) {
+      const RANK_RE = /^(?:RepScope_[A-Za-z]+_Rank|RepStanding_[A-Za-z]+_Rank|RacingRep_Ship_Rank)(\d+)(?:_Name)?(?:,P)?$/;
+      for (const e of entries) {
+        const m = RANK_RE.exec(e.k); if (!m || +m[1] === 0 || !e.out || /^LV\.\d/i.test(e.out)) continue;
+        if (e.cat === 'force' || e.cat === 'fill') continue;
+        stats[e.cat]--; stats.rank = (stats.rank || 0) + 1;
+        e.from = e.cat; e.cat = 'rank'; e.out = 'LV.' + m[1] + ' ' + e.out.trim();
+      }
+    }
     // 漢化固定不動、ExoAE 改版時：英文變了的條目，中文可能已過時
     if (opts.exoBase) {
       for (const e of entries) {
