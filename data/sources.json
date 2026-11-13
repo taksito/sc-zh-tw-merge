@@ -9,10 +9,10 @@
   },
   "exo": {
     "file": "data/exocomp.ini",
-    "sha256": "f752d0db021da1b216e0423f264b40c669a471faf9131e9d239668fb0980c7f5",
-    "size": 10715916,
-    "version": "Alpha 4.10.2: Siege of Orison",
-    "fetched_at": "2026-10-28T01:33:23Z"
+    "sha256": "99ed6cd531771fbf748018d98a165ae95bf3d6969e6f5fe3de38908087ae4045",
+    "size": 10863803,
+    "version": "Alpha 4.10.3: Siege of Orison",
+    "fetched_at": "2026-11-13T01:08:21Z"
   },
   "exo_base": {
     "file": "data/exocomp.base.ini",
@@ -28,9 +28,9 @@
   },
   "ptu_base": {
     "file": "data/ptu/starstrings-live.ini",
-    "sha256": "a9e6e4b126c61a97fd6ccbe7ad846f2d6522534eb347a90cab276853c36023ec",
-    "size": 10715737,
-    "version": "MrKraken StarStrings master (4.10.2 LIVE)",
-    "fetched_at": "2026-11-01T04:01:11Z"
+    "sha256": "df8a26b3f46d2186c26fa65308ee15d67bbdc3e7f8124a648c152a210773502e",
+    "size": 11034351,
+    "version": "Alpha 4.10: Siege of Orison | MrKraken Community Translated Version",
+    "fetched_at": "2026-11-13T01:08:21Z"
   }
 }
