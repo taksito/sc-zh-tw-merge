@@ -35,7 +35,24 @@ Potential Blueprints => 可能獲得的藍圖
 /\\bPool (\\d+)/ => 藍圖池 $1
 Scenario Progress Points => 劇情進度點數
 Ships to Expect => 預計出現的艦船
+Cooldown: => 冷卻時間：
+/(\\d+) ?mins?\\b/ => $1 分鐘
+Debug Name(s): => 除錯名稱：
+/ - (\\d+)d Rental/ => （$1 天租借）
 /Final Wave: ?/ => 最終波：
+/Targets( \\d+)?: ?/ => 目標$1：
+/Hostiles( \\d+)?: ?/ => 敵方$1：
+/Reinforcements( \\d+)?: ?/ => 增援$1：
+/Support Ships( \\d+)?: ?/ => 支援艦$1：
+/Scouts( \\d+)?: ?/ => 偵察艦$1：
+/Defenders( \\d+)?: ?/ => 防守艦$1：
+/Bombers( \\d+)?: ?/ => 轟炸機$1：
+/Ambush( \\d+)?: ?/ => 伏擊$1：
+/Ace Pilot( \\d+)?: ?/ => 王牌飛行員$1：
+/Interdiction( \\d+)?: ?/ => 攔截$1：
+/Heist Ships( \\d+)?: ?/ => 劫掠艦$1：
+/Bosses( \\d+)?: ?/ => 首領$1：
+/Escorts( \\d+)?: ?/ => 護航艦$1：
 /Wave (\\d+): ?/ => 第 $1 波：
 Medium Criminal Fighter Bomber => 中型不法分子戰鬥轟炸機
 Medium Criminal Distortion Ship => 中型不法分子干擾型飛船
@@ -48,7 +65,6 @@ Medium Criminal Fighter => 中型不法分子戰鬥機
 Light Criminal Fighter => 輕型不法分子戰鬥機
 Criminal Gun Boat => 不法分子砲艇
 Criminal Snub Fighter => 不法分子短程戰機
-Criminal VeryHard Combat Ship => 不法分子高難度戰鬥艦
 (any variant) => （任意型號）
 Any Vanduul Ship => 任意剜度飛船
 Any Criminal Ship => 任意不法分子飛船
@@ -83,6 +99,18 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     // 純文字依長度由長到短，避免短詞先吃掉長詞；正規式保持書寫順序並排在前面
     const res = out.filter(x => x.re), str = out.filter(x => !x.re).sort((x, y) => y.s.length - x.s.length);
     return res.concat(str);
+  }
+
+  // 「預計出現的艦船」裡的通用艦種：Hard Criminal Large Combat Ship → 不法分子大型戰鬥艦（困難）
+  const SHIP_DIFF = {'Very Easy': '極簡單', 'Easy': '簡單', 'Medium': '中等', 'Hard': '困難', 'Very Hard': '極困難'};
+  const SHIP_FACTION = {Criminal: '不法分子', Ninetails: '九尾', Civilians: '平民', PrivateSecurity: '私人保全', Advocacy: '督導局', XenoThreat: '異種威脅', Vanduul: '剜度'};
+  const SHIP_TYPE_RE = /\b(?:(Very Easy|Easy|Medium|Hard|Very Hard) )?(Criminal|Ninetails|Civilians|PrivateSecurity|Advocacy|XenoThreat) (?:(Super|VeryHard) )?(?:(Large) )?Combat Ship\b/g;
+  function shipTypes(s) {
+    if (!/Combat Ship|Ship[s]? to Expect|預計出現|Any \w+ Ship/.test(s)) return s;
+    return s.replace(SHIP_TYPE_RE, (_, d, f, sup, lg) => SHIP_FACTION[f] + (sup === 'Super' ? '超級' : '') + (lg ? '大型' : '') + '戰鬥艦' +
+        (sup === 'VeryHard' ? '（極困難）' : d ? '（' + SHIP_DIFF[d] + '）' : ''))
+      .replace(/\bAny (Criminal|Ninetails|Civilians|PrivateSecurity|Advocacy|XenoThreat|Vanduul) Ship\b/g, (_, f) => '任意' + SHIP_FACTION[f] + '飛船')
+      .replace(/ or (?=\d+x )/g, ' 或 ');
   }
 
   function applyDict(s, dict, gloss) {
@@ -122,7 +150,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
   const trimTail = s => s.replace(/(?:\\n|\s)+$/, '');
   const TITLE_SUFFIX = /\s*(<EM4>(?:\s*\[[^\]<]*\]\*?)+\s*<\/EM4>)\s*$/;
 
-  const EXO_MARK = /(?:\\n)+(?=<EM4>(?:Reputation Awarded|Ships to Expect|Potential Blueprints|Multiple Blueprint Pools|Scenario Progress Points|Pool \d|Awarded from))/;
+  const EXO_MARK = /(?:\\n)+(?=<EM4>(?:Reputation Awarded|Ships to Expect|Cooldown:|Debug Name|Potential Blueprints|Multiple Blueprint Pools|Scenario Progress Points|Pool \d|Awarded from))/;
   function emTailCount(v) {
     const ps = trimTail(v).split(P); let n = 0;
     for (let i = ps.length - 1; i >= 0; i--) { if (/^(?:\s|\\n)*<EM4>/.test(ps[i])) n++; else break; }
@@ -147,6 +175,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     const m = EXO_MARK.exec(v); if (m) v = v.slice(0, m.index);
     return v.replace(TITLE_SUFFIX, '').replace(/(?:\\n|\s)+$/, '');
   }
+  const plainCore = v => coreText(v).replace(/<\/?EM\d*>/g, '').replace(/\s+/g, ' ').trim();
   const AUTO_CATS = new Set(['title', 'tail', 'wrap']);
   const toks = v => (v || '').match(/~\w+\([^)]*\)|%l?[sdif]/g) || [];
   function validate(e) {
@@ -188,13 +217,14 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     // 額外的繁中翻譯（例如 PTU 新增／更新條目）：直接放進漢化資料，之後照一般規則處理
     const extra = opts.zhExtra && opts.zhExtra.size ? opts.zhExtra : null;
     if (extra) {
+      var zhHad = new Set(zhRaw.map.keys()); // 漢化包原本就有的鍵：分辨「新增」或「更新」
       const map = new Map(zhRaw.map), keys = zhRaw.keys.slice(), t = new Map(zhT);
-      for (const [k, v] of extra) { if (!map.has(k)) keys.push(k); map.set(k, v); t.set(k, v); }
+      for (const [k, v] of extra) { if (!exo.map.has(k) && !map.has(k)) continue; if (!map.has(k)) keys.push(k); map.set(k, v); t.set(k, v); }
       zhRaw = Object.assign({}, zhRaw, { map, keys }); zhT = t;
     }
     const tailDict = parseDict(opts.tailDict != null ? opts.tailDict : DEFAULT_TAIL_DICT);
     const gloss = buildGlossary(zhT, exo);
-    const tr = s => applyDict(s, tailDict, gloss);
+    const tr = s => shipTypes(applyDict(s, tailDict, gloss));
     const classMap = Object.assign({}, DEFAULT_CLASS_MAP, opts.classMap || {});
     const fill = new Map();
     for (const d of parseDict(opts.fill != null ? opts.fill : DEFAULT_FILL)) if (d.s) fill.set(d.s.trim(), d.to);
@@ -339,7 +369,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force', 'fill', 'ship', 'mloc'].includes(e.cat) || (e.cat === 'loc' && e.from !== 'zh')) continue;
         if (extra && extra.has(e.k)) { e.extra = true; continue; } // 已另外翻譯
         const bv = opts.exoBase.map.get(e.k);
-        if (bv === undefined || bv === e.exo || coreText(bv) === coreText(e.exo)) continue; // 只差在藍圖清單、聲望標籤的不算
+        if (bv === undefined || bv === e.exo || plainCore(bv) === plainCore(e.exo)) continue; // 只差在藍圖清單、聲望標籤、<EM> 強調標記或空白的不算
         stats[e.cat]--; stats.updated = (stats.updated || 0) + 1;
         e.from = e.from || e.cat; e.cat = 'updated'; e.oldExo = bv;
       }
@@ -348,10 +378,10 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     if (extra) {
       for (const e of entries) {
         if (!extra.has(e.k) || e.cat === 'issue') continue;
-        const c = opts.exoBase && opts.exoBase.map.has(e.k) ? 'tr_upd' : 'tr_new';
+        const c = zhHad.has(e.k) ? 'tr_upd' : 'tr_new';
         stats[e.cat]--; stats[c] = (stats[c] || 0) + 1;
         e.from = e.from || e.cat; e.cat = c;
-        if (c === 'tr_upd') e.oldExo = opts.exoBase.map.get(e.k);
+        if (c === 'tr_upd' && opts.exoBase && opts.exoBase.map.has(e.k)) e.oldExo = opts.exoBase.map.get(e.k);
       }
     }
     const seen = new Set(exo.keys);

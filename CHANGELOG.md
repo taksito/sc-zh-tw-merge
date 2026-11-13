@@ -1,5 +1,10 @@
 # 更新紀錄
 
+## 2026-11-13
+- **4.10.3 正式版**：ExoAE、MrKraken StarStrings 更新到 4.10.3。正式版新增 281 條、英文有更新 41 條全部補上繁中，「需要你看」回到 0。補充翻譯檔改名為 `src/extra_zh.txt`，正式版與 PTU 共用（只套用在來源裡有的鍵）。物品名稱照慣例保留英文。
+- **預計出現的艦船**：任務說明的艦船清單標籤（Targets、Hostiles、Reinforcements、Support Ships、Scouts、Defenders、Bombers 等）與通用艦種（例如 Hard Criminal Large Combat Ship → 不法分子大型戰鬥艦（困難））自動翻譯；StarStrings 的 Cooldown、Debug Name 視為附加資訊並翻譯。
+- 「英文有更新」改為忽略 `<EM>` 強調標記與空白差異。
+
 ## 2026-11-01
 - **聲望等級加上 LV**：`RepScope_*_Rank*`、`RepStanding_*_Rank*`、`RacingRep_Ship_Rank*` 的等級名稱前加上 LV.1～LV.N（例：LV.1 初級承包商），第 0 級（申請者／中立）不加。「自訂介面」新增「聲望等級」分類，設定裡可取消勾選。
 - **PTU 頁面調整**：PTU 版的說明、分類與卡片不再寫 ExoAE，改標示英文來源為 MrKraken StarStrings。「自訂介面」新增「PTU 新增（已翻譯）」「PTU 更新（已翻譯）」兩個分類，可逐條查看英文原文與翻譯；更新的條目會同時顯示正式版英文。

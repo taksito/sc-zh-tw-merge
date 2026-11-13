@@ -203,7 +203,7 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
     <a href="#ptu" id="tabPtu">PTU 搶先體驗版</a>
   </nav>
   <div class="ptunote" id="ptuNote" hidden>
-    <b>PTU 搶先體驗版</b>：英文來源是 <a href="https://github.com/MrKraken/StarStrings/tree/sc-ptu" target="_blank" rel="noopener">MrKraken StarStrings 的 PTU 版</a>，中文仍是正式版的漢化。PTU 新增的 95 條和英文有更新的 24 條已翻成繁中（物品名稱照正式版慣例保留英文）；之後 PTU 再有新條目，會先顯示英文，列在下方「自訂介面」的「新增條目」「英文有更新」。PTU 移除的條目仍保留在輸出裡。
+    <b>PTU 搶先體驗版</b>：英文來源是 <a href="https://github.com/MrKraken/StarStrings/tree/sc-ptu" target="_blank" rel="noopener">MrKraken StarStrings 的 PTU 版</a>，中文仍是正式版的漢化。PTU 新增和英文有更新的條目已翻成繁中（物品名稱照正式版慣例保留英文）；之後 PTU 再有新條目，會先顯示英文，列在下方「自訂介面」的「新增條目」「英文有更新」。PTU 移除的條目仍保留在輸出裡。
     安裝時請選 <span class="mono">StarCitizen\PTU</span> 資料夾（手動安裝時把步驟裡的 LIVE 換成 PTU）。審核紀錄和正式版分開保存。
   </div>
 
@@ -396,6 +396,9 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
   <section class="changelog" aria-label="更新紀錄">
     <h2>更新紀錄</h2>
     <dl>
+      <dt><time datetime="2026-11-13">2026-11-13</time></dt>
+      <dd><b>4.10.3 正式版</b>：ExoAE 與 MrKraken StarStrings 都更新到 4.10.3。正式版新增 281 條、英文有更新 41 條全部補上繁中（含之前在 PTU 翻好的互安防務任務等；新內容有光燈節與 IAE 2956 塗裝、紀念幣、雅韻版裝備、坎巴刀、門與燈光控制面板、VR 選項等），「需要你看」回到 0。物品名稱照慣例保留英文。「自訂介面」的「新增（已翻譯）」「更新（已翻譯）」可逐條查看。</dd>
+      <dd><b>預計出現的艦船</b>：4.10.3 的任務說明多了大量艦船清單，「目標／敵方／增援／支援艦／偵察艦／防守艦／轟炸機」等標籤與「不法分子戰鬥艦（困難）」這類通用艦種都會自動翻成中文；StarStrings 的「冷卻時間」「除錯名稱」也一併翻譯。只多了 <code>&lt;EM&gt;</code> 強調標記或空白的英文更新不再列為「英文有更新」。</dd>
       <dt><time datetime="2026-11-01">2026-11-01</time></dt>
       <dd><b>聲望等級加上 LV</b>：各勢力的聲望等級名稱前加上 LV.1～LV.6（例：LV.1 初級承包商、LV.4 資深承包商；競速等級到 LV.10），第 0 級（申請者／中立）不加。「自訂介面」新增「聲望等級」分類可逐條查看，也可在設定取消勾選。</dd>
       <dt><time datetime="2026-11-01">2026-11-01</time></dt>
@@ -442,7 +445,7 @@ Intersec_3Way_Desc_VeryHard_001=任務說明\n\n行動區域：尼克斯星系\n
 Intersec_3Way_Title_Hard_001=與碎刃幫及剜度交戰
 Intersec_3Way_Title_Super_001=制止剜度與碎刃幫的敵對行動
 Intersec_3Way_Title_VeryHard_001=消除剜度與碎刃幫的威脅
-Intersec_BlueCryo_Desc_001=任務說明\n\n行動區域：尼克斯星系\n敵對勢力：碎刃幫\n裝備規格：做好戰鬥準備\n任務簡報：\n\n情報顯示，碎刃幫持有一具冷凍艙，據信內有一個活體剜度樣本。據報這具冷凍艙的外殼帶有藍色飾邊，十分好認。\n\n任何找到這類冷凍艙的互安防務承包商，都應將取得它視為首要任務，並相應調整任務計畫。\n\n取得後，請火速將冷凍艙送往<EM4>~mission(Location|Address)</EM4>。\n\n謹此致意，\n\n迪肯·托賓\n運營經理\n互安防務\n\n本通訊包含僅供收件人知悉的機密資訊。如誤收此訊息，請忽略並通知發件人。所有行動均由承包商自行承擔風險，並須遵守 UEE 及當地星系的適用法律。
+Intersec_BlueCryo_Desc_001=任務說明\n\n行動區域：尼克斯星系\n敵對勢力：碎刃幫\n裝備規格：做好戰鬥準備\n任務簡報：\n\n情報顯示，碎刃幫持有一具冷凍艙，據信內有一個活體剜度樣本。據報這具冷凍艙的外殼帶有藍色飾邊，十分好認。\n\n任何找到這類冷凍艙的互安防務承包商，都應將取得它視為首要任務，並相應調整任務計畫。\n\n取得後，請火速將冷凍艙送往<EM4>~mission(Destination|Address)</EM4>。\n\n謹此致意，\n\n迪肯·托賓\n運營經理\n互安防務\n\n本通訊包含僅供收件人知悉的機密資訊。如誤收此訊息，請忽略並通知發件人。所有行動均由承包商自行承擔風險，並須遵守 UEE 及當地星系的適用法律。
 Intersec_BlueCryo_Title_001=活體剜度樣本
 Intersec_BoardShip_ShatteredBlade_Desc_001=任務說明\n\n行動區域：尼克斯星系\n敵對勢力：碎刃幫\n裝備規格：做好戰鬥準備\n任務簡報：\n\n<EM4>~mission(Location|Address)</EM4>的一艘飛船急需支援。截獲的通訊顯示，碎刃幫已登上該船，企圖劫走船艙內回收的剜度冷凍艙。\n\n請前往該地點奪回船隻。已授權對所有碎刃幫成員使用致命武力。被俘的船員就靠你了。\n\n謹此致意，\n\n迪肯·托賓\n運營經理\n互安防務\n\n本通訊包含僅供收件人知悉的機密資訊。如誤收此訊息，請忽略並通知發件人。所有行動均由承包商自行承擔風險，並須遵守 UEE 及當地星系的適用法律。
 Intersec_BoardShip_ShatteredBlade_Title_001=奪回遭登船的船隻
@@ -543,6 +546,214 @@ item_Namelbco_rifle_energy_01_tint02_short=Skarnov RL Rifle
 item_Namelbco_rifle_energy_01_tint03=Skarnov "Sparkplug" Rifle
 item_Namelbco_rifle_energy_01_tint03_short=Skarnov SP Rifle
 ui_pregame_persistentuniverse_desc=體驗星際公民的 Alpha 測試宇宙。與好友一起造訪太空站、完成合約，一切盡在這個不斷擴展的持續性宇宙中。
+
+# ── 4.10.3 正式版新增／更新（物品名稱、廠牌、PH 佔位沿用英文）
+Event_ShipName_ZEUSCL=宙斯 MK II CL
+Event_ShipName_ZEUSES=宙斯 MK II ES
+Frontend_PU_Version=Alpha 4.10.3：奧里森之圍
+Frontend_play_star_citizen,P=遊玩《星際公民》
+HeadHunters_ShipAmbush_Intro_desc_001,P=有個機會，正適合想炫耀飛行技巧的人。獵頭幫一直被駕駛這架<EM4>~mission(AmbushTarget)</EM4>的笨蛋搞得焦頭爛額，我們這次要徹底解決他。\n\n你將協助我們設下埋伏。聽好，<EM4>~mission(Location|Address)</EM4>附近有片<EM4>輻射雲</EM4>，他經常從那裡飛過。\n\n前往該處，關閉飛船電源藏身雲中，一看到那混蛋和那些蠢到跟他一起飛的單座戰機，就立刻發動攻擊。第一擊全靠你，但我們會在附近安排支援艦協助收尾。\n\n為了紀念這是你第一次替我們執行突襲，任務結束後，主要承包商將額外獲得<EM4>~mission(ScripAmount) 份議會憑證</EM4>作為獎勵。\n\n斯托斯，通訊完畢。
+Highpoint_KillAnimals_rockcracker_desc_E_001=如果你有任何工作需要前往基格小行星帶那些舊的<EM4>QV 碎岩站</EM4>，那麼當你在那邊的時候，我們還有一件事需要你幫忙。\n\n人民聯盟最近聯絡我們，希望我們協助一項為修復這些廢棄空間站做準備的計畫。不幸的是，<EM4>瓦拉卡蠕蟲的泛濫</EM4>不僅嚴重破壞了空間站的基礎設施，也大幅影響了它們有朝一日重新上線的可能性。由於瓦拉卡蠕蟲屬於入侵物種，我們認定撲殺牠們是唯一可行的方案。\n\n只要減少任何一座舊 QV 碎岩站內的瓦拉卡蠕蟲數量，我們就會支付報酬給你。\n\n祝好，\n\n萬達·韋克海澤\n合約管理員\n高境荒野專家公司
+ITSM_Aegis,P=Aegis
+ITSM_Anvil,P=Anvil
+ITSM_Aopoa,P=Aopoa
+ITSM_Argo,P=Argo
+ITSM_ConsolidatedOutland,P=Consolidated Outland
+ITSM_Crusader,P=Crusader
+ITSM_Drake,P=Drake
+ITSM_Esperia,P=Esperia
+ITSM_Greycat,P=Greycat
+ITSM_MISC,P=MISC
+ITSM_Origin,P=Origin
+ITSM_RSI,P=RSI
+ITSM_Tumbril,P=Tumbril
+IT_TellMeMore,P=告訴我更多……
+Intersec_ElimAux_ShatteredBlade_H_Title_001,P=突襲碎刃幫基地
+Intersec_ElimAux_ShatteredBlade_Med_Desc_001,P=任務說明\n\n行動區域：尼克斯星系\n敵對勢力：碎刃幫\n裝備規格：做好戰鬥準備\n任務簡報：\n\n正在尋找人員突襲最近發現、位於<EM4>~mission(Location|Address)</EM4>的一處碎刃幫基地，並鎖定其核心成員之一<EM4>~mission(TargetName)</EM4>。碎刃幫一直把這座輔助基地當作多次行動的出發點，希望打擊這個關鍵目標，能削弱他們日後發動犯罪行動的能力。\n\n謹此致意，\n\n迪肯·托賓\n運營經理\n互安防務\n\n本通訊包含僅供收件人知悉的機密資訊。如誤收此訊息，請忽略並通知發件人。所有行動均由承包商自行承擔風險，並須遵守 UEE 及當地星系的適用法律。
+Intersec_ElimAux_ShatteredBlade_Med_Title_001,P=鎖定碎刃幫：~mission(TargetName)
+TheCollector_ShipMod_URSA_Medivac_VehicleDesc=製造商：RSI\n定位：醫療\n\n即使在最偏遠的行星目的地，也有人需要幫助。RSI 設計的大熊座醫療版可以穿越最崎嶇的地形，它配備的三級醫療床是在最需要的地方提供援助的理想選擇。\n\n我是維克洛。我做了改造。加了部件讓它更有用一點。希望你喜歡。
+delivery_pickup_short,P=在 ~mission(Location) 收取 ~mission(item)
+hmd_OptionsScopeZoomStrength=[實驗性] VR - 瞄準鏡縮放強度
+hmd_OptionsShipZoomStrength=[實驗性] VR - 飛船縮放強度
+item_DescAuroraMK2_Paint_Green_Green_Red=使用「盛裝打扮」塗裝來表達你的節日精神，該塗裝採用傳統的光燈節色彩紅與綠，慶祝這個已深受人類喜愛的巴努節日。
+item_DescAuroraMK2_Paint_White_Blue_White=為你的飛船換上比暴風雪還冰爽的塗裝吧。「破冰」塗裝混合了清爽冰涼的白色與霜凍藍，打造出適合任何季節、令人振奮的外觀。
+item_DescCarryable_1H_SQ_Flair_Coin_IAE_BIS_Drake_Corsair_2026=為紀念德雷克的尖端飛船海盜船（Corsair）打入 2956 年「展會最佳」決賽，這枚紀念幣正中央刻有該艦，外圈環繞著印有艦名與製造商的淡藍色圓環。
+item_DescCarryable_1H_SQ_Flair_Coin_IAE_BIS_Ironclad_Assault_2026=獻給認為 2956 年「展會最佳」決賽入圍艦鐵甲突擊型（Ironclad Assault）無可匹敵的人。這枚硬幣以極為精細的雕刻展現該艦的威猛，邊緣飾有亮藍色鑲邊。
+item_DescCarryable_1H_SQ_Flair_Coin_IAE_BIS_Origin_M80_2026=為慶祝 M80 入圍 2956 年「展會最佳」決賽，這枚收藏幣完整呈現了該艦的氣勢。硬幣以金色精雕艦身並搭配藍色點綴，捕捉了 M80 翱翔太空的英姿。
+item_DescCarryable_1H_SQ_Flair_Coin_IAE_BIS_RSI_Perseus_2026=這枚收藏幣以手工雕刻呈現 2956 年「展會最佳」正式冠軍英仙座（Perseus）的光輝風采。金色雕紋與背後藍黑相間的宇宙形成鮮明對比。
+item_DescCarryable_1H_SQ_Flair_Luminalia_Gift_Card_1_a=用這張充滿節日氣氛的賀卡，祝福你在乎的人節日快樂。打開卡片時，會彈出手持蠟燭、被禮物包圍的企鵝皮可，向他們祝賀光燈節快樂，讓男女老少都驚喜不已。
+item_DescCarryable_2H_CY_toy_plushie_penguin_1_c=來認識中隊42的最新成員：星際飛行員企鵝皮可。雖然皮可滑雪的經驗可能比開飛船還多，但淡藍色飛行服搭配灰色頭盔與背包，確實讓皮可看起來像個王牌飛行員。
+item_DescCarryable_2H_FL_Container_Anim_coin_case_1_IAE2956_a=這個展示盒可容納四枚紀念幣，配有俐落的藍色鑲邊，正面壓印 IAE 2956 標誌，讓你炫耀自己的「展會最佳」紀念幣收藏。
+item_DescCarryable_2H_FL_Container_Anim_multitool_1_citizencon2953_1_a=用這個從派羅星系回收的工具箱自豪地展示你的多功能工具，它不僅挺過了恆星危險的耀斑，也經受住了歲月的摧殘。
+item_DescCorsair_Paint_Black_White_Gold=用專屬的 2956 年展會最佳塗裝慶祝你的海盜船，這款塗裝以白色與灰色為主，並點綴金色亮彩。
+item_DescDefender_Paint_Green_Green_Red=使用「盛裝打扮」塗裝來表達你的節日精神，該塗裝採用傳統的光燈節色彩紅與綠，慶祝這個已深受人類喜愛的巴努節日。
+item_DescDefender_Paint_White_Blue_White=為你的飛船換上比暴風雪還冰爽的塗裝吧。「破冰」塗裝混合了清爽冰涼的白色與霜凍藍，打造出適合任何季節、令人振奮的外觀。
+item_DescFlair_Dashboard_Cockpit_Bot_luminalia_1_a=這款專為擺在儀表板上而設計的小機器人，會在你的旅途中展現豐富的幽默表情。無論它是見到你而滿心歡喜，還是在心裡默默評判你的飛行技術，表達寶都能讓你下一次的飛行多一點樂趣。\n\n光燈節版以金色塗裝與雪花圖案，為你的節日旅程增添幾分節慶光彩。
+item_DescGMNI_smg_ballistic_01_store01=製造商：雙子座 (Gemini)\n物品類型：衝鋒槍\n分類：實彈\n\n彈匣容量：50\n射速：1100 rpm\n有效射程：35 米\n\n附件：槍管 (S1)，光學元件 (S1)，下掛 (S1)\n\n操作簡便、外觀時髦，雙子座生產的 C54 是一把線條俐落、重量精準平衡的衝鋒槍。輕量化聚合物框架與符合人體工學的設計，使其成為近距離交火的理想選擇。C54 能全自動發射 10mm 子彈，提供最大的支援火力與火力壓制，確保任何戰鬥都能迅速結束。\n\n雅韻版採用海軍藍與黑色配色，並以巴洛克風格的金色細節收尾。
+item_DescHurricane_Paint_Green_Green_Red=使用「盛裝打扮」塗裝來表達你的節日精神，該塗裝採用傳統的光燈節色彩紅與綠，慶祝這個已深受人類喜愛的巴努節日。
+item_DescHurricane_Paint_White_Blue_White=為你的飛船換上比暴風雪還冰爽的塗裝吧。「破冰」塗裝混合了清爽冰涼的白色與霜凍藍，打造出適合任何季節、令人振奮的外觀。
+item_DescIronclad_Paint_Black_White_Gold=用專屬的 2956 年展會最佳塗裝慶祝你的鐵甲突擊型，這款塗裝以白色與灰色為主，並點綴金色亮彩。
+item_DescM80_Paint_Black_White_Gold=用專屬的 2956 年展會最佳塗裝慶祝你的 M80，這款塗裝以白色與灰色為主，並點綴金色亮彩。
+item_DescMeteor_Paint_Blue_Blue_Gold=雅韻塗裝以海軍藍為底色，搭配醒目的金色細節，必能讓流星號更顯格調。
+item_DescMoth_Paint_Green_Grey_Blue=用色彩繽紛的蕨綠塗裝讓你的 MOTH 與眾不同，以海沫綠為主色，並點綴灰色與藍色。
+item_DescMoth_Paint_Metal_Grey_Grey=觀星者塗裝採用金屬光澤表面並點綴灰色，恰如其名地讓 MOTH 映照星光。
+item_DescMoth_Paint_Navy_Grey_Orange=下沉氣流塗裝以藍色與灰色為主，並在 MOTH 的後半部點綴亮眼的橙色。
+item_DescMoth_Paint_Yellow_Grey_Blue=天光塗裝以黃色為主，點綴灰色與藍色，讓 MOTH 更加醒目。
+item_DescPerseus_Paint_Black_White_Gold=2956 年展會最佳塗裝以俐落的白色與灰色塗裝搭配吸睛的金色飾邊，讓你慶祝英仙座力壓群雄的光榮勝利。
+item_DescPerseus_Paint_beige_beige_beige=英仙座的沙地塗裝以棕色為主，並點綴黑色。
+item_DescPerseus_Paint_beige_blue_brown=英仙座的海岸迷彩塗裝採用棕藍相間的迷彩圖案，象徵陸地與海洋的交會。
+item_DescPerseus_Paint_beige_green_red=餘波塗裝為英仙座塗上綠色底漆，並以米色與紅色區塊點綴。
+item_DescPerseus_Paint_blue_blue_black=水手迷彩塗裝以深淺不一的藍色與黑色迷彩圖案，打亂英仙座的輪廓。
+item_DescPerseus_Paint_grey_grey_orange=英仙座的堅鋼塗裝使用多種深淺的灰色，並以橙色點綴形成對比。
+item_DescPlayerDeco_Flair_Aegis_Idris_1_a=這是對一艘標誌性太空船的忠實重現：由竹津星艦模型精心打造的聖盾伊德里斯模型，可擺放在你的機庫地板上展示。作為 UEE 海軍最受青睞的護衛艦之一，這款大比例模型突顯了伊德里斯-M 威武的艦體、眾多砲塔與強大的引擎。
+item_DescRaft_Paint_Green_Green_Red=使用「盛裝打扮」塗裝來表達你的節日精神，該塗裝採用傳統的光燈節色彩紅與綠，慶祝這個已深受人類喜愛的巴努節日。
+item_DescRaft_Paint_White_Blue_White=為你的飛船換上比暴風雪還冰爽的塗裝吧。「破冰」塗裝混合了清爽冰涼的白色與霜凍藍，打造出適合任何季節、令人振奮的外觀。
+item_DescSHLD_RSI_S04_Polaris=物品類型：護盾發生器\n製造商：羅伯茨太空工業\n尺寸：4\n\n這款主力艦級護盾發生器專為北極星號設計。
+item_Desc_alb_gloves_01_02_01,P=PH - Description for alb_gloves_01_02_01
+item_Desc_alb_mask_01_02_01,P=PH - Description for alb_mask_01_02_01
+item_Desc_alb_shoes_01_02_01,P=PH - Description for alb_shoes_01_02_01
+item_Desc_cbd_hat_03_02_01,P=PH - Description for cbd_hat_03_02_01
+item_Desc_cbd_hat_03_iae2026_01=戴上 2956 年星際航太博覽會的官方帽子，慶祝 UEE 最盛大的飛船博覽會。這頂黑色帽子正面印有活動標誌與年份。
+item_Desc_ctl_shirt_03_02_01,P=PH - Description for ctl_shirt_03_02_01
+item_Desc_ctl_shirt_03_02_02,P=PH - Description for ctl_shirt_03_02_02
+item_Desc_dmc_jacket_04_02_01,P=PH - Description for dmc_jacket_04_02_01
+item_Desc_dmc_jacket_15_01_01=儲物空間：2K uSCU\n\n為紀念今年的展會最佳冠軍 RSI 英仙座而設計，這件做工精緻的人造皮夾克呈深栗棕色，帶有低調的光澤，正反兩面都綴有印著這艘冠軍艦的徽章。
+item_Desc_dmc_pants_10_01_01,P=PH - Description for dmc_pants_10_01_01
+item_Desc_dmc_pants_10_01_02,P=PH - Description for dmc_pants_10_01_02
+item_Desc_dmc_pants_10_02_01,P=PH - Description for dmc_pants_10_02_01
+item_Desc_eld_shirt_10_iae2026_01=2956 年星際航太博覽會官方 T 恤。這件柔軟又極為舒適的深灰色棉質 T 恤，正面在亮藍色背景上印有 IAE 標誌，背面則印有展覽名稱與年份。
+item_Desc_hdtc_jacket_01_06_01,P=PH - Description for hdtc_jacket_01_06_01
+item_Desc_hdtc_pants_01_07_01,P=PH - Description for hdtc_pants_01_07_01
+item_Desc_hdtc_shirt_03_01_01,P=PH - Description for hdtc_shirt_03_01_01
+item_Desc_hdtc_shirt_04_01_01,P=PH - Description for hdtc_shirt_04_01_01
+item_Desc_hdtc_shoes_01_07_01,P=PH - Description for hdtc_shoes_01_07_01
+item_Desc_kap_combat_light_arms_02_03_01=物品類型：輕型護甲\n傷害減免：20%\n適用溫度：-35 / 65 攝氏度\n輻射防護：26000 雷姆\n輻射清除率：145.8 雷姆 / 秒\n\n幽影隱形護甲是力量與科技的完美結合，採用與 UEE 特種部隊相同的裝備製造商提供的軍用級碳纖維絲製成。護甲面料中編織的極細纖維可遮蔽穿戴者的訊號，使其更難被偵測到。\n\n雅韻版採用海軍藍與黑色配色，並以巴洛克風格的金色細節收尾。
+item_Desc_kap_combat_light_core_02_03_01=物品類型：輕型護甲\n傷害減免：20%\n儲物空間：8k uSCU\n適用溫度：-35 / 65 攝氏度\n輻射防護：26000 雷姆\n輻射清除率：145.8 雷姆 / 秒\n可掛載背包類型：輕型\n\n幽影隱形護甲是力量與科技的完美結合，採用與 UEE 特種部隊相同的裝備製造商提供的軍用級碳纖維絲製成。護甲面料中編織的極細纖維可遮蔽穿戴者的訊號，使其更難被偵測到。\n\n雅韻版採用海軍藍與黑色配色，並以巴洛克風格的金色細節收尾。
+item_Desc_kap_combat_light_helmet_02_03_01=物品類型：輕型護甲\n傷害減免：20%\n適用溫度：-35 / 65 攝氏度\n輻射防護：26000 雷姆\n輻射清除率：145.8 雷姆 / 秒\n\n幽影頭盔是力量與科技的完美結合，採用與 UEE 特種部隊相同的裝備製造商提供的軍用級碳纖維絲製成。護甲面料中編織的極細纖維可遮蔽穿戴者的訊號，使其更難被偵測到。面罩相容 AR 十字準星。\n\n雅韻版採用海軍藍與黑色配色，並以巴洛克風格的金色細節收尾。
+item_Desc_kap_combat_light_legs_02_03_01=物品類型：輕型護甲\n傷害減免：20%\n儲物空間：2.5k uSCU\n適用溫度：-35 / 65 攝氏度\n輻射防護：26000 雷姆\n輻射清除率：145.8 雷姆 / 秒\n\n幽影隱形護甲是力量與科技的完美結合，採用與 UEE 特種部隊相同的裝備製造商提供的軍用級碳纖維絲製成。護甲面料中編織的極細纖維可遮蔽穿戴者的訊號，使其更難被偵測到，而靴底內建的特殊管路則可降低腳步聲。\n\n雅韻版採用海軍藍與黑色配色，並以巴洛克風格的金色細節收尾。
+item_Desc_ksar_jacket_01_01_01,P=PH - Description for ksar_jacket_01_01_01
+item_Desc_ksar_jacket_01_01_02,P=PH - Description for ksar_jacket_01_01_02
+item_Desc_lna_shirt_01_03_01,P=PH - Description for lna_shirt_01_03_01
+item_Desc_vgl_utility_light_backpack_01_06_01=物品類型：輕型背包\n儲物空間：75K uSCU\n可適配胸甲類型：全部\n\n專為急救人員設計，喀戎背包為關鍵物資提供了理想的攜帶方案，可快速取用內置的醫療必需品。\n\n雅韻版採用海軍藍與黑色配色，並以巴洛克風格的金色細節收尾。
+item_Descbanu_melee_05=製造商：巴努 (Banu)\n物品類型：刀具\n分類：近戰\n\n尺寸：N/A\n\n坎巴刀採用改良式鉤尖刀刃，帶有凹槽式指窩，以及鑲有寶石、附指槽的刀柄。刀身呈深色並鑲有金飾，刀刃與刀柄上的紋理都來自巴努工匠獨特的鍛造工藝。
+item_Descgrin_salvage_01_lumi01=製造商：灰貓工業 (Greycat Industrial)\n物品類型：工具\n分類：器具\n\n儲罐容量：大\n射速：N/A (波束)\n有效射程：5 米\n\n用轉化寶剝除殘骸並進行維修。轉化寶是一種兩用的打撈與修復工具 (SRT)，能將廢料中的合金與聚合物收集並轉化為可回收的再生複合材料，可用於出售或快速修復。轉化寶具有快速的剝除速度與出色的電池續航力，是機械師與太空旅行者的必備工具。\n\n讓這款綠色皮可節版點亮這個光燈節的夜晚。
+item_Descklwe_smg_energy_01_lumi01=製造商：克勞斯&韋納 (Klaus & Werner)\n物品類型：衝鋒槍\n分類：能量(雷射)\n\n彈匣容量：45\n射速：562.5 rpm\n有效射程：25 米\n\n附件：瞄具 (S1)，槍管 (S1)，下掛 (S1)\n\n克勞斯&韋納再次展現專業工藝，讓盧敏 V 雷射緊湊型能量步槍更加致命可靠。全新的「間隔自動射擊」模式在按住扳機時會連續射出五發，既能利用自動射擊的火力壓制，又能在間隔中重新校正瞄準。即使持續攻擊，這把槍的優秀設計仍能提供低後座力與集中的彈著散布。\n\n讓企鵝皮可陪你點亮這個光燈節的夜晚，這款藍色皮可節版的側面印有皮可的圖案。
+item_Descksar_lmg_energy_01_store01=衍化版以深綠色為底，飾有雨滴大馬士革紋，保證讓你在戰場上留下印記。
+item_Descksar_pistol_ballistic_01_lumi01=製造商：卡斯塔克軍械 (Kastak Arms)\n物品類型：手槍\n分類：實彈\n\n彈匣容量：6\n射速：180 rpm\n有效射程：100 米\n\n附件：光學元件 (S1)，槍管 (S1)，下掛 (S1)\n\n常被稱為卡斯塔克軍械的「手炮」，終曲只需一發 .50 口徑子彈就能結束戰鬥，但強大的威力也讓它的後座力難以控制。考量到有限的彈匣容量與強勁的後座力，比起持續射擊，更建議使用更精準的單發射擊。\n\n讓企鵝皮可陪你點亮這個光燈節的夜晚，這款藍色皮可節版的側面印有皮可的圖案。
+item_Descplushy_penguin_2_c=就連企鵝皮可也會從雪坡上抽空來慶祝光燈節。這款微科迷人吉祥物版本的皮可穿著紅綠相間的夾克，手拿一塊光燈節主題的滑雪板。
+item_Descsasu_pistol_toy_01_sf01,P=製造商：櫻日集團 (Sakura Sun)\n物品類型：玩具手槍\n分類：泡棉軟彈\n\n彈匣容量：10\n射速：450 rpm\n有效射程：35 米\n\n櫻日集團的驚爆惡徒讓誤擊隊友也變得好玩有趣。用這些色彩繽紛的塑膠玩具手槍，盡情向朋友或假想敵發射泡棉軟彈吧。無論是在著陸區打發時間，還是在星際間的漫長旅途中，驚爆玩具系列都能為全家人帶來輕鬆愉快的刺激與娛樂。\n\nF7C 版採用鐵砧經典大黃蜂戰鬥機的標誌性配色，最適合你的下一場太空冒險。
+item_NameAuroraMK2_Paint_Green_Green_Red=Aurora Mk II Deck the Hull Livery
+item_NameAuroraMK2_Paint_White_Blue_White=Aurora Mk II IceBreak Livery
+item_NameCarryable_1H_SQ_Flair_Coin_IAE_BIS_Drake_Corsair_2026=Corsair BIS '56 Coin
+item_NameCarryable_1H_SQ_Flair_Coin_IAE_BIS_Ironclad_Assault_2026=Ironclad Assault BIS '56 Coin
+item_NameCarryable_1H_SQ_Flair_Coin_IAE_BIS_Origin_M80_2026=Origin M80 BIS '56 Coin
+item_NameCarryable_1H_SQ_Flair_Coin_IAE_BIS_RSI_Perseus_2026=Perseus BIS '56 Coin
+item_NameCarryable_1H_SQ_Flair_Luminalia_Gift_Card_1_a=Pop-Up Pico Luminalia Card
+item_NameCarryable_2H_CY_toy_plushie_penguin_1_c=Pico the Penguin Squadron 42 Plushie
+item_NameCarryable_2H_FL_Container_Anim_coin_case_1_IAE2956_a=IAE 2956 Coin Display Case
+item_NameCorsair_Paint_Black_White_Gold=Corsair 2956 Best In Show Livery
+item_NameDefender_Paint_Green_Green_Red=Defender Deck the Hull Livery
+item_NameDefender_Paint_White_Blue_White=Defender IceBreak Livery
+item_NameFlair_Dashboard_Cockpit_Bot_luminalia_1_a=Emoto “Luminalia” Dashbot
+item_NameGMNI_smg_ballistic_01_store01=C54 "Epoque" SMG
+item_NameGMNI_smg_ballistic_01_store01_short=C53 EQ SMG
+item_NameHurricane_Paint_Green_Green_Red=Hurricane Deck the Hull Livery
+item_NameHurricane_Paint_White_Blue_White=Hurricane IceBreak Livery
+item_NameIronclad_Paint_Black_White_Gold=Ironclad Assault 2956 Best In Show Livery
+item_NameM80_Paint_Black_White_Gold=M80 2956 Best In Show Livery
+item_NameMeteor_Paint_Blue_Blue_Gold=Meteor Epoque Livery
+item_NameMoth_Paint_Green_Grey_Blue=MOTH Braken Livery
+item_NameMoth_Paint_Metal_Grey_Grey=MOTH Stargazer Livery
+item_NameMoth_Paint_Navy_Grey_Orange=MOTH Downrush Livery
+item_NameMoth_Paint_Yellow_Grey_Blue=MOTH Skylight Livery
+item_NamePerseus_Paint_Black_White_Gold=Perseus 2956 Best In Show Livery
+item_NamePerseus_Paint_beige_beige_beige=Perseus Arenosa Livery
+item_NamePerseus_Paint_beige_blue_brown=Perseus Shoreline Camo Livery
+item_NamePerseus_Paint_beige_green_red=Perseus Aftermath Livery
+item_NamePerseus_Paint_blue_blue_black=Perseus Mariner Camo Livery
+item_NamePerseus_Paint_grey_grey_orange=Perseus Adamantine Livery
+item_NamePlayerDeco_Flair_Aegis_Idris_1_a=Aegis Idris-M Model
+item_NameRaft_Paint_Green_Green_Red=RAFT Deck the Hull Livery
+item_NameRaft_Paint_White_Blue_White=RAFT IceBreak Livery
+item_NameSHLD_RSI_S04_Polaris=Deterrent
+item_Name_alb_gloves_01_02_01,P=PH - alb_gloves_01_02_01
+item_Name_alb_mask_01_02_01,P=PH - alb_mask_01_02_01
+item_Name_alb_shoes_01_02_01,P=PH - alb_shoes_01_02_01
+item_Name_cbd_hat_03_02_01,P=PH - cbd_hat_03_02_01
+item_Name_cbd_hat_03_iae2026_01=IAE 2956 Hat
+item_Name_ctl_shirt_03_02_01,P=PH - ctl_shirt_03_02_01
+item_Name_ctl_shirt_03_02_02,P=PH - ctl_shirt_03_02_02
+item_Name_dmc_jacket_04_02_01,P=PH - dmc_jacket_04_02_01
+item_Name_dmc_jacket_15_01_01=2956 Best in Show Bomber Jacket
+item_Name_dmc_pants_10_01_01,P=PH - dmc_pants_10_01_01
+item_Name_dmc_pants_10_01_02,P=PH - dmc_pants_10_01_02
+item_Name_dmc_pants_10_02_01,P=PH - dmc_pants_10_02_01
+item_Name_eld_shirt_10_iae2026_01=IAE 2956 T-Shirt
+item_Name_hdtc_jacket_01_06_01,P=PH - hdtc_jacket_01_06_01
+item_Name_hdtc_pants_01_07_01,P=PH - hdtc_pants_01_07_01
+item_Name_hdtc_shirt_03_01_01,P=PH - hdtc_shirt_03_01_01
+item_Name_hdtc_shirt_04_01_01,P=PH - hdtc_shirt_04_01_01
+item_Name_hdtc_shoes_01_07_01,P=PH - hdtc_shoes_01_07_01
+item_Name_kap_combat_light_arms_02_03_01=Geist Armor Arms Epoque II
+item_Name_kap_combat_light_core_02_03_01=Geist Armor Core Epoque II
+item_Name_kap_combat_light_helmet_02_03_01=Geist Armor Helmet Epoque
+item_Name_kap_combat_light_legs_02_03_01=Geist Armor Legs Epoque II
+item_Name_ksar_jacket_01_01_01,P=PH - ksar_jacket_01_01_01
+item_Name_ksar_jacket_01_01_02,P=PH - ksar_jacket_01_01_02
+item_Name_lna_shirt_01_03_01,P=PH - lna_shirt_01_03_01
+item_Name_vgl_utility_light_backpack_01_06_01,P=Chiron Backpack Epoque
+item_Namebanu_melee_05=Kamba Knife
+item_Namebanu_melee_05_short=Kamba Knife
+item_Namegrin_salvage_01_lumi01=Cambio "Piconalia" SRT
+item_Namegrin_salvage_01_lumi01_short=Cambio PC SRT
+item_Nameklwe_smg_energy_01_lumi01=Lumin V "Piconalia" SMG
+item_Nameklwe_smg_energy_01_lumi01_short=Lumin V PC SMG
+item_Nameksar_lmg_energy_01_store01=Verdict "Derivation" LMG
+item_Nameksar_lmg_energy_01_store01_short=DV LMG
+item_Nameksar_pistol_ballistic_01_lumi01=Coda "Piconalia" Pistol
+item_Nameksar_pistol_ballistic_01_lumi01_short=Coda PC Pistol
+item_Namesasu_pistol_toy_01_sf01,P=WowBlast Desperado Toy Pistol F7C
+item_Namesasu_pistol_toy_01_sf01_short,P=WowBlst Ty Pistol F7
+item_TypeAttachedPart,P=附加部件
+manufacturer_DescVOLT=PH
+manufacturer_NameVOLT=Verified Offworld Laser Technologies
+port_NameModule,P=模組
+ui_CIIndustrialMode,P=切換工業操作模式
+ui_CIIndustrialModeDesc,P=下一個工業模式
+ui_controlpanel_doorbutton_PressToClose=按下關閉
+ui_controlpanel_doorbutton_PressToOpen=按下開啟
+ui_controlpanel_doorstate_Closed=已關閉
+ui_controlpanel_doorstate_Closing=關閉中
+ui_controlpanel_doorstate_Locked=已上鎖
+ui_controlpanel_doorstate_Opened=已開啟
+ui_controlpanel_doorstate_Opening=開啟中
+ui_controlpanel_doorstate_Unlocked=已解鎖
+ui_controlpanel_lightbutton_Emergency=緊急
+ui_controlpanel_lightbutton_Full=全亮
+ui_controlpanel_lightbutton_Low=低亮度
+ui_controlpanel_lockbutton_Lock=上鎖
+ui_controlpanel_lockbutton_Unlock=解鎖
+ui_interactor_enter_copilot_seat_zerog=進入副駕駛座 - 零重力
+ui_interactor_use_ext_tractor_beam,P=使用外部牽引光束
+ui_interactor_use_int_tractor_beam=使用內部牽引光束
+ui_interactor_use_tractor_turret_ext,P=使用牽引光束（外部）
+ui_interactor_use_tractor_turret_int,P=使用牽引光束（內部）
+ui_newline_character,P=\n
+ui_pc_pit_looting,P=切換搜刮畫面（按住）
+ui_weapons_reload_02=換彈
+ui_weapons_switch_firemode_warning=切換射擊模式
+vehicle_DescANVL_Ballista=製造商：鐵砧航太\n定位：防空\n\n選擇鐵砧 HM6 弩炮，還你的天空一片清淨。弩炮的設計初衷是在前哨站抵禦剜度的進攻，這套機動飛彈防禦系統擁有強大的火力配置，足以應付來自空中或地面的任何威脅。
+vehicle_DescANVL_Ballista_Dunestalker=製造商：鐵砧航太\n定位：防空\n\n選擇鐵砧 HM6 弩炮，還你的天空一片清淨。弩炮的設計初衷是在前哨站抵禦剜度的進攻，這套機動飛彈防禦系統擁有強大的火力配置，足以應付來自空中或地面的任何威脅。沙丘追獵者型採用仿自然環境的塗裝，能完美融入嚴酷的地景。
+vehicle_DescANVL_Ballista_Snowblind=製造商：鐵砧航太\n定位：防空\n\n選擇鐵砧 HM6 弩炮，還你的天空一片清淨。弩炮的設計初衷是在前哨站抵禦剜度的進攻，這套機動飛彈防禦系統擁有強大的火力配置，足以應付來自空中或地面的任何威脅。雪盲型採用灰色迷彩塗裝，適合隱蔽在多岩石或月面地形中。
+vehicle_DescANVL_Centurion=製造商：鐵砧航太\n定位：防空\n\n百夫長以鐵砧廣受歡迎的 HM6 平台打造，為短程防空作戰提供了戰術解決方案。憑藉百夫長客製化的能量防空砲塔，你的部隊能迅速有效地解決來自上空的威脅，進而建立地面優勢。
+vehicle_DescANVL_Liberator=製造商：鐵砧航太 (Anvil Aerospace)\n定位：運輸\n\n解放者延續了鐵砧的卓越傳統。這艘開放式載具運輸艦把長程運輸的傳統帶到較小的規模，設計上具備與同規格軍用運輸艦相當的能力，但專為民用市場打造，讓你的艦隊站上任何行動的最前線。
+vehicle_DescANVL_Spartan=製造商：鐵砧航太\n定位：客運\n\n斯巴達以鐵砧堅固的 HM6 平台打造，與其威力強大的弩炮防空系統使用同一款底盤，是一輛配備八個折疊座椅的全裝甲運輸載具。斯巴達堅固的車架使其適合各種地形，遙控加特林砲塔還能清理區域，方便部署兵力。
+vehicle_DescRSI_URSA_Medivac=製造商：RSI\n定位：醫療\n\n即使在最偏遠的行星目的地，也有人需要幫助。RSI 設計的大熊座醫療版可以穿越最崎嶇的地形，它配備的三級醫療床是在最需要的地方提供援助的理想選擇。
+vehicle_class_lightcarrier=輕型航母
+vehicle_room_cargo_hold=貨艙
+vehicle_room_exterior=外部
+vehicle_room_jump_room=跳躍室
+vehicle_room_readyroom=待命室
 
 </script>
 <script type="text/plain" id="mlocNames">
@@ -10089,7 +10300,24 @@ Potential Blueprints => 可能獲得的藍圖
 /\\bPool (\\d+)/ => 藍圖池 $1
 Scenario Progress Points => 劇情進度點數
 Ships to Expect => 預計出現的艦船
+Cooldown: => 冷卻時間：
+/(\\d+) ?mins?\\b/ => $1 分鐘
+Debug Name(s): => 除錯名稱：
+/ - (\\d+)d Rental/ => （$1 天租借）
 /Final Wave: ?/ => 最終波：
+/Targets( \\d+)?: ?/ => 目標$1：
+/Hostiles( \\d+)?: ?/ => 敵方$1：
+/Reinforcements( \\d+)?: ?/ => 增援$1：
+/Support Ships( \\d+)?: ?/ => 支援艦$1：
+/Scouts( \\d+)?: ?/ => 偵察艦$1：
+/Defenders( \\d+)?: ?/ => 防守艦$1：
+/Bombers( \\d+)?: ?/ => 轟炸機$1：
+/Ambush( \\d+)?: ?/ => 伏擊$1：
+/Ace Pilot( \\d+)?: ?/ => 王牌飛行員$1：
+/Interdiction( \\d+)?: ?/ => 攔截$1：
+/Heist Ships( \\d+)?: ?/ => 劫掠艦$1：
+/Bosses( \\d+)?: ?/ => 首領$1：
+/Escorts( \\d+)?: ?/ => 護航艦$1：
 /Wave (\\d+): ?/ => 第 $1 波：
 Medium Criminal Fighter Bomber => 中型不法分子戰鬥轟炸機
 Medium Criminal Distortion Ship => 中型不法分子干擾型飛船
@@ -10102,7 +10330,6 @@ Medium Criminal Fighter => 中型不法分子戰鬥機
 Light Criminal Fighter => 輕型不法分子戰鬥機
 Criminal Gun Boat => 不法分子砲艇
 Criminal Snub Fighter => 不法分子短程戰機
-Criminal VeryHard Combat Ship => 不法分子高難度戰鬥艦
 (any variant) => （任意型號）
 Any Vanduul Ship => 任意剜度飛船
 Any Criminal Ship => 任意不法分子飛船
@@ -10137,6 +10364,18 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     // 純文字依長度由長到短，避免短詞先吃掉長詞；正規式保持書寫順序並排在前面
     const res = out.filter(x => x.re), str = out.filter(x => !x.re).sort((x, y) => y.s.length - x.s.length);
     return res.concat(str);
+  }
+
+  // 「預計出現的艦船」裡的通用艦種：Hard Criminal Large Combat Ship → 不法分子大型戰鬥艦（困難）
+  const SHIP_DIFF = {'Very Easy': '極簡單', 'Easy': '簡單', 'Medium': '中等', 'Hard': '困難', 'Very Hard': '極困難'};
+  const SHIP_FACTION = {Criminal: '不法分子', Ninetails: '九尾', Civilians: '平民', PrivateSecurity: '私人保全', Advocacy: '督導局', XenoThreat: '異種威脅', Vanduul: '剜度'};
+  const SHIP_TYPE_RE = /\b(?:(Very Easy|Easy|Medium|Hard|Very Hard) )?(Criminal|Ninetails|Civilians|PrivateSecurity|Advocacy|XenoThreat) (?:(Super|VeryHard) )?(?:(Large) )?Combat Ship\b/g;
+  function shipTypes(s) {
+    if (!/Combat Ship|Ship[s]? to Expect|預計出現|Any \w+ Ship/.test(s)) return s;
+    return s.replace(SHIP_TYPE_RE, (_, d, f, sup, lg) => SHIP_FACTION[f] + (sup === 'Super' ? '超級' : '') + (lg ? '大型' : '') + '戰鬥艦' +
+        (sup === 'VeryHard' ? '（極困難）' : d ? '（' + SHIP_DIFF[d] + '）' : ''))
+      .replace(/\bAny (Criminal|Ninetails|Civilians|PrivateSecurity|Advocacy|XenoThreat|Vanduul) Ship\b/g, (_, f) => '任意' + SHIP_FACTION[f] + '飛船')
+      .replace(/ or (?=\d+x )/g, ' 或 ');
   }
 
   function applyDict(s, dict, gloss) {
@@ -10176,7 +10415,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
   const trimTail = s => s.replace(/(?:\\n|\s)+$/, '');
   const TITLE_SUFFIX = /\s*(<EM4>(?:\s*\[[^\]<]*\]\*?)+\s*<\/EM4>)\s*$/;
 
-  const EXO_MARK = /(?:\\n)+(?=<EM4>(?:Reputation Awarded|Ships to Expect|Potential Blueprints|Multiple Blueprint Pools|Scenario Progress Points|Pool \d|Awarded from))/;
+  const EXO_MARK = /(?:\\n)+(?=<EM4>(?:Reputation Awarded|Ships to Expect|Cooldown:|Debug Name|Potential Blueprints|Multiple Blueprint Pools|Scenario Progress Points|Pool \d|Awarded from))/;
   function emTailCount(v) {
     const ps = trimTail(v).split(P); let n = 0;
     for (let i = ps.length - 1; i >= 0; i--) { if (/^(?:\s|\\n)*<EM4>/.test(ps[i])) n++; else break; }
@@ -10201,6 +10440,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     const m = EXO_MARK.exec(v); if (m) v = v.slice(0, m.index);
     return v.replace(TITLE_SUFFIX, '').replace(/(?:\\n|\s)+$/, '');
   }
+  const plainCore = v => coreText(v).replace(/<\/?EM\d*>/g, '').replace(/\s+/g, ' ').trim();
   const AUTO_CATS = new Set(['title', 'tail', 'wrap']);
   const toks = v => (v || '').match(/~\w+\([^)]*\)|%l?[sdif]/g) || [];
   function validate(e) {
@@ -10242,13 +10482,14 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     // 額外的繁中翻譯（例如 PTU 新增／更新條目）：直接放進漢化資料，之後照一般規則處理
     const extra = opts.zhExtra && opts.zhExtra.size ? opts.zhExtra : null;
     if (extra) {
+      var zhHad = new Set(zhRaw.map.keys()); // 漢化包原本就有的鍵：分辨「新增」或「更新」
       const map = new Map(zhRaw.map), keys = zhRaw.keys.slice(), t = new Map(zhT);
-      for (const [k, v] of extra) { if (!map.has(k)) keys.push(k); map.set(k, v); t.set(k, v); }
+      for (const [k, v] of extra) { if (!exo.map.has(k) && !map.has(k)) continue; if (!map.has(k)) keys.push(k); map.set(k, v); t.set(k, v); }
       zhRaw = Object.assign({}, zhRaw, { map, keys }); zhT = t;
     }
     const tailDict = parseDict(opts.tailDict != null ? opts.tailDict : DEFAULT_TAIL_DICT);
     const gloss = buildGlossary(zhT, exo);
-    const tr = s => applyDict(s, tailDict, gloss);
+    const tr = s => shipTypes(applyDict(s, tailDict, gloss));
     const classMap = Object.assign({}, DEFAULT_CLASS_MAP, opts.classMap || {});
     const fill = new Map();
     for (const d of parseDict(opts.fill != null ? opts.fill : DEFAULT_FILL)) if (d.s) fill.set(d.s.trim(), d.to);
@@ -10393,7 +10634,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         if (['exo_only', 'issue', 'ore', 'comp', 'en_exo', 'same', 'force', 'fill', 'ship', 'mloc'].includes(e.cat) || (e.cat === 'loc' && e.from !== 'zh')) continue;
         if (extra && extra.has(e.k)) { e.extra = true; continue; } // 已另外翻譯
         const bv = opts.exoBase.map.get(e.k);
-        if (bv === undefined || bv === e.exo || coreText(bv) === coreText(e.exo)) continue; // 只差在藍圖清單、聲望標籤的不算
+        if (bv === undefined || bv === e.exo || plainCore(bv) === plainCore(e.exo)) continue; // 只差在藍圖清單、聲望標籤、<EM> 強調標記或空白的不算
         stats[e.cat]--; stats.updated = (stats.updated || 0) + 1;
         e.from = e.from || e.cat; e.cat = 'updated'; e.oldExo = bv;
       }
@@ -10402,10 +10643,10 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     if (extra) {
       for (const e of entries) {
         if (!extra.has(e.k) || e.cat === 'issue') continue;
-        const c = opts.exoBase && opts.exoBase.map.has(e.k) ? 'tr_upd' : 'tr_new';
+        const c = zhHad.has(e.k) ? 'tr_upd' : 'tr_new';
         stats[e.cat]--; stats[c] = (stats[c] || 0) + 1;
         e.from = e.from || e.cat; e.cat = c;
-        if (c === 'tr_upd') e.oldExo = opts.exoBase.map.get(e.k);
+        if (c === 'tr_upd' && opts.exoBase && opts.exoBase.map.has(e.k)) e.oldExo = opts.exoBase.map.get(e.k);
       }
     }
     const seen = new Set(exo.keys);
@@ -10647,8 +10888,8 @@ const CATS = [
   {id:'updated', name:'英文有更新', hint:'英文來源改版後原文變了，中文可能過時', review:true},
   {id:'exo_only',name:'新增條目', hint:'英文來源新版才有、漢化沒有的條目（先顯示英文）', review:true},
 
-  {id:'tr_new', name:'PTU 新增（已翻譯）', hint:'PTU 才有的新條目，已另外翻成繁中', auto:true},
-  {id:'tr_upd', name:'PTU 更新（已翻譯）', hint:'PTU 英文有改的條目，已依新英文重新翻譯', auto:true},
+  {id:'tr_new', name:(MODE === 'ptu' ? 'PTU ' : '')+'新增（已翻譯）', hint:'漢化包沒有的新條目，已另外翻成繁中', auto:true},
+  {id:'tr_upd', name:(MODE === 'ptu' ? 'PTU ' : '')+'更新（已翻譯）', hint:'英文有改的條目，已依新英文重新翻譯', auto:true},
   {id:'zh_only',name:'只有漢化包有', hint:'新版已移除的條目，保留著不影響遊戲', auto:true},
   {id:'rank',   name:'聲望等級', hint:'等級名稱前加上 LV.1～LV.6（例：LV.1 初級承包商），第 0 級不加', auto:true},
   {id:'ore',    name:'礦石', hint:'中文＋英文縮寫，每行不超過設定字數', auto:true},
@@ -10851,8 +11092,8 @@ async function convertAll(map, mode){
 function readEmbedded(id){ const m = new Map(), el = document.getElementById(id); if (!el) return m;
   for (const l of el.textContent.split(/\r?\n/)) { const i = l.indexOf('='); if (i > 0 && !l.startsWith('#')) m.set(l.slice(0, i).trim(), l.slice(i + 1).trim()); } return m; }
 const SHIPS_RAW = readEmbedded('shipNames'), MLOCS_RAW = readEmbedded('mlocNames');
-// PTU 新增／更新條目的繁中翻譯（只在 PTU 模式使用）
-const PTU_ZH = readEmbedded('ptuZh');
+// 另外補的繁中翻譯（新版本新增／英文有更新的條目），正式版與 PTU 共用
+const EXTRA_ZH = readEmbedded('ptuZh');
 let shipsT = null, mlocsT = null;
 function convertMap(raw, mode){
   if (!window.OpenCC || !raw.size) return new Map(raw);
@@ -10901,7 +11142,7 @@ function remerge(){
   LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
   LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('locZh', $('#locZh').value); LS.set('fillZh', $('#fillZh').value); LS.set('locOn', $('#locOn').checked); LS.set('shipOn', $('#shipOn').checked); LS.set('mlocOn', $('#mlocOn').checked); LS.set('rankOn', $('#rankOn').checked); LS.set('shipWrap', +$('#shipWrap').value); LS.set('shipLayout', $('#shipLayout').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
   const zhT = applyTerms(zhT0);
-  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, rankLv: $('#rankOn').checked, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value, zhExtra: MODE === 'ptu' ? PTU_ZH : null});
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, rankLv: $('#rankOn').checked, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value, zhExtra: EXTRA_ZH});
   byKey = new Map(result.entries.map(e=>[e.k,e]));
   $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
   view.page=0; renderAll();
@@ -10966,7 +11207,7 @@ function renderStats(){
     [n.toLocaleString(),'輸出條目總數'],
     [((st.zh||0)+(st.same||0)).toLocaleString(),'直接採用繁中（或兩邊相同）'],
     [fromExo.toLocaleString(),'接上 '+SRC+' 資料'],
-    ...(trN ? [[trN.toLocaleString(),'PTU 新增／更新（已翻譯）']] : []),
+    ...(trN ? [[trN.toLocaleString(),(MODE === 'ptu' ? 'PTU ' : '')+'新增／更新（已翻譯）']] : []),
     [((st.updated||0)+(st.exo_only||0)).toLocaleString(),'需要你看（英文更新＋新增）'],
     [ok.toLocaleString(),'已確認'],
     [edited.toLocaleString(),'已手動修改'],
@@ -11038,8 +11279,8 @@ function cardHtml(e){
   return `<article class="card s-${s}" data-k="${esc(e.k)}">
     <div class="hd"><span class="k">${esc(e.k)}</span><span class="pill ${e.cat}">${CATNAME[e.cat]||e.cat}</span><span class="pill st-${s}">${stTxt}</span></div>
     <div class="cols">
-      <div class="col"><h3>${SRC} 英文</h3><div class="txt">${rich(e.exo)}</div>${e.van!==undefined&&e.van!==e.exo?`<h3>原版英文</h3><div class="txt">${rich(e.van)}</div>`:''}${e.oldExo!==undefined?`<h3>${e.cat==='tr_upd'?'正式版英文（改版前）':'舊版英文（漢化當時）'}</h3><div class="txt">${rich(e.oldExo)}</div>`:''}</div>
-      <div class="col"><h3>${e.cat==='tr_new'||e.cat==='tr_upd'?'PTU 繁中翻譯':'繁中原譯（已轉繁）'}</h3><div class="txt">${rich(e.zh)}</div></div>
+      <div class="col"><h3>${SRC} 英文</h3><div class="txt">${rich(e.exo)}</div>${e.van!==undefined&&e.van!==e.exo?`<h3>原版英文</h3><div class="txt">${rich(e.van)}</div>`:''}${e.oldExo!==undefined?`<h3>${e.cat==='tr_upd'?(MODE === 'ptu' ? '正式版英文（改版前）' : '上一版英文（改版前）'):'舊版英文（漢化當時）'}</h3><div class="txt">${rich(e.oldExo)}</div>`:''}</div>
+      <div class="col"><h3>${e.cat==='tr_new'||e.cat==='tr_upd'?'補充繁中翻譯':'繁中原譯（已轉繁）'}</h3><div class="txt">${rich(e.zh)}</div></div>
       <div class="col"><h3>輸出結果</h3><div class="txt out">${richOut(e, v)}</div>
         <textarea rows="2" aria-label="編輯輸出結果" spellcheck="false" ${s==='edit'?'':'hidden'}>${esc((v??'').replace(/\\n/g,'\n'))}</textarea></div>
     </div>

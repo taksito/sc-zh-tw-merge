@@ -195,7 +195,7 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
     <a href="#ptu" id="tabPtu">PTU 搶先體驗版</a>
   </nav>
   <div class="ptunote" id="ptuNote" hidden>
-    <b>PTU 搶先體驗版</b>：英文來源是 <a href="https://github.com/MrKraken/StarStrings/tree/sc-ptu" target="_blank" rel="noopener">MrKraken StarStrings 的 PTU 版</a>，中文仍是正式版的漢化。PTU 新增的 95 條和英文有更新的 24 條已翻成繁中（物品名稱照正式版慣例保留英文）；之後 PTU 再有新條目，會先顯示英文，列在下方「自訂介面」的「新增條目」「英文有更新」。PTU 移除的條目仍保留在輸出裡。
+    <b>PTU 搶先體驗版</b>：英文來源是 <a href="https://github.com/MrKraken/StarStrings/tree/sc-ptu" target="_blank" rel="noopener">MrKraken StarStrings 的 PTU 版</a>，中文仍是正式版的漢化。PTU 新增和英文有更新的條目已翻成繁中（物品名稱照正式版慣例保留英文）；之後 PTU 再有新條目，會先顯示英文，列在下方「自訂介面」的「新增條目」「英文有更新」。PTU 移除的條目仍保留在輸出裡。
     安裝時請選 <span class="mono">StarCitizen\PTU</span> 資料夾（手動安裝時把步驟裡的 LIVE 換成 PTU）。審核紀錄和正式版分開保存。
   </div>
 
@@ -388,6 +388,9 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
   <section class="changelog" aria-label="更新紀錄">
     <h2>更新紀錄</h2>
     <dl>
+      <dt><time datetime="2026-11-13">2026-11-13</time></dt>
+      <dd><b>4.10.3 正式版</b>：ExoAE 與 MrKraken StarStrings 都更新到 4.10.3。正式版新增 281 條、英文有更新 41 條全部補上繁中（含之前在 PTU 翻好的互安防務任務等；新內容有光燈節與 IAE 2956 塗裝、紀念幣、雅韻版裝備、坎巴刀、門與燈光控制面板、VR 選項等），「需要你看」回到 0。物品名稱照慣例保留英文。「自訂介面」的「新增（已翻譯）」「更新（已翻譯）」可逐條查看。</dd>
+      <dd><b>預計出現的艦船</b>：4.10.3 的任務說明多了大量艦船清單，「目標／敵方／增援／支援艦／偵察艦／防守艦／轟炸機」等標籤與「不法分子戰鬥艦（困難）」這類通用艦種都會自動翻成中文；StarStrings 的「冷卻時間」「除錯名稱」也一併翻譯。只多了 <code>&lt;EM&gt;</code> 強調標記或空白的英文更新不再列為「英文有更新」。</dd>
       <dt><time datetime="2026-11-01">2026-11-01</time></dt>
       <dd><b>聲望等級加上 LV</b>：各勢力的聲望等級名稱前加上 LV.1～LV.6（例：LV.1 初級承包商、LV.4 資深承包商；競速等級到 LV.10），第 0 級（申請者／中立）不加。「自訂介面」新增「聲望等級」分類可逐條查看，也可在設定取消勾選。</dd>
       <dt><time datetime="2026-11-01">2026-11-01</time></dt>
@@ -451,8 +454,8 @@ const CATS = [
   {id:'updated', name:'英文有更新', hint:'英文來源改版後原文變了，中文可能過時', review:true},
   {id:'exo_only',name:'新增條目', hint:'英文來源新版才有、漢化沒有的條目（先顯示英文）', review:true},
 
-  {id:'tr_new', name:'PTU 新增（已翻譯）', hint:'PTU 才有的新條目，已另外翻成繁中', auto:true},
-  {id:'tr_upd', name:'PTU 更新（已翻譯）', hint:'PTU 英文有改的條目，已依新英文重新翻譯', auto:true},
+  {id:'tr_new', name:(MODE === 'ptu' ? 'PTU ' : '')+'新增（已翻譯）', hint:'漢化包沒有的新條目，已另外翻成繁中', auto:true},
+  {id:'tr_upd', name:(MODE === 'ptu' ? 'PTU ' : '')+'更新（已翻譯）', hint:'英文有改的條目，已依新英文重新翻譯', auto:true},
   {id:'zh_only',name:'只有漢化包有', hint:'新版已移除的條目，保留著不影響遊戲', auto:true},
   {id:'rank',   name:'聲望等級', hint:'等級名稱前加上 LV.1～LV.6（例：LV.1 初級承包商），第 0 級不加', auto:true},
   {id:'ore',    name:'礦石', hint:'中文＋英文縮寫，每行不超過設定字數', auto:true},
@@ -655,8 +658,8 @@ async function convertAll(map, mode){
 function readEmbedded(id){ const m = new Map(), el = document.getElementById(id); if (!el) return m;
   for (const l of el.textContent.split(/\r?\n/)) { const i = l.indexOf('='); if (i > 0 && !l.startsWith('#')) m.set(l.slice(0, i).trim(), l.slice(i + 1).trim()); } return m; }
 const SHIPS_RAW = readEmbedded('shipNames'), MLOCS_RAW = readEmbedded('mlocNames');
-// PTU 新增／更新條目的繁中翻譯（只在 PTU 模式使用）
-const PTU_ZH = readEmbedded('ptuZh');
+// 另外補的繁中翻譯（新版本新增／英文有更新的條目），正式版與 PTU 共用
+const EXTRA_ZH = readEmbedded('ptuZh');
 let shipsT = null, mlocsT = null;
 function convertMap(raw, mode){
   if (!window.OpenCC || !raw.size) return new Map(raw);
@@ -705,7 +708,7 @@ function remerge(){
   LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
   LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('locZh', $('#locZh').value); LS.set('fillZh', $('#fillZh').value); LS.set('locOn', $('#locOn').checked); LS.set('shipOn', $('#shipOn').checked); LS.set('mlocOn', $('#mlocOn').checked); LS.set('rankOn', $('#rankOn').checked); LS.set('shipWrap', +$('#shipWrap').value); LS.set('shipLayout', $('#shipLayout').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
   const zhT = applyTerms(zhT0);
-  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, rankLv: $('#rankOn').checked, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value, zhExtra: MODE === 'ptu' ? PTU_ZH : null});
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, rankLv: $('#rankOn').checked, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value, zhExtra: EXTRA_ZH});
   byKey = new Map(result.entries.map(e=>[e.k,e]));
   $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
   view.page=0; renderAll();
@@ -770,7 +773,7 @@ function renderStats(){
     [n.toLocaleString(),'輸出條目總數'],
     [((st.zh||0)+(st.same||0)).toLocaleString(),'直接採用繁中（或兩邊相同）'],
     [fromExo.toLocaleString(),'接上 '+SRC+' 資料'],
-    ...(trN ? [[trN.toLocaleString(),'PTU 新增／更新（已翻譯）']] : []),
+    ...(trN ? [[trN.toLocaleString(),(MODE === 'ptu' ? 'PTU ' : '')+'新增／更新（已翻譯）']] : []),
     [((st.updated||0)+(st.exo_only||0)).toLocaleString(),'需要你看（英文更新＋新增）'],
     [ok.toLocaleString(),'已確認'],
     [edited.toLocaleString(),'已手動修改'],
@@ -842,8 +845,8 @@ function cardHtml(e){
   return `<article class="card s-${s}" data-k="${esc(e.k)}">
     <div class="hd"><span class="k">${esc(e.k)}</span><span class="pill ${e.cat}">${CATNAME[e.cat]||e.cat}</span><span class="pill st-${s}">${stTxt}</span></div>
     <div class="cols">
-      <div class="col"><h3>${SRC} 英文</h3><div class="txt">${rich(e.exo)}</div>${e.van!==undefined&&e.van!==e.exo?`<h3>原版英文</h3><div class="txt">${rich(e.van)}</div>`:''}${e.oldExo!==undefined?`<h3>${e.cat==='tr_upd'?'正式版英文（改版前）':'舊版英文（漢化當時）'}</h3><div class="txt">${rich(e.oldExo)}</div>`:''}</div>
-      <div class="col"><h3>${e.cat==='tr_new'||e.cat==='tr_upd'?'PTU 繁中翻譯':'繁中原譯（已轉繁）'}</h3><div class="txt">${rich(e.zh)}</div></div>
+      <div class="col"><h3>${SRC} 英文</h3><div class="txt">${rich(e.exo)}</div>${e.van!==undefined&&e.van!==e.exo?`<h3>原版英文</h3><div class="txt">${rich(e.van)}</div>`:''}${e.oldExo!==undefined?`<h3>${e.cat==='tr_upd'?(MODE === 'ptu' ? '正式版英文（改版前）' : '上一版英文（改版前）'):'舊版英文（漢化當時）'}</h3><div class="txt">${rich(e.oldExo)}</div>`:''}</div>
+      <div class="col"><h3>${e.cat==='tr_new'||e.cat==='tr_upd'?'補充繁中翻譯':'繁中原譯（已轉繁）'}</h3><div class="txt">${rich(e.zh)}</div></div>
       <div class="col"><h3>輸出結果</h3><div class="txt out">${richOut(e, v)}</div>
         <textarea rows="2" aria-label="編輯輸出結果" spellcheck="false" ${s==='edit'?'':'hidden'}>${esc((v??'').replace(/\\n/g,'\n'))}</textarea></div>
     </div>

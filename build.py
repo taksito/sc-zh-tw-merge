@@ -7,7 +7,7 @@ eng = (root / 'src/engine.js').read_text(encoding='utf-8')
 dec = (root / 'src/chinesedecode.txt').read_text(encoding='utf-8-sig')
 ships = (root / 'src/ship_names_zh.txt').read_text(encoding='utf-8-sig')
 mlocs = (root / 'src/mission_locations_zh.txt').read_text(encoding='utf-8-sig')
-ptuzh = (root / 'src/ptu_zh.txt').read_text(encoding='utf-8-sig')
+ptuzh = (root / 'src/extra_zh.txt').read_text(encoding='utf-8-sig')
 head = ('<!doctype html>\n<html lang="zh-Hant">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">\n'
         '<style>:root{color-scheme:light dark}body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>\n'
