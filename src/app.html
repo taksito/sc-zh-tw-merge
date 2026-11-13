@@ -141,6 +141,7 @@ nav.cats .none{font-size:13px;color:var(--ok);padding:4px 10px 6px}
 .purehead{display:grid;gap:6px}
 .purehead .tag{font:600 12px/1 var(--f-mono);color:var(--accent);letter-spacing:.06em}
 .purehead h2{font-size:18px;letter-spacing:0;text-transform:none;color:var(--fg);margin:0}
+.purehead a{color:var(--accent)}
 .purehead p,.pure .qstat{margin:0;color:var(--muted);font-size:13.5px}
 .purecmp table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
 .purecmp th,.purecmp td{text-align:left;padding:7px 8px;border-top:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
@@ -243,7 +244,7 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
     <div class="purehead">
       <span class="tag">另一種版本</span>
       <h2>全繁中版</h2>
-      <p>不要英文對照、只想看中文的話，下載這一版。以同一份漢化為底，<b>不加</b>英文船名、英文地名、礦石縮寫、任務標題的聲望／藍圖標籤和說明尾端的英文附加資訊；新版本新增的條目用補充翻譯。漢化包本來就保留英文的物品名稱、廠牌名稱仍是英文，HUD 萬向節幾個字為避免亂碼也維持英文。</p>
+      <p>不要英文對照、只想看中文的話，下載這一版。以同一份漢化為底，<b>不加</b>英文船名、英文地名、礦石縮寫、任務標題的聲望／藍圖標籤和說明尾端的英文附加資訊；物品、武器、裝備與零件名稱改用<a href="https://github.com/StarCitizenToolBox/LocalizationData" target="_blank" rel="noopener">星際公民汉化组「全汉化」</a>的中文名稱；新版本新增的條目用補充翻譯。只剩型號代碼（如 PS-10）和少數漢化組也沒翻的名稱是英文；HUD 萬向節幾個字為避免亂碼維持英文。</p>
     </div>
     <div class="purecmp" id="pureCmp"><p class="muted">完成上方第 1 步後，這裡會列出兩版的差別。</p></div>
     <div class="row">
@@ -415,6 +416,7 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
     <h2>更新紀錄</h2>
     <dl>
       <dt><time datetime="2026-11-13">2026-11-13</time></dt>
+      <dd><b>全繁中版：物品也翻中文</b>：物品、武器、裝備、零件與塗裝名稱改用星際公民汉化组「简中全汉化」的中文名稱（約 1 萬 600 條，轉成繁體；4.10.3 英文有改的部分用汉化组最新版），零件仍保留「軍規1B-」等級標示。雙語版不受影響。</dd>
       <dd><b>全繁中版</b>：三個步驟下方新增「全繁中版」下載區，只用中文：不加英文船名、英文地名、礦石縮寫、任務標題的聲望／藍圖標籤與英文附加資訊，新條目用補充翻譯；並列出兩版的差別範例。原本的雙語版不受影響。</dd>
       <dd><b>4.10.3 正式版</b>：ExoAE 與 MrKraken StarStrings 都更新到 4.10.3。正式版新增 281 條、英文有更新 41 條全部補上繁中（含之前在 PTU 翻好的互安防務任務等；新內容有光燈節與 IAE 2956 塗裝、紀念幣、雅韻版裝備、坎巴刀、門與燈光控制面板、VR 選項等），「需要你看」回到 0。物品名稱照慣例保留英文。「自訂介面」的「新增（已翻譯）」「更新（已翻譯）」可逐條查看。</dd>
       <dd><b>預計出現的艦船</b>：4.10.3 的任務說明多了大量艦船清單，「目標／敵方／增援／支援艦／偵察艦／防守艦／轟炸機」等標籤與「不法分子戰鬥艦（困難）」這類通用艦種都會自動翻成中文；StarStrings 的「冷卻時間」「除錯名稱」也一併翻譯。只多了 <code>&lt;EM&gt;</code> 強調標記或空白的英文更新不再列為「英文有更新」。</dd>
@@ -446,6 +448,9 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
 
 <script type="text/plain" id="ptuZh">
 /*PTUZH*/
+</script>
+<script type="text/plain" id="itemNamesFull">
+/*ITEMSFULL*/
 </script>
 <script type="text/plain" id="mlocNames">
 /*MLOCS*/
@@ -686,16 +691,18 @@ async function convertAll(map, mode){
 function readEmbedded(id){ const m = new Map(), el = document.getElementById(id); if (!el) return m;
   for (const l of el.textContent.split(/\r?\n/)) { const i = l.indexOf('='); if (i > 0 && !l.startsWith('#')) m.set(l.slice(0, i).trim(), l.slice(i + 1).trim()); } return m; }
 const SHIPS_RAW = readEmbedded('shipNames'), MLOCS_RAW = readEmbedded('mlocNames');
+// 全繁中版用的物品中文名稱（汉化组全汉化）
+const ITEMS_RAW = readEmbedded('itemNamesFull');
 // 另外補的繁中翻譯（新版本新增／英文有更新的條目），正式版與 PTU 共用
 const EXTRA_ZH = readEmbedded('ptuZh');
-let shipsT = null, mlocsT = null;
+let shipsT = null, mlocsT = null, itemsT = null;
 function convertMap(raw, mode){
   if (!window.OpenCC || !raw.size) return new Map(raw);
   const conv = OpenCC.Converter({from:'cn', to:mode}); const keys = [...raw.keys()];
   const vals = conv([...raw.values()].join('\n')).split('\n');
   const out = new Map(); keys.forEach((k, i) => out.set(k, vals.length === keys.length ? vals[i] : raw.get(k))); return out;
 }
-function convertShips(mode){ shipsT = convertMap(SHIPS_RAW, mode); mlocsT = convertMap(MLOCS_RAW, mode); }
+function convertShips(mode){ shipsT = convertMap(SHIPS_RAW, mode); mlocsT = convertMap(MLOCS_RAW, mode); itemsT = convertMap(ITEMS_RAW, mode); }
 function applyTerms(map){
   const d = M.parseDict(dictTerm.value);
   if (!d.length) return map;
@@ -945,6 +952,12 @@ $('#addDecode').addEventListener('change', ev => LS.set('addDecode', ev.target.c
 const KEEP_EN_PURE = /^hud_/;   // 萬向節等 HUD 字串：中文會亂碼，維持英文
 const hasCJK = s => /[\u3400-\u9fff]/.test(s || '');
 function pureValue(e){
+  const v = pureBase(e), full = itemsT && itemsT.get(e.k);
+  if (!full) return v;
+  if (e.cat === 'comp') { const m = /^(\S*?\d[A-Da-d])-/.exec(e.out); return m ? m[1] + '-' + full : full; } // 軍規1B-德爾斐 RS-10
+  return hasCJK(v) ? v : full;
+}
+function pureBase(e){
   const zh = e.zh != null && e.zh !== '' ? e.zh : null;
   switch (e.cat) {
     case 'force': return KEEP_EN_PURE.test(e.k) ? e.out : (zh ?? e.out);
@@ -965,11 +978,11 @@ function buildPureOutput(){
   return out;
 }
 function renderPureCmp(){
-  const want = [['ship','飛船'], ['loc','地點'], ['ore','礦石'], ['title','任務標題'], ['mloc','任務地點']];
+  const want = [['item','物品'], ['comp','零件'], ['ship','飛船'], ['loc','地點'], ['ore','礦石'], ['title','任務標題'], ['mloc','任務地點']];
   const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/\\n/g, ' ⏎ ').replace(/&lt;\/?EM\d&gt;/g, '');
   const rows = [];
   for (const [cat, label] of want) {
-    const e = result.entries.find(x => x.cat === cat && String(finalValue(x)) !== String(pureValue(x)) && String(finalValue(x)).length < 90);
+    const e = result.entries.find(x => (cat === 'item' ? /^item_name/i.test(x.k) && x.cat !== 'comp' : x.cat === cat) && String(finalValue(x)) !== String(pureValue(x)) && String(finalValue(x)).length < 90);
     if (e) rows.push(`<tr><td>${label}</td><td>${esc(finalValue(e))}</td><td>${esc(pureValue(e))}</td></tr>`);
   }
   $('#pureCmp').innerHTML = rows.length ? `<table><thead><tr><th>類型</th><th>雙語版</th><th>全繁中版</th></tr></thead><tbody>${rows.join('')}</tbody></table>` : '';

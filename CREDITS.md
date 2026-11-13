@@ -31,12 +31,13 @@
 - 內容：簡體中文翻譯（本工具再轉為繁體）
 - 如原作者不同意本專案保留此檔案，請開 Issue，會立即移除。
 
-### 星際公民汉化组 — 飛船與任務地點中文名稱
+### 星際公民汉化组 — 飛船、任務地點與物品中文名稱
 - 網站：<https://starcitizenzw.com/>
 - 資料：<https://github.com/StarCitizenToolBox/LocalizationData>（`main` 分支「简中全汉化」4.10.2(PU)_CN_V2，2026-10-25）
 - 使用範圍：
   - `vehicle_Name*` 飛船名稱（628 條）→ `src/ship_names_zh.txt`，顯示成中文一行、英文下一行
   - `mission_location*` 任務地點（1,842 條）→ `src/mission_locations_zh.txt`，英文 3 個詞以上只用中文、1～2 個詞顯示「英文 中文」；英文縮寫（如 PYAM-FARSTAT）保留
+  - 物品、武器、裝備、零件與塗裝名稱（約 10,600 條）→ `src/item_names_full_zh.txt`，只用於「全繁中版」；以 4.10.2(PU)_CN_V2（`release/4.10.2_v2_20261014`）為主，4.10.3 英文有改的鍵改用 5.0(PTU)_CN_V1（`main`，2026-11-13）
   - 都由本工具轉成繁體
 - 如原作者不同意此使用方式，請開 Issue，會立即移除。
 
