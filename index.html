@@ -144,6 +144,18 @@ nav.cats .none{font-size:13px;color:var(--ok);padding:4px 10px 6px}
 .foot p{margin:0}
 .foot a{color:var(--accent)}
 .quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.pure{margin-top:14px;background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--r);padding:18px;display:grid;gap:12px;min-width:0}
+.pure.ready{border-color:var(--accent)}
+.purehead{display:grid;gap:6px}
+.purehead .tag{font:600 12px/1 var(--f-mono);color:var(--accent);letter-spacing:.06em}
+.purehead h2{font-size:18px;letter-spacing:0;text-transform:none;color:var(--fg);margin:0}
+.purehead p,.pure .qstat{margin:0;color:var(--muted);font-size:13.5px}
+.purecmp table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+.purecmp th,.purecmp td{text-align:left;padding:7px 8px;border-top:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
+.purecmp th{color:var(--muted);font-weight:600;font-size:12px}
+.purecmp td:first-child{color:var(--muted);width:22%}
+.purecmp td:last-child{color:var(--fg);font-weight:600}
+.purecmp p{margin:0}
 .step{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:18px 18px 16px;display:grid;gap:8px;align-content:start;min-width:0}
 .step .num{font:600 13px/1 var(--f-mono);color:var(--accent);letter-spacing:.06em}
 .step .num::before{content:"STEP "}
@@ -233,6 +245,20 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
       <a class="btn big" id="qExe" href="https://taksito.github.io/sc-zh-tw-merge/download/SC-zhTW-Installer.exe" target="_blank" rel="noopener">下載 SC-zhTW-Installer.exe</a>
       <p class="qstat">只需下載一次。關閉遊戲後執行，會自動抓「下載」資料夾裡最新的 zip。已安裝過中文時，可選「更新中文化」或「移除中文化（變回英文）」。</p>
     </div>
+  </section>
+
+  <section class="pure" id="pure" aria-label="全繁中版">
+    <div class="purehead">
+      <span class="tag">另一種版本</span>
+      <h2>全繁中版</h2>
+      <p>不要英文對照、只想看中文的話，下載這一版。以同一份漢化為底，<b>不加</b>英文船名、英文地名、礦石縮寫、任務標題的聲望／藍圖標籤和說明尾端的英文附加資訊；新版本新增的條目用補充翻譯。漢化包本來就保留英文的物品名稱、廠牌名稱仍是英文，HUD 萬向節幾個字為避免亂碼也維持英文。</p>
+    </div>
+    <div class="purecmp" id="pureCmp"><p class="muted">完成上方第 1 步後，這裡會列出兩版的差別。</p></div>
+    <div class="row">
+      <button class="pri big" id="pZip" disabled>下載全繁中版（.zip）</button>
+      <button class="btn big" id="pIni" disabled>直接下載全繁中 global.ini</button>
+    </div>
+    <p class="qstat">安裝方式和雙語版相同，安裝器會抓「下載」資料夾裡最新的 zip。想換回雙語版，重新下載上方的 zip 再執行一次安裝器即可。</p>
   </section>
 
   <details class="manual" id="manual">
@@ -397,6 +423,7 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
     <h2>更新紀錄</h2>
     <dl>
       <dt><time datetime="2026-11-13">2026-11-13</time></dt>
+      <dd><b>全繁中版</b>：三個步驟下方新增「全繁中版」下載區，只用中文：不加英文船名、英文地名、礦石縮寫、任務標題的聲望／藍圖標籤與英文附加資訊，新條目用補充翻譯；並列出兩版的差別範例。原本的雙語版不受影響。</dd>
       <dd><b>4.10.3 正式版</b>：ExoAE 與 MrKraken StarStrings 都更新到 4.10.3。正式版新增 281 條、英文有更新 41 條全部補上繁中（含之前在 PTU 翻好的互安防務任務等；新內容有光燈節與 IAE 2956 塗裝、紀念幣、雅韻版裝備、坎巴刀、門與燈光控制面板、VR 選項等），「需要你看」回到 0。物品名稱照慣例保留英文。「自訂介面」的「新增（已翻譯）」「更新（已翻譯）」可逐條查看。</dd>
       <dd><b>預計出現的艦船</b>：4.10.3 的任務說明多了大量艦船清單，「目標／敵方／增援／支援艦／偵察艦／防守艦／轟炸機」等標籤與「不法分子戰鬥艦（困難）」這類通用艦種都會自動翻成中文；StarStrings 的「冷卻時間」「除錯名稱」也一併翻譯。只多了 <code>&lt;EM&gt;</code> 強調標記或空白的英文更新不再列為「英文有更新」。</dd>
       <dt><time datetime="2026-11-01">2026-11-01</time></dt>
@@ -10953,7 +10980,8 @@ function prog(p){ for (const id of ['#prog','#qprog']) { const b=$(id); if(!b) c
 // 懶人包
 function updateQuick(){
   const ok = !!result;
-  $('#qZip').disabled = !ok; $('#qIni').disabled = !ok;
+  $('#qZip').disabled = !ok; $('#qIni').disabled = !ok; $('#pZip').disabled = !ok; $('#pIni').disabled = !ok;
+  $('#pure').classList.toggle('ready', ok); if (ok) renderPureCmp();
   $('#q1').classList.toggle('done', ok); $('#q2').classList.toggle('ready', ok);
   if (ok) {
     const v = (parsed.exo.map.get('Frontend_PU_Version')||'').trim();
@@ -11347,6 +11375,49 @@ function renderAll(){ updateQuick(); if (AUTO.has(view.cat) && view.st==='todo')
 const DECODE = (() => { const el = document.getElementById('decodeTable'); return el ? el.textContent.replace(/^\s+|\s+$/g,'').split(/\r?\n/).filter(l => /^[^=\s]+=/.test(l)) : []; })();
 try { $('#decodeCount').textContent = DECODE.length.toLocaleString(); $('#addDecode').checked = LS.get('addDecode', true); } catch(e){}
 $('#addDecode').addEventListener('change', ev => LS.set('addDecode', ev.target.checked));
+// ---------- 全繁中版：只用中文，不加英文對照與附加資訊 ----------
+const KEEP_EN_PURE = /^hud_/;   // 萬向節等 HUD 字串：中文會亂碼，維持英文
+const hasCJK = s => /[\u3400-\u9fff]/.test(s || '');
+function pureValue(e){
+  const zh = e.zh != null && e.zh !== '' ? e.zh : null;
+  switch (e.cat) {
+    case 'force': return KEEP_EN_PURE.test(e.k) ? e.out : (zh ?? e.out);
+    case 'ship':  return (shipsT && shipsT.get(e.k)) || zh || e.out;
+    case 'mloc':  return (mlocsT && mlocsT.get(e.k)) || zh || e.out;
+    case 'ore': { // 「中文 縮寫」或「中文⏎縮寫」只留中文
+      const o = String(e.out).replace(/\\n/g, '\n').split('\n')[0].replace(/\s+[A-Za-z][A-Za-z.\-]*$/, '');
+      return hasCJK(o) ? o : (zh ?? e.out);
+    }
+    case 'comp': case 'fill': case 'rank': case 'zh_only': return e.out;
+    default: return zh ?? e.out;
+  }
+}
+function buildPureOutput(){
+  const eol = parsed.exo.crlf ? '\r\n' : '\n';
+  let out = M.buildIni(result.entries, pureValue, eol);
+  if ($('#addDecode').checked && DECODE.length) out += DECODE.filter(l => !byKey.has(l.slice(0, l.indexOf('=')))).join(eol) + eol;
+  return out;
+}
+function renderPureCmp(){
+  const want = [['ship','飛船'], ['loc','地點'], ['ore','礦石'], ['title','任務標題'], ['mloc','任務地點']];
+  const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/\\n/g, ' ⏎ ').replace(/&lt;\/?EM\d&gt;/g, '');
+  const rows = [];
+  for (const [cat, label] of want) {
+    const e = result.entries.find(x => x.cat === cat && String(finalValue(x)) !== String(pureValue(x)) && String(finalValue(x)).length < 90);
+    if (e) rows.push(`<tr><td>${label}</td><td>${esc(finalValue(e))}</td><td>${esc(pureValue(e))}</td></tr>`);
+  }
+  $('#pureCmp').innerHTML = rows.length ? `<table><thead><tr><th>類型</th><th>雙語版</th><th>全繁中版</th></tr></thead><tbody>${rows.join('')}</tbody></table>` : '';
+}
+async function makeZip(text, name){
+  if (!window.JSZip) { toast('壓縮元件沒有載入，請改用「直接下載」'); return; }
+  const zip = new JSZip();
+  zip.file('global.ini', new Blob([text], {type:'text/plain;charset=utf-8'}));
+  zip.file('安裝說明.txt', INSTALL_TXT);
+  offer(name, await zip.generateAsync({type:'blob', compression:'DEFLATE', compressionOptions:{level:6}}));
+}
+$('#pZip').onclick = async () => { toast('正在產生全繁中版…'); await tick(); await makeZip(buildPureOutput(), 'global_zh-TW_pure' + SUFFIX + '.zip'); };
+$('#pIni').onclick = async () => { toast('正在產生全繁中版…'); await tick(); offer(MODE === 'ptu' ? 'global_PTU.ini' : 'global.ini', new Blob([buildPureOutput()], {type:'text/plain;charset=utf-8'})); };
+
 function buildOutput(){
   const eol = parsed.exo.crlf ? '\r\n' : '\n';
   let out = M.buildIni(result.entries, finalValue, eol);
@@ -11373,12 +11444,7 @@ async function offer(filename, data){
   const a = document.createElement('a'); a.href=url; a.download=filename; document.body.appendChild(a); a.click(); a.remove();
   setTimeout(()=>URL.revokeObjectURL(url), 5000);
 }
-$('#btnZip').onclick = async ()=>{
-  if (!window.JSZip) { toast('壓縮元件沒有載入，請改用「下載為 .txt」'); return; }
-  toast('正在產生檔案…'); await tick();
-  const zip = new JSZip();
-  zip.file('global.ini', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'}));
-  zip.file('安裝說明.txt', [
+const INSTALL_TXT = [
     '【最簡單】下載並執行安裝器：https://taksito.github.io/sc-zh-tw-merge/download/SC-zhTW-Installer.exe',
     '　它會自動找到遊戲、放入這個 zip 的 global.ini、設定 user.cfg，並備份舊檔。',
     '',
@@ -11392,10 +11458,8 @@ $('#btnZip').onclick = async ()=>{
     '5. 重新啟動遊戲',
     '',
     '【變回英文】把 user.cfg 那一行改成 g_language = english',
-  ].join('\r\n') + '\r\n');
-  const blob = await zip.generateAsync({type:'blob', compression:'DEFLATE', compressionOptions:{level:6}});
-  offer('global_zh-TW' + SUFFIX + '.zip', blob);
-};
+  ].join('\r\n') + '\r\n';
+$('#btnZip').onclick = async ()=>{ toast('正在產生檔案…'); await tick(); await makeZip(buildOutput(), 'global_zh-TW' + SUFFIX + '.zip'); };
 $('#btnTxt').onclick = async ()=>{ toast('正在產生檔案…'); await tick(); offer('global.ini.txt', new Blob([buildOutput()], {type:'text/plain;charset=utf-8'})); };
 $('#btnSaveProg').onclick = ()=> offer('sc-merge-review.json', JSON.stringify({version:3, decisions, dictTail:dictTail.value, dictTerm:dictTerm.value, ore:oreOpts(), forceExo:$('#forceExo').value, locZh:$('#locZh').value, locOn:$('#locOn').checked, shipOn:$('#shipOn').checked, mlocOn:$('#mlocOn').checked, rankOn:$('#rankOn').checked, shipWrap:+$('#shipWrap').value, shipLayout:$('#shipLayout').value, fillZh:$('#fillZh').value}, null, 0));
 $('#f-prog').addEventListener('change', async ev=>{

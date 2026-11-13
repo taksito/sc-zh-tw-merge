@@ -1,6 +1,7 @@
 # 更新紀錄
 
 ## 2026-11-13
+- **全繁中版**：網頁三個步驟下方新增「全繁中版」下載（`global_zh-TW_pure.zip`／直接下載 global.ini）。只用中文，不加英文船名、英文地名、礦石縮寫、任務標題標籤與 ExoAE 附加資訊；新條目用補充翻譯。HUD 萬向節字串為避免亂碼維持英文。
 - **4.10.3 正式版**：ExoAE、MrKraken StarStrings 更新到 4.10.3。正式版新增 281 條、英文有更新 41 條全部補上繁中，「需要你看」回到 0。補充翻譯檔改名為 `src/extra_zh.txt`，正式版與 PTU 共用（只套用在來源裡有的鍵）。物品名稱照慣例保留英文。
 - **預計出現的艦船**：任務說明的艦船清單標籤（Targets、Hostiles、Reinforcements、Support Ships、Scouts、Defenders、Bombers 等）與通用艦種（例如 Hard Criminal Large Combat Ship → 不法分子大型戰鬥艦（困難））自動翻譯；StarStrings 的 Cooldown、Debug Name 視為附加資訊並翻譯。
 - 「英文有更新」改為忽略 `<EM>` 強調標記與空白差異。
