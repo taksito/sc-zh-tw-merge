@@ -30,6 +30,15 @@ for k in sorted(set(exo) | set(half)):
     changed = k in exo and exo.get(k) != base.get(k)
     v = f5.get(k) if changed and cjk(f5.get(k)) else f2.get(k) if cjk(f2.get(k)) else f5.get(k) if cjk(f5.get(k)) else None
     if v: out.append(f'{k}={v.strip()}')
+# 手動補：漢化組也沒有、遊戲卻會用到的名稱（簡體）
+MANUAL = {
+    'item_Nameksar_lmg_energy_01': '裁决 轻机枪',
+    'item_Nameksar_lmg_energy_01_short': '裁决 轻机枪',
+    'item_Nameksar_lmg_energy_01_store01': '裁决 轻机枪 衍化',
+    'item_Nameksar_lmg_energy_01_store01_short': '裁决 轻机枪 衍化',
+}
+have = {l.split('=', 1)[0] for l in out}
+out += [f'{k}={v}' for k, v in MANUAL.items() if k not in have]
 head = ['# 全繁中版用的物品中文名稱（簡體原文，工具會轉成繁體）',
         '# 來源：星際公民汉化组「简中全汉化」https://github.com/StarCitizenToolBox/LocalizationData',
         '#   4.10.2(PU)_CN_V2（release/4.10.2_v2_20261014）為主；4.10.3 英文有改的鍵改用 5.0(PTU)_CN_V1（main，2026-11-13）',

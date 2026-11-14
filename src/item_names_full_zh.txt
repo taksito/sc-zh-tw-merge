@@ -10597,3 +10597,7 @@ vehicle_nameMISC_Starlancer_MAX=武藏 星际枪骑兵 MAX
 vehicle_nameMISC_Starlancer_MAX_short=星际枪骑兵 MAX
 vehicle_nameMISC_Starlancer_TAC=武藏 星际枪骑兵 TAC
 vehicle_nameMISC_Starlancer_TAC_short=星际枪骑兵 TAC
+item_Nameksar_lmg_energy_01=裁决 轻机枪
+item_Nameksar_lmg_energy_01_short=裁决 轻机枪
+item_Nameksar_lmg_energy_01_store01=裁决 轻机枪 衍化
+item_Nameksar_lmg_energy_01_store01_short=裁决 轻机枪 衍化

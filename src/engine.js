@@ -219,7 +219,12 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     if (extra) {
       var zhHad = new Set(zhRaw.map.keys()); // 漢化包原本就有的鍵：分辨「新增」或「更新」
       const map = new Map(zhRaw.map), keys = zhRaw.keys.slice(), t = new Map(zhT);
-      for (const [k, v] of extra) { if (!exo.map.has(k) && !map.has(k)) continue; if (!map.has(k)) keys.push(k); map.set(k, v); t.set(k, v); }
+      for (const [k0, v] of extra) {
+        // 鍵名前加「+」：遊戲會用到、但所有語言包都缺的鍵，強制補上
+        const add = k0.startsWith('+'), k = add ? k0.slice(1) : k0;
+        if (!add && !exo.map.has(k) && !map.has(k)) continue;
+        if (!map.has(k)) keys.push(k); map.set(k, v); t.set(k, v);
+      }
       zhRaw = Object.assign({}, zhRaw, { map, keys }); zhT = t;
     }
     const tailDict = parseDict(opts.tailDict != null ? opts.tailDict : DEFAULT_TAIL_DICT);
@@ -377,7 +382,7 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
     // 另外翻譯的條目（PTU）：單獨列成「新增（已翻譯）」「更新（已翻譯）」，方便查看
     if (extra) {
       for (const e of entries) {
-        if (!extra.has(e.k) || e.cat === 'issue') continue;
+        if (!(extra.has(e.k) || extra.has('+' + e.k)) || e.cat === 'issue') continue;
         const c = zhHad.has(e.k) ? 'tr_upd' : 'tr_new';
         stats[e.cat]--; stats[c] = (stats[c] || 0) + 1;
         e.from = e.from || e.cat; e.cat = c;
