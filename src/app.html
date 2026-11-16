@@ -244,7 +244,7 @@ nav.cats .grp{font-size:11.5px;letter-spacing:.06em;color:var(--muted);padding:1
     <div class="purehead">
       <span class="tag">另一種版本</span>
       <h2>全繁中版</h2>
-      <p>不要英文對照、只想看中文的話，下載這一版。以同一份漢化為底，<b>不加</b>英文船名、英文地名、礦石縮寫、任務標題的聲望／藍圖標籤和說明尾端的英文附加資訊；物品、武器、裝備與零件名稱改用<a href="https://github.com/StarCitizenToolBox/LocalizationData" target="_blank" rel="noopener">星際公民汉化组「全汉化」</a>的中文名稱；新版本新增的條目用補充翻譯。只剩型號代碼（如 PS-10）和少數漢化組也沒翻的名稱是英文；HUD 萬向節幾個字為避免亂碼維持英文。</p>
+      <p>不要英文對照、只想看中文的話，下載這一版。以同一份漢化為底，<b>不加</b>英文船名、英文地名和礦石縮寫；任務標題的聲望／藍圖標籤，以及說明尾端的獲得聲望、可能獲得的藍圖、預計出現的艦船都保留並翻成中文；物品、武器、裝備與零件名稱改用<a href="https://github.com/StarCitizenToolBox/LocalizationData" target="_blank" rel="noopener">星際公民汉化组「全汉化」</a>的中文名稱；新版本新增的條目用補充翻譯。只剩型號代碼（如 PS-10）和少數漢化組也沒翻的名稱是英文；HUD 萬向節幾個字為避免亂碼維持英文。</p>
     </div>
     <div class="purecmp" id="pureCmp"><p class="muted">完成上方第 1 步後，這裡會列出兩版的差別。</p></div>
     <div class="row">
@@ -415,6 +415,8 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
   <section class="changelog" aria-label="更新紀錄">
     <h2>更新紀錄</h2>
     <dl>
+      <dt><time datetime="2026-11-16">2026-11-16</time></dt>
+      <dd><b>全繁中版加回聲望與獎勵</b>：任務標題的 [聲望] [藍圖] 標籤，以及說明尾端的「獲得聲望」「可能獲得的藍圖」「預計出現的艦船」都保留在全繁中版；藍圖清單的物品與零件名稱、艦船清單的船名會換成中文（例如「- 帕利塞德（護盾）」）。</dd>
       <dt><time datetime="2026-11-14">2026-11-14</time></dt>
       <dd><b>修正 @item_Nameksar_lmg_energy_01</b>：4.10.3 新武器「裁決」輕機槍（Verdict LMG）的基本款名稱與說明，所有語言包都漏了，遊戲裡會直接顯示鍵名。現在補上名稱、簡稱與說明（全繁中版顯示「裁決 輕機槍」），衍化版說明也補上製造商與類型。</dd>
       <dt><time datetime="2026-11-13">2026-11-13</time></dt>
@@ -970,23 +972,78 @@ function pureBase(e){
       return hasCJK(o) ? o : (zh ?? e.out);
     }
     case 'comp': case 'fill': case 'rank': case 'zh_only': return e.out;
-    default: return zh ?? e.out;
+    default:
+      // 任務標題的聲望／藍圖標籤、說明尾端的聲望、藍圖、預計出現的艦船：保留，名稱換中文
+      if (e.added && /^(title|tail|issue|tr_new|tr_upd)$/.test(e.cat)) return pureTail(e.out);
+      return zh ?? e.out;
   }
 }
+// 英文名稱 → 中文（藍圖清單、艦船清單用）
+let EN2ZH = null, EN2SHIP = null;
+const PART_TYPE = {'Cooler':'冷卻器','Powerplant':'發電機','Power Plant':'發電機','Shield':'護盾','Radar':'雷達','Mining Laser':'採礦雷射',
+  'Quantum Drive':'量子驅動器','Fuel Nozzle':'燃料噴嘴','Salvage Mod':'打撈模組','Modified':'改裝版','Mining Module':'採礦模組'};
+function buildNameMaps(){
+  EN2ZH = new Map(); EN2SHIP = new Map();
+  const norm = s => String(s).trim().toLowerCase().replace(/\s+/g, ' ');
+  for (const e of result.entries) {
+    const k = e.k, en = e.exo; if (!en) continue;
+    const iz = /^item/i.test(k) && !/desc|_short$/i.test(k) && String(en).length < 70 ? ((itemsT && itemsT.get(k)) || (hasCJK(e.zh) ? e.zh : null)) : null;
+    if (iz) {
+      const zh = iz, mc = M.COMP_RE ? M.COMP_RE.exec(en) : null;
+      for (const n of [en, mc && mc[4]]) if (n && !EN2ZH.has(norm(n))) EN2ZH.set(norm(n), zh);
+    }
+    if (/^vehicle_name/i.test(k) && shipsT && shipsT.get(k)) {
+      const z = shipsT.get(k).split('\\n')[0];
+      for (const n of [norm(en), norm(en).replace(/^\S+ /, '')]) if (!EN2SHIP.has(n)) EN2SHIP.set(n, z);
+    }
+  }
+}
+function bpName(n){
+  const norm = s => String(s).trim().toLowerCase().replace(/\s+/g, ' ');
+  const m = /^(.*?)\s*\(([^)]*)\)\s*$/.exec(n), base = m ? m[1] : n, tag = m ? m[2] : '';
+  let zh = EN2ZH.get(norm(n)) || EN2ZH.get(norm(base));
+  if (!zh) for (const t of Object.keys(PART_TYPE)) if (norm(base).endsWith(' ' + t.toLowerCase())) { zh = EN2ZH.get(norm(base.slice(0, -t.length))); if (zh) break; }
+  if (!zh) return tag && PART_TYPE[tag] ? base + '（' + PART_TYPE[tag] + '）' : n;
+  if (!tag) return zh;
+  const cap = /^(\d+) cap$/i.exec(tag);
+  const tz = cap ? cap[1] + ' 發' : PART_TYPE[tag] || tag;
+  return hasCJK(zh) && zh.includes(tz) ? zh : zh + '（' + tz + '）';
+}
+function shipZh(x){
+  const norm = s => String(s).trim().toLowerCase().replace(/\s+/g, ' ');
+  const n = norm(x), z = EN2SHIP.get(n) || EN2SHIP.get(n.replace(/^\S+ /, ''));
+  return z ? z + (/\s$/.test(x) ? ' ' : '') : x;
+}
+function pureTail(s){
+  if (!EN2ZH) buildNameMaps();
+  const norm = x => String(x).trim().toLowerCase().replace(/\s+/g, ' ');
+  return String(s)
+    .replace(/(^|\\n)- ([^\\]+?)(?=\\n|$)/g, (m, a, n) => a + '- ' + bpName(n))
+    .replace(/(\d+x )([A-Za-z][^、,\\（]*?)(?=、|, | 或 |\\n|$|（)/g, (m, a, n) => a + n.split(' / ').map(x => shipZh(x)).join(' / '));
+}
+
 function buildPureOutput(){
+  EN2ZH = null;
   const eol = parsed.exo.crlf ? '\r\n' : '\n';
   let out = M.buildIni(result.entries, pureValue, eol);
   if ($('#addDecode').checked && DECODE.length) out += DECODE.filter(l => !byKey.has(l.slice(0, l.indexOf('=')))).join(eol) + eol;
   return out;
 }
 function renderPureCmp(){
-  const want = [['item','物品'], ['comp','零件'], ['ship','飛船'], ['loc','地點'], ['ore','礦石'], ['title','任務標題'], ['mloc','任務地點']];
+  EN2ZH = null;
+  const want = [['item','物品'], ['comp','零件'], ['ship','飛船'], ['loc','地點'], ['ore','礦石'], ['mloc','任務地點']];
   const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])).replace(/\\n/g, ' ⏎ ').replace(/&lt;\/?EM\d&gt;/g, '');
   const rows = [];
   for (const [cat, label] of want) {
     const e = result.entries.find(x => (cat === 'item' ? /^item_name/i.test(x.k) && x.cat !== 'comp' : x.cat === cat) && String(finalValue(x)) !== String(pureValue(x)) && String(finalValue(x)).length < 90);
     if (e) rows.push(`<tr><td>${label}</td><td>${esc(finalValue(e))}</td><td>${esc(pureValue(e))}</td></tr>`);
   }
+  // 任務標題的聲望標籤兩版都保留；說明尾端的藍圖／艦船清單在全繁中版換成中文名稱
+  const t = result.entries.find(x => x.cat === 'title' && String(finalValue(x)).length < 70);
+  if (t) rows.push(`<tr><td>任務標題</td><td>${esc(finalValue(t))}</td><td>${esc(pureValue(t))}</td></tr>`);
+  const tail3 = v => String(v).split('\\n').filter(l => l.trim()).slice(-3).join('\\n');
+  const d = result.entries.find(x => x.cat === 'tail' && /\\n- /.test(x.added || '') && tail3(finalValue(x)) !== tail3(pureValue(x)));
+  if (d) rows.push(`<tr><td>任務說明尾端</td><td>${esc(tail3(finalValue(d)))}</td><td>${esc(tail3(pureValue(d)))}</td></tr>`);
   $('#pureCmp').innerHTML = rows.length ? `<table><thead><tr><th>類型</th><th>雙語版</th><th>全繁中版</th></tr></thead><tbody>${rows.join('')}</tbody></table>` : '';
 }
 async function makeZip(text, name){

@@ -603,6 +603,6 @@ Carinite => Carinite
     return '\ufeff' + lines.join(eol || '\n') + (eol || '\n');
   }
 
-  const api = { parseIni, merge, buildIni, parseDict, applyDict, textLen, CJK, DEFAULT_TAIL_DICT, DEFAULT_TERM_DICT, DEFAULT_ORE_ZH, DEFAULT_ORE_ABBR, DEFAULT_CLASS_MAP, DEFAULT_FORCE_EXO, DEFAULT_LOC_ZH, DEFAULT_FILL };
+  const api = { COMP_RE, parseIni, merge, buildIni, parseDict, applyDict, textLen, CJK, DEFAULT_TAIL_DICT, DEFAULT_TERM_DICT, DEFAULT_ORE_ZH, DEFAULT_ORE_ABBR, DEFAULT_CLASS_MAP, DEFAULT_FORCE_EXO, DEFAULT_LOC_ZH, DEFAULT_FILL };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.SCMerge = api;
 })(this);
