@@ -415,6 +415,8 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
   <section class="changelog" aria-label="更新紀錄">
     <h2>更新紀錄</h2>
     <dl>
+      <dt><time datetime="2026-11-18">2026-11-18</time></dt>
+      <dd><b>補上 ExoAE 漏掉的 146 條（含德雷克 劫掠者）</b>：ExoAE 4.10.3 預先版漏了新飛船 Drake Marauder 與 IAE 2956 活動的條目，遊戲裡會顯示 <code>@vehicle_NameDRAK_Marauder</code> 這類鍵名。現在英文改用 MrKraken StarStrings 正式版補上，中文取自星際公民汉化组 4.10.3 正式版臨時漢化；船名照樣是「德雷克 劫掠者 ⏎ Drake Marauder」。</dd>
       <dt><time datetime="2026-11-16">2026-11-16</time></dt>
       <dd><b>全繁中版加回聲望與獎勵</b>：任務標題的 [聲望] [藍圖] 標籤，以及說明尾端的「獲得聲望」「可能獲得的藍圖」「預計出現的艦船」都保留在全繁中版；藍圖清單的物品與零件名稱、艦船清單的船名會換成中文（例如「- 帕利塞德（護盾）」）。</dd>
       <dt><time datetime="2026-11-14">2026-11-14</time></dt>
@@ -455,6 +457,12 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
 </script>
 <script type="text/plain" id="itemNamesFull">
 /*ITEMSFULL*/
+</script>
+<script type="text/plain" id="missEn">
+/*MISSEN*/
+</script>
+<script type="text/plain" id="missZh">
+/*MISSZH*/
 </script>
 <script type="text/plain" id="mlocNames">
 /*MLOCS*/
@@ -697,6 +705,9 @@ function readEmbedded(id){ const m = new Map(), el = document.getElementById(id)
 const SHIPS_RAW = readEmbedded('shipNames'), MLOCS_RAW = readEmbedded('mlocNames');
 // 全繁中版用的物品中文名稱（汉化组全汉化）
 const ITEMS_RAW = readEmbedded('itemNamesFull');
+// ExoAE 漏掉的鍵：英文（StarStrings）與中文（汉化组，簡體）
+const MISS_EN = readEmbedded('missEn'), MISS_RAW = readEmbedded('missZh');
+let missT = null;
 // 另外補的繁中翻譯（新版本新增／英文有更新的條目），正式版與 PTU 共用
 const EXTRA_ZH = readEmbedded('ptuZh');
 let shipsT = null, mlocsT = null, itemsT = null;
@@ -706,7 +717,7 @@ function convertMap(raw, mode){
   const vals = conv([...raw.values()].join('\n')).split('\n');
   const out = new Map(); keys.forEach((k, i) => out.set(k, vals.length === keys.length ? vals[i] : raw.get(k))); return out;
 }
-function convertShips(mode){ shipsT = convertMap(SHIPS_RAW, mode); mlocsT = convertMap(MLOCS_RAW, mode); itemsT = convertMap(ITEMS_RAW, mode); }
+function convertShips(mode){ shipsT = convertMap(SHIPS_RAW, mode); mlocsT = convertMap(MLOCS_RAW, mode); itemsT = convertMap(ITEMS_RAW, mode); missT = convertMap(MISS_RAW, mode); }
 function applyTerms(map){
   const d = M.parseDict(dictTerm.value);
   if (!d.length) return map;
@@ -747,7 +758,7 @@ function remerge(){
   LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
   LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('locZh', $('#locZh').value); LS.set('fillZh', $('#fillZh').value); LS.set('locOn', $('#locOn').checked); LS.set('shipOn', $('#shipOn').checked); LS.set('mlocOn', $('#mlocOn').checked); LS.set('rankOn', $('#rankOn').checked); LS.set('shipWrap', +$('#shipWrap').value); LS.set('shipLayout', $('#shipLayout').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
   const zhT = applyTerms(zhT0);
-  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, rankLv: $('#rankOn').checked, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value, zhExtra: EXTRA_ZH});
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, rankLv: $('#rankOn').checked, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value, zhExtra: MODE === 'ptu' || !missT ? EXTRA_ZH : new Map([...[...missT].filter(([k]) => !/^vehicle_name/i.test(k)), ...EXTRA_ZH]), exoFill: MODE === 'ptu' ? null : MISS_EN});
   byKey = new Map(result.entries.map(e=>[e.k,e]));
   $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
   view.page=0; renderAll();
@@ -956,7 +967,7 @@ $('#addDecode').addEventListener('change', ev => LS.set('addDecode', ev.target.c
 const KEEP_EN_PURE = /^hud_/;   // 萬向節等 HUD 字串：中文會亂碼，維持英文
 const hasCJK = s => /[\u3400-\u9fff]/.test(s || '');
 function pureValue(e){
-  const v = pureBase(e), full = itemsT && itemsT.get(e.k);
+  const v = pureBase(e), full = (itemsT && itemsT.get(e.k)) || (MODE !== 'ptu' && missT && missT.get(e.k));
   if (!full) return v;
   if (e.cat === 'comp') { const m = /^(\S*?\d[A-Da-d])-/.exec(e.out); return m ? m[1] + '-' + full : full; } // 軍規1B-德爾斐 RS-10
   return hasCJK(v) ? v : full;

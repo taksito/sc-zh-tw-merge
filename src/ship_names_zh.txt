@@ -629,3 +629,5 @@ vehicle_NameXNAA_SantokYai=奥波亚 桑托起亚
 vehicle_NameXNAA_SantokYai_short=桑托起亚
 vehicle_Nameprobe_comms_1_a=CHCO 奥瑞斯 被动数据收集监测设备
 vehicle_Nameprobe_comms_1_a_short=奥瑞斯 被动数据收集监测设备
+vehicle_NameDRAK_Marauder=德雷克 劫掠者
+vehicle_NameGAMA_Hyun=盖塔克 Hyun

@@ -215,6 +215,12 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
   function merge(zhRaw, zhT, exo, van, opts) {
     opts = opts || {};
     // 額外的繁中翻譯（例如 PTU 新增／更新條目）：直接放進漢化資料，之後照一般規則處理
+    // ExoAE 漏掉的鍵：用其他英文來源（MrKraken StarStrings）補進英文資料
+    if (opts.exoFill && opts.exoFill.size) {
+      const map = new Map(exo.map), keys = exo.keys.slice();
+      for (const [k, v] of opts.exoFill) if (!map.has(k)) { keys.push(k); map.set(k, v); }
+      exo = Object.assign({}, exo, { map, keys });
+    }
     const extra = opts.zhExtra && opts.zhExtra.size ? opts.zhExtra : null;
     if (extra) {
       var zhHad = new Set(zhRaw.map.keys()); // 漢化包原本就有的鍵：分辨「新增」或「更新」

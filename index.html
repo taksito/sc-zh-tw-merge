@@ -423,6 +423,8 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
   <section class="changelog" aria-label="更新紀錄">
     <h2>更新紀錄</h2>
     <dl>
+      <dt><time datetime="2026-11-18">2026-11-18</time></dt>
+      <dd><b>補上 ExoAE 漏掉的 146 條（含德雷克 劫掠者）</b>：ExoAE 4.10.3 預先版漏了新飛船 Drake Marauder 與 IAE 2956 活動的條目，遊戲裡會顯示 <code>@vehicle_NameDRAK_Marauder</code> 這類鍵名。現在英文改用 MrKraken StarStrings 正式版補上，中文取自星際公民汉化组 4.10.3 正式版臨時漢化；船名照樣是「德雷克 劫掠者 ⏎ Drake Marauder」。</dd>
       <dt><time datetime="2026-11-16">2026-11-16</time></dt>
       <dd><b>全繁中版加回聲望與獎勵</b>：任務標題的 [聲望] [藍圖] 標籤，以及說明尾端的「獲得聲望」「可能獲得的藍圖」「預計出現的艦船」都保留在全繁中版；藍圖清單的物品與零件名稱、艦船清單的船名會換成中文（例如「- 帕利塞德（護盾）」）。</dd>
       <dt><time datetime="2026-11-14">2026-11-14</time></dt>
@@ -11399,6 +11401,307 @@ item_Nameksar_lmg_energy_01_store01=裁决 轻机枪 衍化
 item_Nameksar_lmg_energy_01_store01_short=裁决 轻机枪 衍化
 
 </script>
+<script type="text/plain" id="missEn">
+# ExoAE 漏掉的鍵的英文原文（取自 MrKraken StarStrings 正式版）；ExoAE 補上後就不會用到
+Event_shipName_Centaurus=CENTAURUS
+Event_shipName_Hermes=HERMES
+Event_shipName_Liberator=LIBERATOR
+Event_shipName_Marauder=MARAUDER
+Event_shipName_Moth=MOTH
+Event_shipName_Skylark=SKYLARK
+Event_shipName_StarRunner=STAR RUNNER
+Event_shipTitle_Mercury=The Mercury
+IAE_2956_ATLS_GEO_Keystone_Desc=Manufacturer: Argo Astronautics\nFocus: Mining\n\nBuilding upon the rock-solid foundation offered by the ATLS, the engineers at Argo Astronautics have masterfully converted the power suit into the ideal personal mining platform.  Featuring a mining laser, tractor beam and removable ore storage, the ATLS GEO is an all-in-one solution for harvesting the maximum potential value from your deposits.\n\nCrisp white with blue accents, the Keystone livery celebrates the workers whose mining, refining, hauling, salvaging, and more have made the empire what it is today.
+IAE_2956_Aurora_Mk2_Cloudbuster_Desc=Manufacturer: Roberts Space Industries\nFocus: Starter / Light Freight\n \nA new take of the classic ship, Roberts Space Industries has reimagined the tried-and-true Aurora from the struts up. Introducing the Aurora Mk II. Everything from the ship’s performance, usability, to its styling has been overhauled with a new generation of pilots in mind. Plus, this latest version introduces a new trick for the Aurora series – swappable modules. Rather than locking pilots into a single career path, these modules allow for straightforward operational specialization from the comfort of your hangar. Whether you’re a first-time shipowner, or a long-time pilot ready for an upgrade to your daily flyer, the Aurora Mk II is waiting for you.\n\nThe Cloudbuster livery utilizes a contrasting pale gray against a rich blue, finished with playful yellow highlights.
+IAE_2956_Avenger_Titan_DeBiasio_Desc=Manufacturer: Aegis Dynamics\nFocus: Light Freight \n\nLacking the Prisoner Cells of the Stalker or the EMP Generator of the Warlock, the Titan’s hold is free to carry cargo. Couple that available space with the Avenger’s tried and true combat abilities and you’ve got a light cargo hauler that’s more than capable of handling itself in a fight.\n\nTo honor the brave explorers that brought us to space and support those currently seeking new frontiers, the Interstellar Cartography Center (ICC) commissioned this special livery for the Avenger. Named in honor of former ICC Director Loretta De Biasio, this livery mixes orange and grey with black highlights. All proceeds from the sale of the De Biasio livery goes directly to the ICC to support their efforts in "Charting the Way Ahead."
+IAE_2956_BlueTemplarArmor=Geist Epoque II Armor
+IAE_2956_BlueTemplarBundle=Epoque
+IAE_2956_Bundle=Bundle
+IAE_2956_C1_Spirit_Valor_Desc=Manufacturer: Crusader Industries\nFocus: Light Freight\n\nCrusader Industries brings its usual commitment to excellence directly to the civilian market with the C1 Spirit, a mid-size multi-purpose starship built for cargo transport and delivery but packing enough versatility to tackle multiple roles and unpredictable jobs.\n\nWhere ever your mission takes you, this livery featuring dark grey with sky blue highlights and white trim will make sure that your Crusader Spirit looks the part.
+IAE_2956_Constellation_Mk5_Patrician_Desc=Manufacturer: RSI\nFocus: Medium Freight / Gunship\n\nThe Constellation Mk V Centaurus reimages RSI's classic, versatile multi-crew ship for a new generation. Its bold new look honors the last-generation Constellation while updating the design to take advantage of the increased size to feature a larger crew mess and cargo bay. Bigger turrets and missiles racks provide additional defense, and an updated snub-fighter docking port is the perfect home for the RSI Skylark. Together these changes elevate the Mk V into a truly modern ship ready and raring to go on any adventure.\n\nWhen it comes to making a statement, the Patrician livery has you covered. Featuring stark white and gray with contrasting orange highlights, your enemies will be admiring your ship for as long as it takes to shoot them down.
+IAE_2956_Cyclone_XXXX_Desc=Manufacturer: Tumbril Land Systems\nFocus: Passenger\n\nWith a potent combination of speed, maneuverability, and rugged durability, the Cyclone is a perfect choice for local deliveries and transport between planetside homesteads and outposts.
+IAE_2956_Defender_Ocellus_Desc=Manufacturer: Banu \nFocus: Light Fighter\n\nMeet the Banu Defender, a multi-crew fighter whose patchwork design highlights technology from a variety of species. Featuring modest accommodations for its crew and easy access to components, the Defender gets its name from the role it serves: the first line of defense against enemy attacks. That's why the Defender makes the ideal companion to the Merchantman: one to do the heavy hauling and the other to perform the deadly dogfighting.\n\nThe Ocellus livery adapts and updates the iconic colors and design used on some Tevarin ships to bring a striking new look to the Defender. The livery gives the fuselage a prominent red section while shimmering green covers the rest of the ship. Thick grey lines swoop through both colors to provide a unique geometric pattern.
+IAE_2956_DisruptCamoArmor=Testudo Disrupt Camo Armor
+IAE_2956_DisruptCamoBundle=Disrupt Camo
+IAE_2956_Fortune_Sunspot_Desc=Manufacturer: MISC\nFocus: Light Salvage\n\nFor those ready to elevate their profession to the next level, the engineers at MISC have carefully crafted the Fortune as a best-in-class small reclamation vessel. Equipped with a versatile salvage arm and a cargo lift, the MISC Fortune is built from the struts up to turn trash into treasure.\n\nThe deep contrast of the warm orange against the cold black of the Sunspot livery highlights the distinctive profile of the Fortune.
+IAE_2956_Freelancer_MAX_XXXX_Desc=Manufacturer: MISC\nFocus: Medium Freight\n\nFreelancer variant with additional cargo capacity at the expense of weapons. The Freelancer MAX variant sacrifices weaponry for an increased cargo capacity making it ideal for equipment or raw materials transport.
+IAE_2956_Galaxy_XXXX_Desc=Manufacturer: RSI\nFocus: Modular\n\nFeaturing a fully modular design and an onboard hangar capable of deploying small ships, the cutting-edge Galaxy has versatility built into its DNA with a highly configurable main cabin that can be outfitted with comprehensive facilities to support cargo, medical, or refining operations.
+IAE_2956_GideonArmor=Morozov Gideon Armor
+IAE_2956_GideonBundle=Gideon
+IAE_2956_GoldsmithArmor=Bellator Goldsmith Suit
+IAE_2956_GoldsmithBundle=Goldsmith
+IAE_2956_Golem_Faultline_Desc=Manufacturer: Drake Interplanetary\nFocus: Starter / Light Mining\n\nWith the Golem, Drake designed the ideal ship for those interested in starting a mining career. The ship features a bespoke mining laser and the capacity to carry 32 SCU of valuable resources. In classic Drake fashion, the Golem is a purpose-built ship that prioritizes function over frills.\n\nThe Golem gets a distinct look with the Faultline livery with strategically placed yellow and orange stripes making the ship more visible.
+IAE_2956_HM6_Centurion_Sandstorm_Desc=Manufacturer: Anvil Aerospace\nFocus: Anti-Air\n\nBuilt on Anvil's popular HM6 Platform, the Centurion presents a tactical solution for short-range anti-aircraft operations. Thanks to the Centurion’s custom energy-based AA turret, your forces can establish ground superiority by assuring immediate threats from above are dealt with quickly and efficiently.\n\nOutfit your HM6-series vehicle in dark tan and green camo with the Sandstorm Camo livery. The looks allows this battlefield beast to blend into a wide variety of terrains.
+IAE_2956_HeartthrobArmor=Chiron Heartthrob Armor
+IAE_2956_HeartthrobBundle=Heartthrob
+IAE_2956_Hermes_Disco_Desc=Manufacturer: Roberts Space Industries\nFocus: Medium Freight\n\nUnlike its mythical namesake, the RSI Hermes is no trickster - it really is that fast. Featuring a bespoke, innovative thruster-package, an impressive array of defensive measures, and a sizeable cargo hold, the Hermes is ready to speed deliveries to their final destinations. Even to dangerous drop-offs other haulers wouldn’t dare to go.\n\nEquip the ship livery used by ace pilot Disco in the classic children's cartoon Rory Nova. While it turns the Hermes metallic dark blue, black, and red, whether you turn into the 'dynamic, instinctive spacecraft operator' that inspired the livery's name is up to you.
+IAE_2956_HighSecArmor=Monde HighSec Armor
+IAE_2956_HighSecBundle=HighSec
+IAE_2956_HoverQuad_Lightspeed_Desc=Manufacturer: Consolidated Outland\nFocus: Passenger\n\nDesigned as a companion ground vehicle for the Nomad, the HoverQuad's sleek angular frame utilizes four grav-lev pads for maximum maneuverability, making it the perfect transport across all kinds of surfaces.\n\nSpeed across picturesque landscapes in this sublime HoverQuad Lightspeed livery, which is orange with yellow flourishes.
+IAE_2956_Hyun_XXXX_Desc,P=Manufacturer: Gatac Manufacture\nFocus: Generalist\n\nA proper ship shouldn’t be about limits, but about meeting the new possibilities that arise each day. From the renowned Xi’an manufacturer House Gatac comes the Hyun, an industrial vessel whose specialization is adaptability; coming standard with equipment for both mining and salvaging.
+IAE_2956_Liberator_XXXX_Desc,P=Manufacturer: Anvil Aerospace\nFocus: Transporter\n\nAnvil continues its tradition of excellence with the Liberator, an open-air vehicle carrier that applies the tradition of long-range transport to a smaller scale. Designed to be as capable as similarly spec’d military carriers but tailored to the civilian market, the Liberator puts your fleet on the front lines of any operation.
+IAE_2956_MDC_XXXX_Desc=Manufacturer: Greycat Industrial\nFocus: Anti - Air\n \nBuilding upon a robust and sturdy industrial frame, Greycat has crafted the MDC Mobile Defense Center into an effective combat vehicle ready to protect your interests from remote mining sites to patrolling high-value processing centers thanks to its mounted PDS turret.
+IAE_2956_MOTH_XXXX_Desc,P=Manufacturer: Argo Astronautics\nFocus: Medium Salvage\n\nExperience Argo's centuries of industrial expertise with the MOTH. Using a tried and tested chassis as its foundation, the MOTH features three dedicated salvage turrets and an external salvage autoloader, so a four person crew can strip, rip, and store salvage as fast as they can get to it.\n\nFeaturing a metallic finish with grey highlights, the Stargazer livery will fittingly reflect starlight off the MOTH.
+IAE_2956_Marauder_XXXX_Desc=Manufacturer: Drake Interplanetary\nFocus: Medium Fighter\n\nIn a universe as treacherous as this one, pilots need a ship that flies faster and hits heavier - the Drake Marauder. Fitted with powerful main thrusters for quick hit-and-runs, and armed to the teeth with firepower, by the time your enemies spot you, it'll already be too late.
+IAE_2956_Mercury_Blackguard_Desc=Manufacturer: Crusader Industries\nFocus: Medium Freight\n\nIf you need it there fast and unscathed, the Mercury checks all the boxes expected of a dependable courier vessel and then some. Built with the same engineering and design principles that have made Crusader Industries the go-to manufacturer for galactic transport on any scale, the Mercury Star Runner will let you stay ahead of schedule, trouble, and the competition.\n\nFeaturing a blue left wing and highlights, the Blackguard livery will make your Mercury Star Runner stand out from the crowd.
+IAE_2956_Nomad_IceBreak_Desc=Manufacturer: Consolidated Outland \nFocus: Starter / Light Freight\n\nWith the versatility of a medium-sized multi-purpose freighter packed into a stylish, compact frame, the Consolidated Outland Nomad is the model of self-sufficiency, the spirit of the open sky, and the perfect solution for anyone yearning to start a brand-new adventure.\n\nEquip your Avenger with a paint scheme cooler than a snow storm. The IceBreak livery mixes crisp, cool white with a frostbitten blue for an exciting look suitable for any season.
+IAE_2956_Nox_Overdrive_Desc=Manufacturer: Aopoa\nFocus: Racing\n\nHit the skids with the 2947 Nox. This speedy and maneuverable open-canopy racer from Aopoa is capable of zipping along planet surfaces or deep space. Available for the first time in Human space, the Nox has been specifically redesigned for Human pilots and is ready to race.\n\nBlast past other racers in your Nox with the Overdrive livery, which features a stylish blend red and silver coloring.
+IAE_2956_Prospector_Nebula_Desc=Manufacturer: MISC\nFocus: Light Mining\n\nFor years, the Prospector has been the universe’s preferred mining vessel for solo operators. Featuring MISC’s sleek design sensibility and a bevy of upgraded high-tech mining tools, the 2947 Prospector perfectly balances form and functionality.\n\nBalancing black and white, the Nebula livery for the Prospector lets you blast rocks in style.
+IAE_2956_Prowler_Elysian_Desc=Manufacturer: Esperia\nFocus: Drop Ship\n\nNamed after the UPE military designation, the Prowler is a modernized version of the infamous Tevarin boarding craft from the First Tevarin War. The Prowler’s effectiveness as a rapid personnel deployment vehicle was mainly due to its silence. With the Prowler, you will find the perfect fusion of two cultures: the elegance and effectiveness of the Tevarin war machine combined with the reliability of modern UEE technology.\n\nBeautiful blues swirl together with the Elysian livery to bring a truly special look to the Prowler.
+IAE_2956_ROC_Harvester_Desc=Manufacturer: Greycat Industrial\nFocus: Light Mining\n\nBy focusing on the essentials of terrestrial-based mining, Greycat Industrial designed their hardworking, no-nonsense ROC (Remote Ore Collector) to complement the miners who use it. From its precision gimbaled mining arm to its all-terrain wheels, this solo-operated vehicle shows how important it is to have the right tool for the job.\n\nThe Harvester livery for the ROC and ROC-DS brings a bold look to any jobsite.
+IAE_2956_Railen_Uamchuai_Desc=Manufacturer: Gatac Manufacture\nFocus: Cargo\n\nGatac’s first foray into the Human market, the Railen is an elegant interspecies vessel perfect for any Human or Xi’an pilot looking for a safe, reliable solution for commercial-grade medium cargo hauling, and is a prime example of why the Xi’an Empire has trusted House Gatac with production of its industrial vessels for centuries.\n\nThe Uamchuai edition breaks the mold with grey and sand-brown base, with flattering dusty gold highlights that flow down the ship's hull.
+IAE_2956_Razor_Hosanna_Desc=Manufacturer: Mirai \nFocus: Racing\n\nThis advanced racer features an advanced composite spaceframe that puts pure speed ahead of everything else... it's the ship for pilots who want to leave the competition in the dust.\n\nInspired by the gorgeous clouds that enshroud Orison, the Hosanna livery blends red, ivory, and pink to give the Razor a distinct appearance. It also features a silhouette of the landing zone's famous Hosanna tree complete with its pink flowers.
+IAE_2956_RedlineArmor=Tailwind Flight Suit Drake
+IAE_2956_RedlineBundle=Redline
+IAE_2956_RunicArmor=Monolith Runic Armor
+IAE_2956_RunicBundle=Runic
+IAE_2956_SRV_DarkStorm_Desc=Manufacturer: Argo Astronautics\nFocus: Recovery\n\nWhen it comes to getting the job done, Argo doesn’t mess around. From simple freight and cargo towing to harrowing search-and-rescue operations, the SRV handles whatever you can throw at it. The bespoke tractor system utilizes an innovative plate and arm combination, allowing for effortless solo use as well as precision team towing for bigger jobs. Your crew and passengers stay safe too thanks to durable shields and heavy-duty armor that keep the cockpit and components secure when the situation gets hairy.\n\nBlack with yellow highlights, the Dark Storm livery gives the SRV a sleek yet discreet look.
+IAE_2956_STV_BlueCarbon_Desc,P=Manufacturer: Greycat Industrial\nFocus: Passenger\n\nGet ready to have some serious fun on the job with the STV from Greycat. This Sport Terrain Vehicle was built by pros for pros and features blazing speed and convenient built-in storage.\n\nGround adventures never looked so good with the Blue Carbon livery, which gives the STV a sleek carbon-fiber finish trimmed with vibrant blue.
+IAE_2956_Salvation_Safeguard_Desc=Manufacturer: Roberts Space Industries\nFocus: Salvage\n \nFor centuries, Roberts Space Industries' has prided itself on crafting vehicles that not only meets the pilots needs but exceeds expectations. While the RSI Salvation may seem like a simple salvaging craft at first glance, every detail from the salvaging arm, the onboard processing plant, to the convenient external storage has been refined and optimized to make even an amateur feel like an expert.\n\nThe colorful industrial design of the Safeguard livery for the Salvation includes a vibrant blue and yellow stripes.
+IAE_2956_SantokYai_Yilen_Desc=Manufacturer: Aopoa\nFocus: Medium Fighter\n\nHarnessing the power of next-generation Xi'an flight systems, upgraded dual-vector thrusters, and a daunting weapons package, Aopoa has crafted a fighter that retains the nimble dexterity and tight handling the brand is known for.\n\nThe shimmering iridescence of the Yilen livery delivers a distinct look for the San'tok.yai.
+IAE_2956_ShadowGildArmor=Palatino Shadow Gild Armor
+IAE_2956_ShadowGildBundle=Shadow Gild
+IAE_2956_Skylark_XXXX_Desc=Manufacturer: RSI\nFocus: Snub Fighter\n\nThe Skylark snub fighter was built to be the ultimate companion for the Constellation Mk V. With a complimentary style and shape, the Skylark can be docked and accessed directly from its parent ship. It also features highly maneuverable thrusters to keep it nimble and a spirited weapons package that includes a robust missile payload.
+IAE_2956_Starlite_Empyrean_Desc=Manufacturer: MISC\nFocus: Light Refueling\n\nIf there’s one constant in the universe, it’s that ships will eventually run out of fuel. That’s where the Starlite come in. Featuring two standard fuel pods and a scaled back, elegant design, the Starlite was meticulously crafted by the engineers at MISC to offer refueling services to ships in need wherever they may be stranded.\n\nGive the Starlite a bold new look with the Empyrean Livery which features a dynamic tricolor design. Yellow highlights divide a white nose from a grey mid-section lending the ship an added appearance of speed.
+IAE_2956_SteelTekArmor=BUL-H4 SteelTek Armor
+IAE_2956_SteelTekBundle=SteelTek
+IAE_2956_Stingray_Marina_Desc=Manufacturer: Kruger Intergalactic\nFocus: Medium Fighter\n\nSleek, balanced, and uncompromising in its vision, the S-65 Stingray is a medium fighter that balances great maneuverability whilst still packing a punch. Taking after its namesake, the Stingray is no stranger to combat, able to swoop in, deliver sustained damage, and swoop out, unafraid to take a few hits in the process.\n\nFeaturing thin, fluid lines resembling gills, the Marina's blues and golds bring an aquatic theme to the Stingray.
+IAE_2956_StreamlineArmor=Monde Streamline Armor
+IAE_2956_StreamlineBundle=Streamline
+IAE_2956_UTV_Keystone_Desc=Manufacturer: Greycat Industrial\nFocus: Passenger\n\nThe Greycat UTV is a durable, utility buggy designed to transport light cargo loads across rugged terrain. Whether you’re coordinating freight storage or making a supply run to a neighboring outpost, the straightforward design of the UTV allows operators to focus on tackling the job at hand.\n\nCrisp white with blue accents, the Keystone livery celebrates the workers whose mining, refining, hauling, salvaging, and more have made the empire what it is today.
+IAE_2956_Ursa_Medivac_XXXX_Desc,P=Manufacturer: RSI\nFocus: Medical\n \nEven in the most remote of planetside destinations, there are people who could use a helping hand. Designed by RSI to cross even the most rugged terrain, the Ursa Medivac features a Tier 3 Medical Bed ideal for offering aid wherever it's needed most.
+IAE_2956_Vulture_Longhorn_Desc=Manufacturer: Drake Interplanetary\nFocus: Light Salvage\n\nAnswer to no one, cut out the middle man, and throw caution to the wind. Rip wrecks like a pro and carve out your own place in the great big empty behind the stick of this rough, rugged salvage machine from Drake Interplanetary.\n\nFor the Vulture captain dedicated to a hard day's work, the Longhorn livery's black-and-burnt orange hull with rough silver highlights lend a classic industrial feel to the famed spacecraft.
+IAE_2956_XykaraArmor=Xy’kara Armor
+IAE_2956_XykaraBundle=Xy’kara
+IAE_2956_Zeus_Mk2_Frontier_Desc=Manufacturer: Roberts Space Industries\nFocus: Medium Freight\n\nReady to ferry a whole new generation of travelers across the universe, Roberts Space Industries is proud to introduce a starship eight centuries in the making - the all-new Zeus Mk II spacecraft. Paying homage to the classic design that launched Humanity to the stars in 2140, the Zeus Mk II has been updated to exceed modern standards while retaining the heart of this beloved spacefaring icon.  With a focus on commerce, the Zeus Mk II CL edition features additional cargo space and a tractor beam ideal for handling large volumes of cargo.\n\nThe Frontier livery highlights the dynamic angular design of the Zeus Mk II. The white in the front extends into the grey back half of the ship down the center of the fuselage and edge of each wing.
+event_ShipName_ATLS_GEO=ATLS GEO
+event_ShipName_Galaxy=GALAXY
+event_ShipName_Golem=GOLEM
+event_ShipName_Hyun=HYUN
+event_ShipName_MKV_Andromeda=Mk V CENTAURUS
+event_ShipName_Railen=RAILEN
+event_ShipName_Stingray=STINGRAY
+event_ShipName_UTV=UTV
+event_ShipTitle_Constelation_MkV=The Constellation Mk V
+event_ShipTitle_S65=The S-65
+item_DescFlair_Dashboard_Cockpit_Hologram_WallysBar_1_a,P=Featuring a neon palm tree and a holographic Wally's Bar logo, this decorative dashboard light will transport your mind to New Babbage's favorite bar while you're cruising in quantum.
+item_DescLiberator_Paint_Black_Black_Yellow_Stripe=Wrap your Liberator in a black base with yellow accents with the Last Light livery.
+item_DescLiberator_Paint_Copper_Copper_Grey=The Valhalla livery melds a dazzling copper finish with gray accents to give the Liberator a truly distinct appearance.
+item_DescLiberator_Paint_Green_Grey_Red=The military green of the Brigade livery is paired with bold red stripes to make your Liberator inspire confidence on the battlefield.
+item_DescLiberator_Paint_White_Black_Grey=Blend into the clouds until ready to strike with the Galahad livery for the Liberator, which features a white base paint with black and grey highlights.
+item_DescLiberator_Paint_White_Red_Red_Wings=The unique Condor livery for the Anvil Liberator features an exquisite decorative feather pattern on the ship's wings. An eye-catching addition to a livery that dynamically blends white, black, grey, and red.
+item_DescMODU_RSI_Galaxy_Base_Module=The stock module that comes standard with the RSI Galaxy. This can be exchanged with other specialized modules to provide your ship with additional functionality.
+item_DescMODU_RSI_Galaxy_Cargo_Module=Adding significant cargo space, and an industrial-grade lift, the Cargo module enables hauling on a massive scale, allowing near-effortless loading, unloading, and recalibration.
+item_DescMODU_RSI_Galaxy_Medical_Module=The comprehensive Med Bay module allows you to operate a field hospital almost anywhere. Tier 1, 2, and 3 medbeds ensure that any injury can be treated, from minor scrapes and lacerations to catastrophic trauma, while the integrated LifeLift gets patients on and offboard as comfortably as possible.
+item_DescMarauder_paint_black_black_gold=Featuring silky blacks with exquisite gold trim, the Splendor livery ensure you stay classy no matter what you're getting up to.
+item_DescMarauder_paint_blue_blue_yellow=The Aquamarine livery gives a metallic teal base with subtle yellow accents to make a statement, before you throw a punch.
+item_DescMarauder_paint_red_grey_black=Dive into combat with this blood red livery for your Marauder to show everyone on the battlefield exactly what you're out for.
+item_DescMarauder_paint_yellow_black_grey=When you want them to see you coming, the Hardstrike livery is a bold explosion of yellow to make every fight even more vibrant.
+item_DescPaint_Galaxy_Blue_Blue_Gold=You'll be standing out from the rest with the Magnitude livery, featuring striking blue plating over a black base coat and complemented by orange accents.
+item_DescPaint_Galaxy_Blue_Blue_White=The Candor livery pairs two contrasting shades of blue together for a no-nonsense look appropriate no matter the journey ahead.
+item_DescPaint_Galaxy_Blue_Orange_White=Pairing a smokey blue hull with orange accents, the Bravura livery is more than capable of elevating the appearance of your ship.
+item_DescPaint_Galaxy_Blue_White_Gold=Predominantly blue with sections of white, the Protector livery is a confident look for those ready to make a stand.
+item_DescPaint_Galaxy_White_Black_Brown=The Luster livery is made to be admired with an elegant white accented by tasteful brown accents.
+item_DescPaint_Hyun_Black_Black_Black=The Hyaotan edition features a subtle dark grey, wave-like pattern over its light grey base, with embedded blue lights unique to this edition to give off that otherworldly shine.
+item_DescPaint_Hyun_Blue_Gold=Make your Hyun stand out from the crowd with the Chui'a livery that's blue marbled with gold accents and evokes passing waves.
+item_DescPaint_Hyun_Pink_Purple_Black=With flowing purple and pink waves across a dark hull, the Suii livery shows that your craft is more than a transport, its a statement.
+item_DescPaint_Hyun_White_Grey_Gold=The Ch.iiing edition boasts a bold white base with eye-catching gold highlights that flow down the ship's hull.
+item_DescPaint_Wolf_Yellow_White_Chrome=With a striking yellow fuselage and white wings, the Liberty livery is perfect for the pilot who loves the exhilirating freedom of flight.
+item_DescPlayerDeco_Seat_Ride_Hornet_1_a=Experience all the fun of flying a Hornet and none of the danger when you pilot this kiddie ride. Capturing the ship in miniature, the ride features the signature style of its full-sized counterpart while accentuating its undeniable charm.
+item_DescPlayerDeco_Static_Hologram_Vice_1_a=Featuring a ship flying through palm trees silhouetted against a bright sunset, the Neonwave Hologram Display brings the cool vibes of a hot tropical night into your hangar.
+item_Desc_eld_shirt_04_01_wallysbar=Show your support for local businesses with the Wally's Bar Retro T-Shirt. This premium white shirt made from natural fibers showcases New Babbage's favorite bar, featuring a bright neon pink palm tree that's synonymous with Wally's décor.
+item_Desc_nvs_jacket_04_01_01=Carrying Capacity: 1K µSCU\n\nUp your game with this Cousin Crow's edition varsity jacket. Fitted with CC's signature graffiti inspired orange lettering, this black and teal jacket brings a modern take on a classic look.
+item_Desc_r6p_glasses_01_02_01=When the future's looking bright, reach for these aviator shades from R6 Pro. With a design that has remained an acknowledged classic for centuries, you can salute the trailblazing aviators of the past as you seek tomorrow's new horizons.\n\nThe Neonwave edition consists of sky blue lenses, blending into bright fuchsia, and finishing with sunset orange.
+item_Deschdgw_rifle_ballistic_01_store01,P=Manufacturer: Hedeby Gunworks\nItem Type: Rifle\nClass: Ballistic\n\nMagazine Size: 20\nRate Of Fire: 320 rpm\nEffective Range: 50 m\n\nAttachments: Optics (S2), Barrel (S2), Underbarrel (S3)\n\nGunsmiths at Hedeby Gunworks looked to classic ballistic designs to construct a long rifle steeped in the past and the future. The Arlington provides accurate marksmanship, an easy cycling of rounds thanks to the lever action design, and multiple fire modes. Artisans shaped the weapon's body by hand to create a piece that's equally fit for the mantle as it is on the frontier.\n\nThe Everglade edition features elegant gold plating and an ivory colored stock, etched with a palm leaf design.
+item_NameFlair_Dashboard_Cockpit_Hologram_WallysBar_1_a,P=Wally's Bar Neon Light
+item_NameLiberator_Paint_Black_Black_Yellow_Stripe=Liberator Last Light Livery
+item_NameLiberator_Paint_Copper_Copper_Grey=Liberator Valhalla Livery
+item_NameLiberator_Paint_Green_Grey_Red=Liberator Brigade Livery
+item_NameLiberator_Paint_White_Black_Grey=Liberator Galahad Livery
+item_NameLiberator_Paint_White_Red_Red_Wings=Liberator Condor Livery
+item_NameMODU_RSI_Galaxy_Base_Module=Galaxy Stock Module
+item_NameMODU_RSI_Galaxy_Cargo_Module=Galaxy Cargo Module
+item_NameMODU_RSI_Galaxy_Medical_Module=Galaxy Med Bay Module
+item_NameMarauder_paint_black_black_gold=Marauder Splendor Livery
+item_NameMarauder_paint_blue_blue_yellow=Marauder Aquamarine Livery
+item_NameMarauder_paint_red_grey_black=Marauder Bloodlet Livery
+item_NameMarauder_paint_yellow_black_grey=Marauder Hardstrike Livery
+item_NamePaint_Galaxy_Blue_Blue_Gold=Galaxy Magnitude Livery
+item_NamePaint_Galaxy_Blue_Blue_White=Galaxy Candor Livery
+item_NamePaint_Galaxy_Blue_Orange_White=Galaxy Bravura Livery
+item_NamePaint_Galaxy_Blue_White_Gold=Galaxy Protector Livery
+item_NamePaint_Galaxy_White_Black_Brown=Galaxy Luster Livery
+item_NamePaint_Hyun_Black_Black_Black=Hyun Hyaotan Livery
+item_NamePaint_Hyun_Blue_Gold=Hyun Chui'a Livery
+item_NamePaint_Hyun_Pink_Purple_Black=Hyun Suii Livery
+item_NamePaint_Hyun_White_Grey_Gold=Hyun Ch.iing Livery
+item_NamePaint_Wolf_Yellow_White_Chrome=Wolf "Liberty" Livery
+item_NamePlayerDeco_Seat_Ride_Hornet_1_a=Hornet Kiddie Ride
+item_NamePlayerDeco_Static_Hologram_Vice_1_a=Neonwave Hologram Display
+item_Name_eld_shirt_04_01_wallysbar=Wally's Bar Retro T-Shirt
+item_Name_nvs_jacket_04_01_01=Bobcat Varsity Jacket Cousin Crow's
+item_Name_r6p_glasses_01_02_01=Yaeger Aviator Glasses Neonwave
+item_Namehdgw_rifle_ballistic_01_store01,P=Arlington "Everglade" Rifle
+item_Namehdgw_rifle_ballistic_01_store01_short,P=Arlington EG Rifle
+vehicle_DescDRAK_Marauder=Manufacturer: Drake Interplanetary\nFocus: Medium Fighter\n\nIn a universe as treacherous as this one, pilots need a ship that flies faster and hits heavier - the Drake Marauder. Fitted with powerful main thrusters for quick hit-and-runs, and armed to the teeth with firepower, by the time your enemies spot you, it'll already be too late.
+vehicle_DescGAMA_Hyun=Manufacturer: Gatac Manufacture\nFocus: Generalist\n\nA proper ship shouldn’t be about limits, but about meeting the new possibilities that arise each day. From the renowned Xi’an manufacturer House Gatac comes the Hyun, an industrial vessel whose specialization is adaptability; coming standard with equipment for both mining and salvaging.
+vehicle_NameDRAK_Marauder=Drake Marauder
+vehicle_NameDRAK_Marauder_short,P=Marauder
+vehicle_NameGAMA_Hyun=Gatac Hyun
+vehicle_NameGAMA_Hyun_Short=Hyun
+
+</script>
+<script type="text/plain" id="missZh">
+# ExoAE 漏掉、遊戲正式版會用到的鍵（簡體，工具會轉繁體並強制補上）
+# 鍵名來源：MrKraken StarStrings 正式版；中文：星際公民汉化组 4.10.3 LIVE 汉化临时版 V0.1（2026-11-15）
+Event_shipName_Centaurus=半人马座
+Event_shipName_Hermes=赫尔墨斯
+Event_shipName_Liberator=解放者
+Event_shipName_Marauder=劫掠者
+Event_shipName_Moth=飞蛾
+Event_shipName_Skylark=云雀
+Event_shipName_StarRunner=墨丘利
+Event_shipTitle_Mercury=墨丘利
+IAE_2956_ATLS_GEO_Keystone_Desc=制造商：南船座宇航\n定位：采矿\n\n在ATLS坚如磐石的基础上，南船座宇航的工程师们巧妙地将动力服改造成了理想的个人采矿平台。ATLS GEO配备了采矿激光、牵引光束和可拆卸的矿石储存器，是从矿藏中获取最大潜在价值的一体化解决方案。\n\n基石涂装以明快的白色搭配蓝色点缀，向从事采矿、精炼、运输、打捞等工作的劳动者致敬。正是他们的辛勤付出，成就了帝国的今天。
+IAE_2956_Aurora_Mk2_Cloudbuster_Desc=制造商：罗伯茨太空工业\n定位：新手船/轻型货运\n \n作为一款对经典飞船的全新诠释，罗伯茨太空工业从基础开始重构了久经考验的极光。全新推出极光 Mk II。从飞船性能，易用性到风格，极光 Mk II全面改造以满足新一代飞行员的需求。另外，这个最新型号为极光系列引入了一个新的功能 - 可更换模块。与其将飞行员局限于单一的职业路径，这些模块让你在机库内就能轻松完成针对特定作业的专门配置。无论你是初次拥有飞船的船主，或是准备升级日常飞船的资深飞行员，极光 Mk II静候您的驾驭。\n\n破云涂装采用淡灰色与浓郁的蓝色形成对比，并以活泼的黄色点缀。
+IAE_2956_Avenger_Titan_DeBiasio_Desc=制造商：圣盾动力\n定位： 轻型货运 \n\n《泰坦》没有追猎者的囚犯舱，也没有Warlock的电磁脉冲发生器，因此货舱可腾出来运载货物。将这片可用空间与复仇者久经考验的战斗能力相结合，便造就了一艘在战斗中完全有能力自保的轻型货船。\n\n为纪念与支持那些带领我们步入太空、现仍在不断探索新边疆的探索者们，星际制图中心为复仇者推出了这款特殊涂装。这款涂装以星际制图中心前任局长洛蕾塔·德·比亚西奥的名字命名，采用了橙色与灰色相交的底漆并伴以黑色点缀。德·比亚西奥涂装的全部销售额都将捐献给星际制图中心，以支持他们不断“探索前路”。
+IAE_2956_BlueTemplarArmor=幽影护甲 纪元 II
+IAE_2956_BlueTemplarBundle=纪元
+IAE_2956_Bundle=捆绑包
+IAE_2956_C1_Spirit_Valor_Desc=制造商：十字军工业\n定位：轻型货运\n\n凭借星灵 C1，十字军工业将一贯的优良品质带到了平民市场。这是一艘为货物运输与投递而造的中等大小多功能星际飞船，同时还兼具足够的多功能属性来应对多种职能以及无法预见的任务。\n\n无论任务将你带往何处，这款以深灰色为主色、搭配天蓝色点缀与白色饰边的涂装都能确保你的十字军星灵外观得体。
+IAE_2956_Constellation_Mk5_Patrician_Desc=制造商：RSI\n定位：中型货船 / 炮艇\n\n星座 Mk V 半人马座为新一代重新诠释了RSI经典多用途多船员飞船。其大胆的新外观致敬上一代星座，同时更新设计，利用增大的尺寸配备更宽敞的船员餐厅和货舱。更大的炮塔和导弹架提供额外防御，升级后的寄生战斗机对接口则是RSI云雀的完美归宿。这些改动让Mk V成为真正的现代化飞船，随时准备踏上任何冒险。\n\n想要彰显个性，Patrician涂装就能满足你。涂装采用鲜明的白色和灰色，搭配对比鲜明的橙色点缀。敌人会一直欣赏你的飞船，直到你将他们击落。
+IAE_2956_Cyclone_XXXX_Desc=制造商：盾博尔地面系统\n定位：客运\n\n拥有着速度，机动性和坚固耐用性强强联合的旋风是在行星表面的住宅和哨站间进行本地货运和交通的完美选择。
+IAE_2956_Defender_Ocellus_Desc=制造商：巴努 (Banu)\n定位：轻型战斗机\n\n向您展示巴努防卫者，一个集合了多种族科技的多人战斗机。可为船员提供合适的生存空间，触及组件也相当容易。巴努防卫者的名字来源于它扮演的角色，它在敌人进攻时永远防守在第一线。所以说巴努防卫者是巴努商船的好伙伴，一个负责拉货，另一个负责狗斗。\n\n眼纹涂装调整并更新了部分塔维因飞船所采用的标志性配色与设计，为防卫者带来引人注目的全新外观。该涂装在机身上呈现出醒目的红色区域，飞船其余部分则覆盖着闪耀的绿色。粗大的灰色线条划过这两种颜色，形成独特的几何图案。
+IAE_2956_DisruptCamoArmor=龟甲 护甲 破碎迷彩
+IAE_2956_DisruptCamoBundle=破碎迷彩
+IAE_2956_Fortune_Sunspot_Desc=制造商：武藏工业与星航株式会社 (MISC)\n定位：轻型打捞\n\n对于那些准备将自己的专业提升到一个新水平的人来说，武藏的工程师们精心打造了财运，使其成为同类最佳的小型打捞船。武藏 财运配备了多功能打捞臂和货物升降机，每一处都能让你变废为宝。\n\n金乌涂装以温暖的橙色与冰冷的黑色形成鲜明对比，凸显财运独特的轮廓。
+IAE_2956_Freelancer_MAX_XXXX_Desc=制造商：武藏工业与星航株式会社 (MISC)\n定位：中型货船\n\n以武器数量为代价换取更大货舱的自由枪骑兵变体。自由枪骑兵-MAX牺牲了部分武装以换取更大的货舱空间，非常适合运送装备和原材料。
+IAE_2956_Galaxy_XXXX_Desc=制造商：RSI\n定位：模块化\n\n有着完全模块化设计以及一个能够部署小型飞船的船载机库，先进的银河将多功能性刻进了骨子里，可高度定制的主船舱能够配备各式设施来支持货运、医疗或者精炼作业。
+IAE_2956_GideonArmor=莫罗佐夫-SH-I 护甲 基甸
+IAE_2956_GideonBundle=基甸
+IAE_2956_GoldsmithArmor=斗士 套装 金匠
+IAE_2956_GoldsmithBundle=金匠
+IAE_2956_Golem_Faultline_Desc=制造商：德雷克行星际\n定位：新手船/轻型采矿\n\n德雷克为有意开始采矿生涯的人设计了魔像这一艘理想的飞船。该飞船配备了定制的采矿激光，可装载32 SCU的宝贵资源。作为德雷克的经典之作，魔像是一艘功能优先于装饰的专用飞船。\n\nFaultline涂装赋予魔像独特的外观，精心布置的黄色和橙色条纹让飞船更加醒目。
+IAE_2956_HM6_Centurion_Sandstorm_Desc=制造商：铁砧航天 (Anvil Aerospace)\n定位：防空\n\n建于铁砧常见的HM6平台，百夫长为短程防空作战提供了战术解决方案。依赖百夫长的定制能量防空炮塔，你的部队可快速有效地解决来自上空的威胁并以此建立地面优势。\n\n为你的HM6系列载具配备沙暴迷彩涂装，换上深棕褐色和绿色迷彩外观。这种外观能让这头战场巨兽融入多种地形。
+IAE_2956_HeartthrobArmor=喀戎 护甲 心动
+IAE_2956_HeartthrobBundle=心动
+IAE_2956_Hermes_Disco_Desc=制造商：罗伯茨太空工业\n定位：中型货运\n\n与神话中的同名神不同，虽然RSI 赫尔墨斯的速度确实如此惊人，但它绝非诡计多端。凭借定制化的创新推进器组件、令人印象深刻的防御系统以及宽敞的货舱，赫尔墨斯随时准备将货物极速送达目的地。即便面对其他运输船不敢涉足的危险区域，它也能从容完成交付。\n\n为飞船装备经典儿童动画片Rory Nova中王牌飞行员Disco使用的涂装。这款涂装会将赫尔墨斯变为带有金属质感的深蓝色、黑色和红色。至于你能否成为“充满活力、凭直觉行事的航天器驾驶员”，就取决于你自己了——这正是涂装名称的灵感来源。
+IAE_2956_HighSecArmor=蒙德 护甲 高安
+IAE_2956_HighSecBundle=高安
+IAE_2956_HoverQuad_Lightspeed_Desc=制造商：联合外域\n定位：载客\n\n作为游牧者的配套地面载具，悬浮驷那简洁有力且棱角分明的框架为四块反重力悬浮板提供了强大的机动性能，令其成为能跨越各种地形的交通工具。\n\n为悬浮驷换上这款橙色为主，黄色为辅的Lightspeed涂装，再骑上它于壮丽的景致间飞驰吧。
+IAE_2956_Hyun_XXXX_Desc,P=制造商：盖塔克制造\n定位：多用途\n\n一艘真正的飞船不应受限，而应迎接每天涌现的新可能。Hyun出自著名的希安制造商盖塔克，是一艘以适应性见长的工业飞船；标配采矿和打捞设备。
+IAE_2956_Liberator_XXXX_Desc,P=制造商：铁砧航天 (Anvil Aerospace)\n定位：运输\n\n解放者传承了铁砧的优良传统；这艘开放式载具运输船将长途运输的传统应用于更小规模的场景。其设计旨在具备与同规格军用运输船同等的能力，同时针对民用市场量身定制。解放者是将您的舰队运输至任何行动前线的理想运输船。
+IAE_2956_MDC_XXXX_Desc=制造商：灰猫工业\n定位：防空\n \n基于坚固耐用的工业框架，灰猫公司打造的MDC机动防御中心已蜕变为高效作战载具。凭借其搭载的PDS炮塔，该战车能从远程采矿基地到高价值加工中心的巡逻任务中，随时守护您的核心利益。
+IAE_2956_MOTH_XXXX_Desc,P=制造商：南船座宇航\n定位：中型打捞\n\n体验南船座积淀数百年的工业造诣，尽在飞蛾。这款飞船以久经考验的底盘为基础，配备三座专用打捞炮塔及外部自动装载系统，只需四人机组，就可实现飞一般的快速拆解、切割与存储战利品。\n\nStargazer涂装采用金属质感表面，辅以灰色点缀，将恰如其分地让星光在飞蛾表面反射。
+IAE_2956_Marauder_XXXX_Desc=制造商：德雷克行星际\n定位：中型战斗机\n\n在这样一个危机四伏的宇宙中，飞行员需要一艘飞得更快、打得更狠的飞船——德雷克劫掠者。它配备强劲的主推进器，便于快速突袭撤离，火力更是武装到牙齿。等敌人发现你时，一切早已为时过晚。
+IAE_2956_Mercury_Blackguard_Desc=制造商：十字军工业 (Crusader Industries)\n定位：中型货船\n\n如果你需要将货物快速且毫发无损地运到某处，墨丘利满足了所有快递运输船的要求，而且还远不至此。采用了令十字军工业成为星际运输界首选厂商的技术及设计理念，墨丘利星际快运船能让您快过时间表、快过麻烦，让您在竞争中处于领先位置。\n\n恶棍涂装采用蓝色左翼和点缀，让您的墨丘利 星际快运船脱颖而出。
+IAE_2956_Nomad_IceBreak_Desc=制造商：联合外域 \n定位：新手船 / 轻型货运\n\n一艘中型多用途运输船包装在了一个时尚、紧凑的框架中，联合外域游牧者是自给自足的典范，是开阔天空的灵魂，是所有渴望展开全新冒险的人们的完美解决方案。\n\n为你的复仇者配上比暴风雪更酷的涂装。破冰涂装将清爽的冷白色与霜冻般的蓝色相结合，打造出适合任何季节的亮眼外观。
+IAE_2956_Nox_Overdrive_Desc=制造商：奥波亚 (Aopoa)\n定位：竞速\n\n和2947Nox一起放飞自我。这款奥波亚出品的敞篷赛车拥有极高的速度和灵活的机动，可以在星球表面以及外太空飞速行驶。Nox作为一辆专门为人类驾驶员重新设计的赛车首次进入人类世界，已准备好投入比赛。\n\n驾驶采用过载驱动涂装的Nox，飞速超越其他赛车手。这款涂装将红色与银色时尚地融合在一起。
+IAE_2956_Prospector_Nebula_Desc=制造商：武藏工业与星航株式会社\n定位：轻型采矿\n\n多年来，勘探者在宇宙中一直作为单人采矿工的首选飞船。2947款勘探者具有MISC一贯的圆滑外形和一批经过升级的高科技采矿工具，在外形和功能上有着很好的平衡。\n\n勘探者的星云涂装兼顾黑白两色，让你在炸碎岩石时尽显风格。
+IAE_2956_Prowler_Elysian_Desc=制造商：埃斯佩里亚\n定位：空降\n\n以UPE军队的军用代号命名，徘徊者是一种在第一次塔维因战争中臭名昭著的塔维因登陆艇的现代化版本。徘徊者之所以能快速的部署作战人员，是因为它优异的静默特性。在徘徊者中你可以找到两种不同文化的交融，高雅以及有效的塔维因战争机器和可靠的UEE现代科技。\n\n美丽的蓝色在极乐涂装中交织，为徘徊者带来真正独特的外观。
+IAE_2956_ROC_Harvester_Desc=制造商：灰猫工业 (Greycat Industrial)\n定位：轻型采矿\n\n通过对地面采矿的重点研究，灰猫工业(Greycat Industrial)推出了认真、严谨的ROC(远程矿石收集者)，让用它的矿工事半功倍。从它的精密万向支架采矿臂到它的全地形车轮，这台单人操作的车辆证明了一个正确的工具对工作是多么的重要。\n\nROC和ROC-DS的收割机涂装为任何作业现场带来醒目的外观。
+IAE_2956_Railen_Uamchuai_Desc=制造商：盖塔克制造 (Gatac Manufacture)\n定位：货运\n\n作为盖塔克首次面向人类市场的产品，锐伦这艘别致的跨种族飞船，是人类或希安驾驶员寻求安全可靠的商业级中型货运方案时的完美选择；也是为何希安帝国数百年来能够放心将工业飞船交给盖塔克家族生产的典例。\n\n尘沙金版本打破常规，采用灰色与沙棕色底色，搭配沿飞船船体延伸的尘金色亮饰，衬托出飞船的美感。
+IAE_2956_Razor_Hosanna_Desc=制造商：未来 \n专长： 竞速\n\n这款先进的竞速飞船采用先进的复合材料空间框架，将纯粹的速度置于一切之上……它专为那些想把竞争对手远远甩在身后的飞行员而生。\n\n从缭绕奥里森的壮丽云彩为发想，和撒那涂装融合了红色、象牙白与粉色，赋予了剃刀独特的外观。它还具有着陆区著名的和撒那树剪影，开满了粉红色的花朵。
+IAE_2956_RedlineArmor=顺风 飞行服 德雷克
+IAE_2956_RedlineBundle=红线
+IAE_2956_RunicArmor=巨石 护甲 秘纹
+IAE_2956_RunicBundle=秘纹
+IAE_2956_SRV_DarkStorm_Desc=制造商：南船座宇航\n定位：回收\n\n说到完成工作，南船座从不会乱来。从简单的货运和货物拖曳到惊险的搜救行动，SRV总能处理您可以扔给它的一切事情。定制的牵引系统创新地采用了板臂组合，不止让你能够轻松单人使用，还能进行精准的团队牵引完成更大的任务。耐用的护盾和重型装甲保证你的机组人员和乘客的安全，即使情况变得棘手，它们依旧保障着座舱和组件的完整。\n\n暗暴涂装以黑色搭配黄色点缀，赋予SRV流畅而低调的外观。
+IAE_2956_STV_BlueCarbon_Desc,P=制造商：灰猫工业\n定位：客运\n\n准备好在工作中使用灰猫工业的STV来获得一些真正的乐趣。这款运动型全地形车由专业人士为专业人士打造，拥有闪电般的速度和实用的内置存储空间。\n\n蓝碳涂装赋予了地面冒险前所未有的迷人魅力。这款涂装使STV拥有了光亮的碳纤维饰面，并饰有充满活力的蓝色。
+IAE_2956_Salvation_Safeguard_Desc=制造商：罗伯茨太空工业（Roberts Space Industries）\n定位：打捞\n \n几世纪以来，罗伯茨太空工业一直以打造不仅满足飞行员需求、甚至超出预期的载具为荣。RSI 拯救乍看之下可能是台简单的回收飞船，但从回收机械臂、机载处理装置，到便捷的外部储存空间，每个细节都经过优化与打磨，哪怕是新手也拥有专家般的体验。\n\n拯救的安全作业涂装采用色彩丰富的工业设计，包含鲜艳的蓝色和黄色条纹。
+IAE_2956_SantokYai_Yilen_Desc=制造商：奥波亚 (Aopoa)\n定位：中型战斗机\n\n凭借强大的希安次世代飞行系统、升级双矢量推进器，以及让人生畏的武器配置，奥波亚精心雕琢出一艘保留了自家著名的灵活机动性与灵敏操控性的战斗飞船。\n\n亦能涂装闪烁着虹彩光泽，为San'tok.yai带来独特外观。
+IAE_2956_ShadowGildArmor=帕拉蒂诺 护甲 鎏影
+IAE_2956_ShadowGildBundle=鎏影
+IAE_2956_Skylark_XXXX_Desc=制造商：RSI\n定位：寄生战斗机\n\n云雀寄生战斗机旨在成为星座 Mk V的终极伴侣。凭借相得益彰的风格与外形，云雀可以对接在母舰上，并直接从母舰内部进入。它还配备了机动性极高的推进器，行动灵活自如。它也搭载一套性能强劲的武器系统，导弹载荷也相当充足。
+IAE_2956_Starlite_Empyrean_Desc=制造商：武藏工业与星航株式会社\n定位：轻型燃料补给\n\n如果宇宙中有什么恒定不变的事，那就是舰船终有燃料耗尽的时候。这正是星光发挥作用之处。由武藏的工程师们精心打造、采用简约而优雅的设计，星光配备两个标准燃料舱，旨在为任何身陷困境的飞船提供补给服务，无论它们搁浅在何处，都能为其解除困境。\n\n采用动感三色设计的天界涂装，为星光赋予醒目的全新外观。黄色亮饰将白色船首与灰色中段分隔开来，为飞船增添速度感。
+IAE_2956_SteelTekArmor=BUL-H4 护甲 钢纹
+IAE_2956_SteelTekBundle=钢纹
+IAE_2956_Stingray_Marina_Desc=制造商：克鲁格星际 (Kruger Intergalactic)\n定位：中型战斗机\n\nS-65 刺鳐是一款中型战斗机，外形流线利落、性能均衡，且在设计理念上毫不妥协。它在拥有出色机动性的同时，也具备可观的打击火力。正如其名，刺鳐在战斗中游刃有余，能够俯冲切入、持续输出伤害，再从容脱离，过程中无惧承受几次攻击。\n\nMarina采用形似鱼鳃的纤细流畅线条，以蓝色和金色为刺鳐带来水生主题。
+IAE_2956_StreamlineArmor=蒙德 护甲 流线
+IAE_2956_StreamlineBundle=流线
+IAE_2956_UTV_Keystone_Desc=制造商：灰猫工业\n定位：乘客\n\nGreycat UTV是一款经久耐用的多功能越野车，专为在崎岖地形中运输少量货物而设计。无论是协调货物存储，还是向邻近前哨运送补给，UTV的简洁设计都能让操作员专注于处理眼前的工作。\n\n纯白色搭配蓝色点缀的基石涂装，致敬了那些通过采矿、精炼、运输、打捞等工作将帝国建设成如今模样的劳动者。
+IAE_2956_Ursa_Medivac_XXXX_Desc,P=制造商：RSI\n定位：医疗\n \n即使在最偏远的行星目的地，也有人需要帮助。RSI 设计的大熊座 医疗可以穿越最崎岖的地形，它配备的三级医疗床是在最需要的地方提供援助的理想选择。
+IAE_2956_Vulture_Longhorn_Desc=制造商：德雷克行星际 (Drake Interplanetary)\n定位：轻型回收\n\n不对任何人负责，不要中间商赚差价，无惧任何风险。驾驶这台由德雷克行星际打造的粗犷坚固的打捞机器，像专业人士一样拆解残骸，在浩瀚太空中开创属于自己的天地。\n\n对于辛勤工作的秃鹫船长而言，Longhorn涂装以黑色与焦橙色船体搭配粗犷的银色点缀，为这艘著名飞船赋予经典工业风格。
+IAE_2956_XykaraArmor=希卡拉 护甲
+IAE_2956_XykaraBundle=希卡拉
+IAE_2956_Zeus_Mk2_Frontier_Desc=制造商：罗伯茨太空工业\n定位：中型货运\n\n罗伯茨太空工业公司自豪地向您介绍一艘历经八个世纪打造的星际飞船--全新的宙斯MkII宇宙飞船，它已准备好载着新一代的旅行者穿越宇宙。为了向 2140 年将人类推向星际的经典设计致敬，宙斯MkII经过更新，超越了现代标准，同时保留了这一深受喜爱的太空标志的核心。 宙斯MkII-CL版以商业为重点，配备了额外的货运空间和牵引光束，是处理大量货物的理想选择。\n\nFrontier涂装突出了宙斯MkII富有动感的棱角设计。前部的白色沿着机身中央和两侧机翼边缘，延伸至飞船灰色的后半部。
+event_ShipName_ATLS_GEO=ATLS GEO
+event_ShipName_Galaxy=银河
+event_ShipName_Golem=魔像
+event_ShipName_Hyun=HYUN
+event_ShipName_MKV_Andromeda=Mk V 半人马座
+event_ShipName_Railen=锐伦
+event_ShipName_Stingray=刺鳐
+event_ShipName_UTV=UTV
+event_ShipTitle_Constelation_MkV=星座 MkV
+event_ShipTitle_S65=S-65
+item_DescFlair_Dashboard_Cockpit_Hologram_WallysBar_1_a,P=这款装饰性仪表盘灯配有霓虹棕榈树和沃利酒吧全息标志，会在你进行量子航行时，将你的思绪带到新巴贝奇最受欢迎的酒吧。
+item_DescLiberator_Paint_Black_Black_Yellow_Stripe=把你的解放者包裹在以黑色为基调、黄色为点缀的余辉涂装中。
+item_DescLiberator_Paint_Copper_Copper_Grey=英灵殿涂装融合了耀眼的铜色饰面和绿色点缀，赋予解放者真正与众不同的外观。
+item_DescLiberator_Paint_Green_Grey_Red=Brigade涂装将军绿色与醒目的红色条纹相搭配，让你的解放者在战场上令人充满信心。
+item_DescLiberator_Paint_White_Black_Grey=解放者的圣洁涂装，以白色为基底，点缀黑色与灰色高光，让你在云层中隐匿行踪，伺机出击。
+item_DescLiberator_Paint_White_Red_Red_Wings=铁砧解放者的独特Condor涂装在飞船机翼上饰有精美的装饰性羽毛图案。这一醒目的点缀为融合白色、黑色、灰色和红色的涂装增添了动感。
+item_DescMODU_RSI_Galaxy_Base_Module=RSI银河标配的基础模组。可将其更换为其他专用模组，为您的飞船提供额外功能。
+item_DescMODU_RSI_Galaxy_Cargo_Module=货运模组增加了大量货运空间和一部工业级升降机，可实现大规模货物运输，让装载、卸载和重新校准几乎毫不费力。
+item_DescMODU_RSI_Galaxy_Medical_Module=功能全面的Med Bay模组让您几乎可以在任何地方开设野战医院。1级、2级和3级医疗床确保任何伤势都能得到治疗，从轻微擦伤、撕裂伤到灾难性创伤均可处理。内置LifeLift让病人能够尽可能舒适地上下船。
+item_DescMarauder_paint_black_black_gold=Splendor涂装采用丝滑黑色为主色调，配以精致的金色镶边。无论您在做什么，都能确保您保持优雅格调。
+item_DescMarauder_paint_blue_blue_yellow=海蓝涂装以金属感青绿色为底，点缀着低调的黄色元素，让你在出手之前就已气场全开。
+item_DescMarauder_paint_red_grey_black=为你的劫掠者披上这身血红涂装，投身战斗，向战场上的所有人昭示你的真正意图。
+item_DescMarauder_paint_yellow_black_grey=当你希望让对手早早察觉你的到来时，重击涂装那醒目的黄色设计将让每一场战斗都更加精彩纷呈。
+item_DescPaint_Galaxy_Blue_Blue_Gold=星等涂装以醒目的蓝色装甲覆盖黑色底漆，并点缀橙色，让你脱颖而出。
+item_DescPaint_Galaxy_Blue_Blue_White=Candor涂装将两种对比鲜明的蓝色搭配在一起，呈现出简洁务实的外观，无论前方是怎样的旅程都很合适。
+item_DescPaint_Galaxy_Blue_Orange_White=烟蓝色船体配以橙色点缀，Bravura涂装足以提升你的飞船外观。
+item_DescPaint_Galaxy_Blue_White_Gold=Protector涂装以蓝色为主色调，局部采用白色，为准备坚守立场的人带来充满自信的外观。
+item_DescPaint_Galaxy_White_Black_Brown=Luster涂装采用优雅的白色，搭配雅致的棕色点缀，令人心生赞赏。
+item_DescPaint_Hyun_Black_Black_Black=霄天版以浅灰色为底，其上饰有淡雅的深灰色波浪纹，并嵌有该版本独有的蓝色灯光，散发出超凡脱俗的光芒。
+item_DescPaint_Hyun_Blue_Gold=蓝色大理石花纹搭配金色点缀的翠雅涂装让您的Hyun从人群中脱颖而出，让人想起逝去的海浪。
+item_DescPaint_Hyun_Pink_Purple_Black=Suii涂装以流动的紫色和粉色波浪覆盖深色船壳，表明你的飞船不只是交通工具，更是态度的宣言。
+item_DescPaint_Hyun_White_Grey_Gold=驰银版拥有大胆的纯白底色，夺目的金色高光沿飞船船身流淌而下。
+item_DescPaint_Wolf_Yellow_White_Chrome=自由港涂装拥有醒目的黄色机身和白色机翼，非常适合热爱飞行时那份畅快自由的飞行员。
+item_DescPlayerDeco_Seat_Ride_Hornet_1_a=驾驶这款儿童游乐设施，体验驾驶大黄蜂的全部乐趣，无需承担任何危险。这款游乐设施将飞船化为微缩模型，既展现了原尺寸飞船的标志性风格，又突出了其不可否认的魅力。
+item_DescPlayerDeco_Static_Hologram_Vice_1_a=Neonwave Hologram Display展现了一艘飞船穿行于棕榈树间的景象，棕榈树在明亮的落日映衬下呈现剪影。它将炎热热带夜色中的酷爽氛围带入你的机库。
+item_Desc_eld_shirt_04_01_wallysbar=穿上沃利酒吧Retro T-Shirt，表达您对当地商家的支持。这款优质白色衬衫采用天然纤维制成，展示了新巴贝奇最受欢迎的酒吧。其上印有一棵亮眼的霓虹粉色棕榈树，这是沃利酒吧装饰的标志。
+item_Desc_nvs_jacket_04_01_01=储物空间：1K uSCU\n\n穿上这款Cousin Crow's版校队夹克，提升您的格调。这款黑色与蓝绿色夹克饰有CC标志性的涂鸦风橙色字样，为经典造型带来现代演绎。
+item_Desc_r6p_glasses_01_02_01=当未来一片光明时，就戴上这副 R6 Pro 飞行员墨镜吧。它的设计数百年来始终被公认为经典，让你在迈向未来新地平线时，也能向过去那些开拓天际的飞行员致意。\n\nNeonwave版采用天蓝色镜片，逐渐融入亮紫红色并最终以日落橙色收尾。
+item_Deschdgw_rifle_ballistic_01_store01,P=制造商：赫德比枪械\n物品类型：步枪\n分类：实弹\n\n弹匣容量：20\n射速：320 rpm\n有效射程：50 m\n\n附件：瞄具（S2），枪管（S2），下挂（S3）\n\n赫德比枪械的枪匠以经典弹道武器为灵感，打造出这款兼具旧时代底蕴与未来气息的长步枪。阿灵顿步枪拥有出色的射击精度，杠杆式枪机结构让弹药循环顺畅利落，同时还配备了多种射击模式。工匠们以手工塑造枪身，使它既适合陈列在壁炉架上作为收藏，也足以陪伴使用者驰骋边疆。\n\nEverglade版采用典雅的镀金饰面，配有象牙色枪托，枪托上蚀刻着棕榈叶图案。
+item_NameFlair_Dashboard_Cockpit_Hologram_WallysBar_1_a,P=沃利酒吧 霓虹灯
+item_NameLiberator_Paint_Black_Black_Yellow_Stripe=解放者 余晖涂装
+item_NameLiberator_Paint_Copper_Copper_Grey=解放者 英灵殿涂装
+item_NameLiberator_Paint_Green_Grey_Red=解放者Brigade涂装
+item_NameLiberator_Paint_White_Black_Grey=解放者 圣洁涂装
+item_NameLiberator_Paint_White_Red_Red_Wings=解放者Condor涂装
+item_NameMODU_RSI_Galaxy_Base_Module=银河 占位模块
+item_NameMODU_RSI_Galaxy_Cargo_Module=银河 货运模块
+item_NameMODU_RSI_Galaxy_Medical_Module=银河 医疗模块
+item_NameMarauder_paint_black_black_gold=劫掠者Splendor涂装
+item_NameMarauder_paint_blue_blue_yellow=劫掠者 海蓝涂装
+item_NameMarauder_paint_red_grey_black=劫掠者 放血涂装
+item_NameMarauder_paint_yellow_black_grey=劫掠者 重击涂装
+item_NamePaint_Galaxy_Blue_Blue_Gold=银河 星等涂装
+item_NamePaint_Galaxy_Blue_Blue_White=银河 Candor涂装
+item_NamePaint_Galaxy_Blue_Orange_White=银河Bravura涂装
+item_NamePaint_Galaxy_Blue_White_Gold=银河Protector涂装
+item_NamePaint_Galaxy_White_Black_Brown=银河 Luster涂装
+item_NamePaint_Hyun_Black_Black_Black=Hyun霄天涂装
+item_NamePaint_Hyun_Blue_Gold=Hyun Chui'a涂装
+item_NamePaint_Hyun_Pink_Purple_Black=Hyun Suii涂装
+item_NamePaint_Hyun_White_Grey_Gold=Hyun驰银涂装
+item_NamePaint_Wolf_Yellow_White_Chrome=狼式“自由港”涂装
+item_NamePlayerDeco_Seat_Ride_Hornet_1_a=大黄蜂儿童摇摇车
+item_NamePlayerDeco_Static_Hologram_Vice_1_a=Neonwave全息展示装置
+item_Name_eld_shirt_04_01_wallysbar=沃利酒吧 T恤 复古
+item_Name_nvs_jacket_04_01_01=山猫 棒球夹克 乌鸦表哥
+item_Name_r6p_glasses_01_02_01=耶格尔 飞行员眼镜Neonwave
+item_Namehdgw_rifle_ballistic_01_store01,P=阿灵顿 步枪 “Everglade”
+item_Namehdgw_rifle_ballistic_01_store01_short,P=阿灵顿EG步枪
+vehicle_DescDRAK_Marauder=制造商：德雷克行星际\n定位：中型战斗机\n\n在这个危机四伏的宇宙中，飞行员需要一艘飞得更快、打击更猛的飞船——德雷克劫掠者。它配备强劲的主推进器，便于快速突袭撤离；同时火力充沛，武装到了牙齿。等敌人发现你时，一切早已为时过晚。
+vehicle_DescGAMA_Hyun=制造商：盖塔克制造\n定位：多用途\n\n一艘真正的飞船不应受限，而应迎接每天涌现的新可能。Hyun出自著名的希安制造商盖塔克，是一艘以适应性见长的工业飞船；标配采矿和打捞设备。
+vehicle_NameDRAK_Marauder=德雷克 劫掠者
+vehicle_NameDRAK_Marauder_short,P=劫掠者
+vehicle_NameGAMA_Hyun=盖塔克 Hyun
+vehicle_NameGAMA_Hyun_Short=Hyun
+
+</script>
 <script type="text/plain" id="mlocNames">
 # 任務地點中文名稱（簡體原文，工具會轉成繁體）
 # 來源：星際公民汉化组 https://starcitizenzw.com/ ，取自 https://github.com/StarCitizenToolBox/LocalizationData （main 分支，4.10.2(PU)_CN_V2，2026-10-25）
@@ -13879,6 +14182,8 @@ vehicle_NameXNAA_SantokYai=奥波亚 桑托起亚
 vehicle_NameXNAA_SantokYai_short=桑托起亚
 vehicle_Nameprobe_comms_1_a=CHCO 奥瑞斯 被动数据收集监测设备
 vehicle_Nameprobe_comms_1_a_short=奥瑞斯 被动数据收集监测设备
+vehicle_NameDRAK_Marauder=德雷克 劫掠者
+vehicle_NameGAMA_Hyun=盖塔克 Hyun
 
 </script>
 <script type="text/plain" id="decodeTable">
@@ -21123,6 +21428,12 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
   function merge(zhRaw, zhT, exo, van, opts) {
     opts = opts || {};
     // 額外的繁中翻譯（例如 PTU 新增／更新條目）：直接放進漢化資料，之後照一般規則處理
+    // ExoAE 漏掉的鍵：用其他英文來源（MrKraken StarStrings）補進英文資料
+    if (opts.exoFill && opts.exoFill.size) {
+      const map = new Map(exo.map), keys = exo.keys.slice();
+      for (const [k, v] of opts.exoFill) if (!map.has(k)) { keys.push(k); map.set(k, v); }
+      exo = Object.assign({}, exo, { map, keys });
+    }
     const extra = opts.zhExtra && opts.zhExtra.size ? opts.zhExtra : null;
     if (extra) {
       var zhHad = new Set(zhRaw.map.keys()); // 漢化包原本就有的鍵：分辨「新增」或「更新」
@@ -21743,6 +22054,9 @@ function readEmbedded(id){ const m = new Map(), el = document.getElementById(id)
 const SHIPS_RAW = readEmbedded('shipNames'), MLOCS_RAW = readEmbedded('mlocNames');
 // 全繁中版用的物品中文名稱（汉化组全汉化）
 const ITEMS_RAW = readEmbedded('itemNamesFull');
+// ExoAE 漏掉的鍵：英文（StarStrings）與中文（汉化组，簡體）
+const MISS_EN = readEmbedded('missEn'), MISS_RAW = readEmbedded('missZh');
+let missT = null;
 // 另外補的繁中翻譯（新版本新增／英文有更新的條目），正式版與 PTU 共用
 const EXTRA_ZH = readEmbedded('ptuZh');
 let shipsT = null, mlocsT = null, itemsT = null;
@@ -21752,7 +22066,7 @@ function convertMap(raw, mode){
   const vals = conv([...raw.values()].join('\n')).split('\n');
   const out = new Map(); keys.forEach((k, i) => out.set(k, vals.length === keys.length ? vals[i] : raw.get(k))); return out;
 }
-function convertShips(mode){ shipsT = convertMap(SHIPS_RAW, mode); mlocsT = convertMap(MLOCS_RAW, mode); itemsT = convertMap(ITEMS_RAW, mode); }
+function convertShips(mode){ shipsT = convertMap(SHIPS_RAW, mode); mlocsT = convertMap(MLOCS_RAW, mode); itemsT = convertMap(ITEMS_RAW, mode); missT = convertMap(MISS_RAW, mode); }
 function applyTerms(map){
   const d = M.parseDict(dictTerm.value);
   if (!d.length) return map;
@@ -21793,7 +22107,7 @@ function remerge(){
   LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
   LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('locZh', $('#locZh').value); LS.set('fillZh', $('#fillZh').value); LS.set('locOn', $('#locOn').checked); LS.set('shipOn', $('#shipOn').checked); LS.set('mlocOn', $('#mlocOn').checked); LS.set('rankOn', $('#rankOn').checked); LS.set('shipWrap', +$('#shipWrap').value); LS.set('shipLayout', $('#shipLayout').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
   const zhT = applyTerms(zhT0);
-  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, rankLv: $('#rankOn').checked, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value, zhExtra: EXTRA_ZH});
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, rankLv: $('#rankOn').checked, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value, zhExtra: MODE === 'ptu' || !missT ? EXTRA_ZH : new Map([...[...missT].filter(([k]) => !/^vehicle_name/i.test(k)), ...EXTRA_ZH]), exoFill: MODE === 'ptu' ? null : MISS_EN});
   byKey = new Map(result.entries.map(e=>[e.k,e]));
   $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
   view.page=0; renderAll();
@@ -22002,7 +22316,7 @@ $('#addDecode').addEventListener('change', ev => LS.set('addDecode', ev.target.c
 const KEEP_EN_PURE = /^hud_/;   // 萬向節等 HUD 字串：中文會亂碼，維持英文
 const hasCJK = s => /[\u3400-\u9fff]/.test(s || '');
 function pureValue(e){
-  const v = pureBase(e), full = itemsT && itemsT.get(e.k);
+  const v = pureBase(e), full = (itemsT && itemsT.get(e.k)) || (MODE !== 'ptu' && missT && missT.get(e.k));
   if (!full) return v;
   if (e.cat === 'comp') { const m = /^(\S*?\d[A-Da-d])-/.exec(e.out); return m ? m[1] + '-' + full : full; } // 軍規1B-德爾斐 RS-10
   return hasCJK(v) ? v : full;
