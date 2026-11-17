@@ -416,6 +416,7 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
     <h2>更新紀錄</h2>
     <dl>
       <dt><time datetime="2026-11-18">2026-11-18</time></dt>
+      <dd><b>補漏條目加上中文</b>：146 條補漏中仍只有英文的 6 條加上中文：ATLS GEO 採礦型、HYUN 玄、UTV 越野車、S-65 刺鰩、Marauder 劫掠者、Hyun 玄（全繁中版的劫掠者簡稱只顯示「劫掠者」）。</dd>
       <dd><b>補上 ExoAE 漏掉的 146 條（含德雷克 劫掠者）</b>：ExoAE 4.10.3 預先版漏了新飛船 Drake Marauder 與 IAE 2956 活動的條目，遊戲裡會顯示 <code>@vehicle_NameDRAK_Marauder</code> 這類鍵名。現在英文改用 MrKraken StarStrings 正式版補上，中文取自星際公民汉化组 4.10.3 正式版臨時漢化；船名照樣是「德雷克 劫掠者 ⏎ Drake Marauder」。</dd>
       <dt><time datetime="2026-11-16">2026-11-16</time></dt>
       <dd><b>全繁中版加回聲望與獎勵</b>：任務標題的 [聲望] [藍圖] 標籤，以及說明尾端的「獲得聲望」「可能獲得的藍圖」「預計出現的艦船」都保留在全繁中版；藍圖清單的物品與零件名稱、艦船清單的船名會換成中文（例如「- 帕利塞德（護盾）」）。</dd>
@@ -969,6 +970,7 @@ const hasCJK = s => /[\u3400-\u9fff]/.test(s || '');
 function pureValue(e){
   const v = pureBase(e), full = (itemsT && itemsT.get(e.k)) || (MODE !== 'ptu' && missT && missT.get(e.k));
   if (!full) return v;
+  if (/^vehicle_name.*_short/i.test(e.k) && hasCJK(full)) return full; // 船名簡稱：全繁中版只放中文
   if (e.cat === 'comp') { const m = /^(\S*?\d[A-Da-d])-/.exec(e.out); return m ? m[1] + '-' + full : full; } // 軍規1B-德爾斐 RS-10
   return hasCJK(v) ? v : full;
 }

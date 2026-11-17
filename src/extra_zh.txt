@@ -330,3 +330,10 @@ vehicle_room_readyroom=待命室
 +item_Nameksar_lmg_energy_01=Verdict LMG
 +item_Nameksar_lmg_energy_01_short=Verdict LMG
 +item_Descksar_lmg_energy_01=製造商：卡斯塔克軍械 (Kastak Arms)\n物品類型：輕機槍\n分類：能量\n\n「裁決」是卡斯塔克軍械推出的能量輕機槍。
+# ── 4.10.3 補漏條目中仍是英文的：加上中文（英文 中文）
+event_ShipName_ATLS_GEO=ATLS GEO 採礦型
+event_ShipName_Hyun=HYUN 玄
+event_ShipName_UTV=UTV 越野車
+event_ShipTitle_S65=S-65 刺鰩
+vehicle_NameDRAK_Marauder_short,P=Marauder 劫掠者
+vehicle_NameGAMA_Hyun_Short=Hyun 玄

@@ -1,6 +1,7 @@
 # 更新紀錄
 
 ## 2026-11-18
+- **補漏條目加上中文**：146 條補漏中仍只有英文的 6 條（`event_ShipName_ATLS_GEO`、`event_ShipName_Hyun`、`event_ShipName_UTV`、`event_ShipTitle_S65`、`vehicle_NameDRAK_Marauder_short,P`、`vehicle_NameGAMA_Hyun_Short`）在 `src/extra_zh.txt` 加上中文。
 - **補上 ExoAE 漏掉的 146 條**：ExoAE 4.10.3（pre release）缺少新飛船 Drake Marauder（`vehicle_NameDRAK_Marauder` 等）與 IAE 2956 活動條目，遊戲會顯示鍵名。正式版改用 MrKraken StarStrings 正式版的英文補上（`src/live_missing_en.txt`），中文取自星際公民汉化组 4.10.3 LIVE 汉化临时版 V0.1（`src/live_missing_zh_s.txt`），由 `tools/make_live_missing.py` 產生。ExoAE 補上後會自動改用 ExoAE。船名加入 `src/ship_names_zh.txt`。
 
 ## 2026-11-16
