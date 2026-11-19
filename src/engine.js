@@ -336,17 +336,29 @@ Warning: Some blueprint strings in this pool may have been assigned to the wrong
         e.from = e.cat; e.cat = 'loc'; e.out = v;
       }
     }
-    // 飛船：中文在前、英文在後（中文名來自星際公民汉化组）
+    // 飛船：預設英文在前、中文在後（中文名來自星際公民汉化组），讓遊戲裡的飛船清單照廠商英文名排序
+    // shipOrder：en＝英文在前（預設）；zh＝中文在前
+    // 完整船名（不是 _short）缺廠商時依鍵名補上，例如 Cutlass Black PYAM Exec → Drake Cutlass Black PYAM Exec
+    const SHIP_MFR = { AEGS: 'Aegis', ANVL: 'Anvil', ARGO: 'Argo', DRAK: 'Drake', RSI: 'RSI' };
+    const MFR_WORDS = /^(Aegis|Anvil|Aopoa|Argo|Banu|C\.O\.|Consolidated|Crusader|Drake|Esperia|Gatac|Grey's|Greycat|Kruger|MISC|Mirai|Origin|RSI|Syulen|Tumbril|Vanduul)\b/;
+    const shipEn = (k, en) => {
+      if (/_short/i.test(k)) return en;
+      en = en.replace(/^ARGO\b/, 'Argo');
+      const m = /^vehicle_Name([A-Z]+)_/.exec(k), mfr = m && SHIP_MFR[m[1]];
+      if (!mfr || MFR_WORDS.test(en) || /^(Advocacy|KRF)\b/.test(en)) return en;
+      return mfr + ' ' + en;
+    };
     if (opts.ships && opts.ships.size) {
       for (const e of entries) {
         if (!/^vehicle_Name/.test(e.k)) continue;
         const z = (opts.ships.get(e.k) || '').replace(/(?:\\n|\s)+$/, '').trim(), en = (e.out || '').replace(/(?:\\n|\s)+$/, '').trim();
         if (!z || !en || CJK.test(en) || z.includes(en)) continue;
         stats[e.cat]--; stats.ship = (stats.ship || 0) + 1;
-        // 太長就把英文換到下一行（中文算 1 字、英文數字算半字）
-        // 版面：wrap＝一律中文一行、英文下一行（預設）；auto＝超過 shipWrap 字才換行；line＝同一行
+        // 太長就把後面那個語言換到下一行（中文算 1 字、英文數字算半字）
+        // 版面：wrap＝一律分兩行（預設）；auto＝超過 shipWrap 字才換行；line＝同一行
         const layout = opts.shipLayout || 'wrap', wrap = opts.shipWrap == null ? 15 : +opts.shipWrap;
-        const one = z + ' ' + en, two = z + '\\n' + en;
+        const enFirst = opts.shipOrder !== 'zh', en2 = enFirst ? shipEn(e.k, en) : en;
+        const one = enFirst ? en2 + ' ' + z : z + ' ' + en2, two = enFirst ? en2 + '\\n' + z : z + '\\n' + en2;
         e.from = e.cat; e.cat = 'ship'; e.shipZh = z;
         e.out = layout === 'line' ? one : layout === 'auto' ? (wrap > 0 && textLen(one, true) > wrap ? two : one) : two;
       }
