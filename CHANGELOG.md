@@ -1,6 +1,12 @@
 # 更新紀錄
 
 ## 2026-11-19
+- **全繁中版跟上雙語版**：逐條比對兩版（98,396 條，鍵完全一致），補上全繁中版落後的地方：
+  - 漢化包本身留英文的 19 個地名（Hurston、ArcCorp、Area18、Grim HEX、Levski、星門、出生地點選單等），雙語版有「英文 中文」、全繁中版卻只有英文，改用地點對照表的中文（赫斯頓、18區、六角灣…）。
+  - 藍圖清單的燃料噴嘴（Marlin 槍魚、Lindstrom 林斯特龍、Bendix 奔德士、Torrez 托雷斯、Ezra 以斯拉）鍵名是 `Nozzle_…_Name`，之前沒查到，改為一起查。
+  - 預計出現的艦船清單裡的系列名稱（Anvil Hornet（任意型號）→ 鐵砧 大黃蜂、RSI Aurora Mk I → 極光、C.O. Mustang、Constellation Mk IV、C8 Pisces）改用各型號共同的中文。
+  - 通用艦種補上 Heavy Fighter、Medium Fighter、Heavy Interceptor、Distortion Ship、Vanduul Combat Ship（雙語版也一起翻）。
+  - 仍是英文的只剩 Anvil Paladin（漢化組沒有中文名）。
 - **飛船改成英文在前**：船名改為「英文 ⏎ 中文」（例：`Drake Cutlass Black` ⏎ `德雷克 黑彎刀`），遊戲裡的飛船清單照廠商英文名排序（Aegis → Anvil → Argo → … → Vanduul）。完整船名缺廠商的自動補上（`Cutlass Black PYAM Exec` → `Drake Cutlass Black PYAM Exec`、`Aurora Mk II TS Module` → `RSI Aurora Mk II TS Module`、`ARGO MOLE Alliance` → `Argo MOLE Alliance`）；簡稱（`_short`）不加廠商。設定新增「飛船順序」，可改回中文在前。全繁中版不受影響。
 
 ## 2026-11-18

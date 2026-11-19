@@ -421,6 +421,7 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
     <h2>更新紀錄</h2>
     <dl>
       <dt><time datetime="2026-11-19">2026-11-19</time></dt>
+      <dd><b>全繁中版跟上雙語版</b>：逐條比對兩版後補上落後的地方：19 個只剩英文的地名（Hurston、Area18、Grim HEX、星門、出生地點選單等）改成中文；藍圖清單的燃料噴嘴（槍魚、林斯特龍、奔德士、托雷斯、以斯拉）改成中文；預計出現的艦船裡的「Anvil Hornet（任意型號）」等系列名稱改成中文（鐵砧 大黃蜂、極光…）；通用艦種補上重型戰鬥機、干擾型飛船等（雙語版也一起翻）。</dd>
       <dd><b>飛船改成英文在前</b>：船名改為「Drake Cutlass Black ⏎ 德雷克 黑彎刀」，遊戲裡的飛船清單會照廠商英文名排序（Aegis → Anvil → Argo → … → Vanduul）。少數沒寫廠商的船（PYAM 行政版、Aurora 模組）自動補上廠商。想改回中文在前，到設定的「飛船順序」切換。</dd>
       <dt><time datetime="2026-11-18">2026-11-18</time></dt>
       <dd><b>補漏條目加上中文</b>：146 條補漏中仍只有英文的 6 條加上中文：ATLS GEO 採礦型、HYUN 玄、UTV 越野車、S-65 刺鰩、Marauder 劫掠者、Hyun 玄（全繁中版的劫掠者簡稱只顯示「劫掠者」）。</dd>
@@ -988,6 +989,12 @@ function pureBase(e){
     case 'force': return KEEP_EN_PURE.test(e.k) ? e.out : (zh ?? e.out);
     case 'ship':  return (shipsT && shipsT.get(e.k)) || zh || e.out;
     case 'mloc':  return (mlocsT && mlocsT.get(e.k)) || zh || e.out;
+    case 'loc': { // 漢化包本身留英文的地名（Hurston、Area18…）：拿掉雙語版「英文 中文」的英文
+      if (hasCJK(zh)) return zh;
+      const o = String(e.out), en = String(e.exo || '');
+      if (en && o.startsWith(en)) { const r = o.slice(en.length).replace(/^(?:\s|\\n)+/, ''); if (hasCJK(r)) return r; }
+      return zh ?? e.out;
+    }
     case 'ore': { // 「中文 縮寫」或「中文⏎縮寫」只留中文
       const o = String(e.out).replace(/\\n/g, '\n').split('\n')[0].replace(/\s+[A-Za-z][A-Za-z.\-]*$/, '');
       return hasCJK(o) ? o : (zh ?? e.out);
@@ -1004,20 +1011,39 @@ let EN2ZH = null, EN2SHIP = null;
 const PART_TYPE = {'Cooler':'冷卻器','Powerplant':'發電機','Power Plant':'發電機','Shield':'護盾','Radar':'雷達','Mining Laser':'採礦雷射',
   'Quantum Drive':'量子驅動器','Fuel Nozzle':'燃料噴嘴','Salvage Mod':'打撈模組','Modified':'改裝版','Mining Module':'採礦模組'};
 function buildNameMaps(){
-  EN2ZH = new Map(); EN2SHIP = new Map();
+  EN2ZH = new Map(); EN2SHIP = new Map(); SHIPLIST.length = 0; MFR_ZH = null;
   const norm = s => String(s).trim().toLowerCase().replace(/\s+/g, ' ');
   for (const e of result.entries) {
     const k = e.k, en = e.exo; if (!en) continue;
-    const iz = /^item/i.test(k) && !/desc|_short$/i.test(k) && String(en).length < 70 ? ((itemsT && itemsT.get(k)) || (hasCJK(e.zh) ? e.zh : null)) : null;
+    const iz = (/^item/i.test(k) || /^Nozzle_.*_Name$/i.test(k)) && !/desc|_short$/i.test(k) && String(en).length < 70 ? ((itemsT && itemsT.get(k)) || (hasCJK(e.zh) ? e.zh : null)) : null;
     if (iz) {
       const zh = iz, mc = M.COMP_RE ? M.COMP_RE.exec(en) : null;
       for (const n of [en, mc && mc[4]]) if (n && !EN2ZH.has(norm(n))) EN2ZH.set(norm(n), zh);
     }
-    if (/^vehicle_name/i.test(k) && shipsT && shipsT.get(k)) {
-      const z = shipsT.get(k).split('\\n')[0];
+    if (/^vehicle_name/i.test(k) && !/_short/i.test(k) && shipsT && shipsT.get(k)) {
+      const z = shipsT.get(k).split('\\n').find(hasCJK) || '';
+      if (!hasCJK(z)) continue;
       for (const n of [norm(en), norm(en).replace(/^\S+ /, '')]) if (!EN2SHIP.has(n)) EN2SHIP.set(n, z);
+      SHIPLIST.push([new Set(norm(en).split(' ')), z]); // 系列名稱用（Anvil Hornet → 各型 Hornet）
     }
   }
+}
+const SHIPLIST = []; let MFR_ZH = null;
+// 「Anvil Hornet （任意型號）」這種系列名稱：找英文名含有這些字的所有型號，取它們共同的中文詞（鐵砧 大黃蜂）
+function shipFamilyZh(n){
+  const q = n.split(' '); if (q.length < 2) return null;
+  const hits = SHIPLIST.filter(([w]) => q.every(t => w.has(t))).map(x => x[1]);
+  if (hits.length < 2) return null;
+  // 取一半以上型號都有的中文詞，依出現順序排（少數型號中文名不同時不會整個失效）
+  const cnt = new Map(), first = new Map();
+  hits.forEach(z => z.split(' ').forEach((t, i) => { if (!hasCJK(t)) return; cnt.set(t, (cnt.get(t) || 0) + 1); if (!first.has(t)) first.set(t, i); }));
+  const toks = [...cnt].filter(([t, c]) => c * 2 >= hits.length).map(x => x[0]).sort((a, b) => first.get(a) - first.get(b));
+  if (!MFR_ZH) { // 廠商中文詞：出現在 3 種以上不同系列船名開頭的詞（鐵砧、聖盾…）
+    const seen = new Map();
+    for (const [w, z] of SHIPLIST) { const t = z.split(' ')[0], fam = [...w][1] || ''; if (!seen.has(t)) seen.set(t, new Set()); seen.get(t).add(fam); }
+    MFR_ZH = new Set([...seen].filter(([, f]) => f.size >= 3).map(x => x[0]));
+  }
+  return toks.some(t => !MFR_ZH.has(t)) ? toks.join(' ') : null;
 }
 function bpName(n){
   const norm = s => String(s).trim().toLowerCase().replace(/\s+/g, ' ');
@@ -1032,7 +1058,7 @@ function bpName(n){
 }
 function shipZh(x){
   const norm = s => String(s).trim().toLowerCase().replace(/\s+/g, ' ');
-  const n = norm(x), z = EN2SHIP.get(n) || EN2SHIP.get(n.replace(/^\S+ /, ''));
+  const n = norm(x), z = EN2SHIP.get(n) || EN2SHIP.get(n.replace(/^\S+ /, '')) || shipFamilyZh(n);
   return z ? z + (/\s$/.test(x) ? ' ' : '') : x;
 }
 function pureTail(s){
