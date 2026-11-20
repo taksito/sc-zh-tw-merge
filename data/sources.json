@@ -21,10 +21,10 @@
   },
   "ptu": {
     "file": "data/ptu/starstrings-ptu.ini",
-    "sha256": "7a8d7c575fc569bed9a3da38aa9295de663f51b0c8cd07c7c7be996c41f9939d",
-    "size": 11485991,
-    "version": "Alpha 4.10: Siege of Orison | MrKraken Community Translated Version",
-    "fetched_at": "2026-11-18T02:27:40Z"
+    "sha256": "d1d8ff7bca74a13f6cbec25b7ad2663fbd56a3ac479c62c593af3dd3a2631025",
+    "size": 11524697,
+    "version": "",
+    "fetched_at": "2026-11-20T01:47:35Z"
   },
   "ptu_base": {
     "file": "data/ptu/starstrings-live.ini",
