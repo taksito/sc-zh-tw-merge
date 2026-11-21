@@ -21,10 +21,10 @@
   },
   "ptu": {
     "file": "data/ptu/starstrings-ptu.ini",
-    "sha256": "d1d8ff7bca74a13f6cbec25b7ad2663fbd56a3ac479c62c593af3dd3a2631025",
-    "size": 11524697,
+    "sha256": "74ed5c02e93f44d21c68bc7310e122837280d10460974ccf848a0a99b4748857",
+    "size": 11545561,
     "version": "",
-    "fetched_at": "2026-11-20T01:47:35Z"
+    "fetched_at": "2026-11-21T01:34:01Z"
   },
   "ptu_base": {
     "file": "data/ptu/starstrings-live.ini",
