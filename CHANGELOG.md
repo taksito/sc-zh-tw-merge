@@ -1,5 +1,9 @@
 # 更新紀錄
 
+## 2026-11-21
+- **補上 Idris 雷達名稱**：遊戲裡會顯示 `@item_Name_Radr_GNRP_S03_idris`，因為官方英文檔本身就漏了這條（鍵名還把 GRNP 拼成 GNRP），ExoAE、StarStrings、汉化组也都沒有。現在補成「伊德里斯 雷達」（英文 Idris Radar，比照 Mauler Radar）。
+- `live_missing_*.txt` 新增「手動補充」區，`tools/make_live_missing.py` 重新產生時會保留。
+
 ## 2026-11-19
 - **全繁中版跟上雙語版**：逐條比對兩版（98,396 條，鍵完全一致），補上全繁中版落後的地方：
   - 漢化包本身留英文的 19 個地名（Hurston、ArcCorp、Area18、Grim HEX、Levski、星門、出生地點選單等），雙語版有「英文 中文」、全繁中版卻只有英文，改用地點對照表的中文（赫斯頓、18區、六角灣…）。

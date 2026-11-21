@@ -428,6 +428,8 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
   <section class="changelog" aria-label="更新紀錄">
     <h2>更新紀錄</h2>
     <dl>
+      <dt><time datetime="2026-11-21">2026-11-21</time></dt>
+      <dd><b>補上 Idris 雷達名稱</b>：Idris 的 S3 雷達在遊戲裡會顯示成 <code>@item_Name_Radr_GNRP_S03_idris</code>，因為官方英文檔本身就漏了這條字串。現在補成「伊德里斯 雷達」。</dd>
       <dt><time datetime="2026-11-19">2026-11-19</time></dt>
       <dd><b>全繁中版跟上雙語版</b>：逐條比對兩版後補上落後的地方：19 個只剩英文的地名（Hurston、Area18、Grim HEX、星門、出生地點選單等）改成中文；藍圖清單的燃料噴嘴（槍魚、林斯特龍、奔德士、托雷斯、以斯拉）改成中文；預計出現的艦船裡的「Anvil Hornet（任意型號）」等系列名稱改成中文（鐵砧 大黃蜂、極光…）；通用艦種補上重型戰鬥機、干擾型飛船等（雙語版也一起翻）。</dd>
       <dd><b>飛船改成英文在前</b>：船名改為「Drake Cutlass Black ⏎ 德雷克 黑彎刀」，遊戲裡的飛船清單會照廠商英文名排序（Aegis → Anvil → Argo → … → Vanduul）。少數沒寫廠商的船（PYAM 行政版、Aurora 模組）自動補上廠商。想改回中文在前，到設定的「飛船順序」切換。</dd>
@@ -11565,6 +11567,9 @@ vehicle_NameDRAK_Marauder=Drake Marauder
 vehicle_NameDRAK_Marauder_short,P=Marauder
 vehicle_NameGAMA_Hyun=Gatac Hyun
 vehicle_NameGAMA_Hyun_Short=Hyun
+# ---- 手動補充：官方英文檔也沒有、遊戲卻會用到的鍵（重新產生時保留）----
+# 4.10.3：Idris 的 S3 雷達，官方鍵名把 GRNP 拼成 GNRP 且英文檔漏了這條，命名比照 Mauler Radar
+item_Name_Radr_GNRP_S03_idris=Idris Radar
 
 </script>
 <script type="text/plain" id="missZh">
@@ -11716,6 +11721,9 @@ vehicle_NameDRAK_Marauder=德雷克 劫掠者
 vehicle_NameDRAK_Marauder_short,P=劫掠者
 vehicle_NameGAMA_Hyun=盖塔克 Hyun
 vehicle_NameGAMA_Hyun_Short=Hyun
+# ---- 手動補充：官方英文檔也沒有、遊戲卻會用到的鍵（重新產生時保留）----
+# 4.10.3：Idris 的 S3 雷達（官方漏字串），中文比照汉化组「重拳 雷达」
+item_Name_Radr_GNRP_S03_idris=伊德里斯 雷达
 
 </script>
 <script type="text/plain" id="mlocNames">

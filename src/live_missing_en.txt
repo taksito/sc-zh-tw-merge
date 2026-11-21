@@ -145,3 +145,6 @@ vehicle_NameDRAK_Marauder=Drake Marauder
 vehicle_NameDRAK_Marauder_short,P=Marauder
 vehicle_NameGAMA_Hyun=Gatac Hyun
 vehicle_NameGAMA_Hyun_Short=Hyun
+# ---- 手動補充：官方英文檔也沒有、遊戲卻會用到的鍵（重新產生時保留）----
+# 4.10.3：Idris 的 S3 雷達，官方鍵名把 GRNP 拼成 GNRP 且英文檔漏了這條，命名比照 Mauler Radar
+item_Name_Radr_GNRP_S03_idris=Idris Radar

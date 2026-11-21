@@ -146,3 +146,6 @@ vehicle_NameDRAK_Marauder=德雷克 劫掠者
 vehicle_NameDRAK_Marauder_short,P=劫掠者
 vehicle_NameGAMA_Hyun=盖塔克 Hyun
 vehicle_NameGAMA_Hyun_Short=Hyun
+# ---- 手動補充：官方英文檔也沒有、遊戲卻會用到的鍵（重新產生時保留）----
+# 4.10.3：Idris 的 S3 雷達（官方漏字串），中文比照汉化组「重拳 雷达」
+item_Name_Radr_GNRP_S03_idris=伊德里斯 雷达
