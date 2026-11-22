@@ -429,6 +429,7 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
     <h2>更新紀錄</h2>
     <dl>
       <dt><time datetime="2026-11-22">2026-11-22</time></dt>
+      <dd><b>拉格朗日點縮寫保留英文</b>：「十-L1 雄心偉夢站」改成「CRU-L1 雄心偉夢站」、「派1 L1-A 入口」改成「PYR1 L1-A 入口」，HUR、ARC、MIC 也一樣，後面的站名維持中文。雙語版和全繁中版都套用。</dd>
       <dd><b>全繁中版：星圖地名全部中文化</b>：F2 星圖上原本是英文的地名改成中文，例如 Seraphim Station → 熾天使空間站、Cellin → 賽琳、Daymar → 戴瑪爾、CRU L1 → 十 CRU L1、Monox → 殁氧星，連同前哨站、地下設施、拉格朗日休息站、勢力和人名，共補上約 1,900 條（來源：漢化組全漢化 4.10.3）。雙語版不變。</dd>
       <dt><time datetime="2026-11-21">2026-11-21</time></dt>
       <dd><b>補上 Idris 雷達名稱</b>：Idris 的 S3 雷達在遊戲裡會顯示成 <code>@item_Name_Radr_GNRP_S03_idris</code>，因為官方英文檔本身就漏了這條字串。現在補成「伊德里斯 雷達」。</dd>
@@ -24631,10 +24632,19 @@ function pureTail(s){
     .replace(/(\d+x )([A-Za-z][^、,\\（]*?)(?=、|, | 或 |\\n|$|（)/g, (m, a, n) => a + n.split(' / ').map(x => shipZh(x)).join(' / '));
 }
 
+// 拉格朗日點等縮寫保留英文：漢化組寫成「十-L1」「十 CRU L1」「派1 L1-A」，改回 CRU-L1、CRU L1、PYR1 L1-A，後面的名稱維持中文
+const LCODE = {'十':'CRU', '赫':'HUR', '弧':'ARC', '微':'MIC'};
+function lcode(v){
+  const s = String(v ?? '');
+  if (!/[十赫弧微派]/.test(s)) return v;
+  return s.replace(/[十赫弧微] ?(CRU|HUR|ARC|MIC) (?=L\d)/g, '$1 ')
+          .replace(/([十赫弧微])-L(\d)/g, (m, a, n) => LCODE[a] + '-L' + n)
+          .replace(/派(\d) L(\d)/g, 'PYR$1 L$2');
+}
 function buildPureOutput(){
   EN2ZH = null;
   const eol = parsed.exo.crlf ? '\r\n' : '\n';
-  let out = M.buildIni(result.entries, pureValue, eol);
+  let out = M.buildIni(result.entries, e => lcode(pureValue(e)), eol);
   if ($('#addDecode').checked && DECODE.length) out += DECODE.filter(l => !byKey.has(l.slice(0, l.indexOf('=')))).join(eol) + eol;
   return out;
 }
@@ -24667,7 +24677,7 @@ $('#pIni').onclick = async () => { toast('正在產生全繁中版…'); await t
 
 function buildOutput(){
   const eol = parsed.exo.crlf ? '\r\n' : '\n';
-  let out = M.buildIni(result.entries, finalValue, eol);
+  let out = M.buildIni(result.entries, e => lcode(finalValue(e)), eol);
   if ($('#addDecode').checked && DECODE.length) {
     const have = byKey;
     const extra = DECODE.filter(l => !have.has(l.slice(0, l.indexOf('='))));
