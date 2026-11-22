@@ -420,6 +420,8 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
   <section class="changelog" aria-label="更新紀錄">
     <h2>更新紀錄</h2>
     <dl>
+      <dt><time datetime="2026-11-22">2026-11-22</time></dt>
+      <dd><b>全繁中版：星圖地名全部中文化</b>：F2 星圖上原本是英文的地名改成中文，例如 Seraphim Station → 熾天使空間站、Cellin → 賽琳、Daymar → 戴瑪爾、CRU L1 → 十 CRU L1、Monox → 殁氧星，連同前哨站、地下設施、拉格朗日休息站、勢力和人名，共補上約 1,900 條（來源：漢化組全漢化 4.10.3）。雙語版不變。</dd>
       <dt><time datetime="2026-11-21">2026-11-21</time></dt>
       <dd><b>補上 Idris 雷達名稱</b>：Idris 的 S3 雷達在遊戲裡會顯示成 <code>@item_Name_Radr_GNRP_S03_idris</code>，因為官方英文檔本身就漏了這條字串。現在補成「伊德里斯 雷達」。</dd>
       <dt><time datetime="2026-11-19">2026-11-19</time></dt>
@@ -468,6 +470,9 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
 </script>
 <script type="text/plain" id="itemNamesFull">
 /*ITEMSFULL*/
+</script>
+<script type="text/plain" id="fullNames">
+/*FULLNAMES*/
 </script>
 <script type="text/plain" id="missEn">
 /*MISSEN*/
@@ -717,6 +722,9 @@ function readEmbedded(id){ const m = new Map(), el = document.getElementById(id)
 const SHIPS_RAW = readEmbedded('shipNames'), MLOCS_RAW = readEmbedded('mlocNames');
 // 全繁中版用的物品中文名稱（汉化组全汉化）
 const ITEMS_RAW = readEmbedded('itemNamesFull');
+// 全繁中版用的全漢化補充：星圖地名、太空站、勢力、人名…（半漢化包留英文的部分）
+const FULLN_RAW = readEmbedded('fullNames');
+let fullT = null;
 // ExoAE 漏掉的鍵：英文（StarStrings）與中文（汉化组，簡體）
 const MISS_EN = readEmbedded('missEn'), MISS_RAW = readEmbedded('missZh');
 let missT = null;
@@ -729,7 +737,7 @@ function convertMap(raw, mode){
   const vals = conv([...raw.values()].join('\n')).split('\n');
   const out = new Map(); keys.forEach((k, i) => out.set(k, vals.length === keys.length ? vals[i] : raw.get(k))); return out;
 }
-function convertShips(mode){ shipsT = convertMap(SHIPS_RAW, mode); mlocsT = convertMap(MLOCS_RAW, mode); itemsT = convertMap(ITEMS_RAW, mode); missT = convertMap(MISS_RAW, mode); }
+function convertShips(mode){ shipsT = convertMap(SHIPS_RAW, mode); mlocsT = convertMap(MLOCS_RAW, mode); itemsT = convertMap(ITEMS_RAW, mode); fullT = convertMap(FULLN_RAW, mode); missT = convertMap(MISS_RAW, mode); }
 function applyTerms(map){
   const d = M.parseDict(dictTerm.value);
   if (!d.length) return map;
@@ -979,7 +987,8 @@ $('#addDecode').addEventListener('change', ev => LS.set('addDecode', ev.target.c
 const KEEP_EN_PURE = /^hud_/;   // 萬向節等 HUD 字串：中文會亂碼，維持英文
 const hasCJK = s => /[\u3400-\u9fff]/.test(s || '');
 function pureValue(e){
-  const v = pureBase(e), full = (itemsT && itemsT.get(e.k)) || (MODE !== 'ptu' && missT && missT.get(e.k));
+  const k = String(e.k).replace(/,P$/, ''); // 有些鍵在檔案裡帶 ,P 後綴，對照表用的是不帶後綴的鍵名
+  const v = pureBase(e), full = (itemsT && (itemsT.get(e.k) || itemsT.get(k))) || (MODE !== 'ptu' && ((missT && (missT.get(e.k) || missT.get(k))) || (fullT && fullT.get(k))));
   if (!full) return v;
   if (/^vehicle_name.*_short/i.test(e.k) && hasCJK(full)) return full; // 船名簡稱：全繁中版只放中文
   if (e.cat === 'comp') { const m = /^(\S*?\d[A-Da-d])-/.exec(e.out); return m ? m[1] + '-' + full : full; } // 軍規1B-德爾斐 RS-10
