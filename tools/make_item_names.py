@@ -36,6 +36,9 @@ MANUAL = {
     'item_Nameksar_lmg_energy_01_short': '裁决 轻机枪',
     'item_Nameksar_lmg_energy_01_store01': '裁决 轻机枪 衍化',
     'item_Nameksar_lmg_energy_01_store01_short': '裁决 轻机枪 衍化',
+    # 塗裝版（tint01～05）與彈匣：官方英文檔也沒有名稱，先用基本款名稱
+    **{f'item_Nameksar_lmg_energy_01_tint0{i}{s}': '裁决 轻机枪' for i in range(1, 6) for s in ('', '_short')},
+    'item_Nameksar_lmg_energy_01_mag': '裁决 轻机枪电池',
 }
 have = {l.split('=', 1)[0] for l in out}
 out += [f'{k}={v}' for k, v in MANUAL.items() if k not in have]

@@ -329,6 +329,18 @@ vehicle_room_readyroom=待命室
 # ── 遊戲會用到、但所有語言包都缺的鍵（鍵名前加 +，強制補上）
 +item_Nameksar_lmg_energy_01=Verdict LMG
 +item_Nameksar_lmg_energy_01_short=Verdict LMG
+# Verdict 塗裝版（tint01～05）與彈匣：官方英文檔也沒有名稱，先用基本款名稱
++item_Nameksar_lmg_energy_01_tint01=Verdict LMG
++item_Nameksar_lmg_energy_01_tint01_short=Verdict LMG
++item_Nameksar_lmg_energy_01_tint02=Verdict LMG
++item_Nameksar_lmg_energy_01_tint02_short=Verdict LMG
++item_Nameksar_lmg_energy_01_tint03=Verdict LMG
++item_Nameksar_lmg_energy_01_tint03_short=Verdict LMG
++item_Nameksar_lmg_energy_01_tint04=Verdict LMG
++item_Nameksar_lmg_energy_01_tint04_short=Verdict LMG
++item_Nameksar_lmg_energy_01_tint05=Verdict LMG
++item_Nameksar_lmg_energy_01_tint05_short=Verdict LMG
++item_Nameksar_lmg_energy_01_mag=Verdict LMG Battery
 +item_Descksar_lmg_energy_01=製造商：卡斯塔克軍械 (Kastak Arms)\n物品類型：輕機槍\n分類：能量\n\n「裁決」是卡斯塔克軍械推出的能量輕機槍。
 # ── 4.10.3 補漏條目中仍是英文的：加上中文（英文 中文）
 event_ShipName_ATLS_GEO=ATLS GEO 採礦型
