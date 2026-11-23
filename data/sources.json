@@ -9,10 +9,10 @@
   },
   "exo": {
     "file": "data/exocomp.ini",
-    "sha256": "99ed6cd531771fbf748018d98a165ae95bf3d6969e6f5fe3de38908087ae4045",
-    "size": 10863803,
+    "sha256": "3b50df1c1f0d47189122ee5d85f0b7cbf52b2fe6bcac41fc5635b95f8aa46373",
+    "size": 11034639,
     "version": "Alpha 4.10.3: Siege of Orison",
-    "fetched_at": "2026-11-13T01:08:21Z"
+    "fetched_at": "2026-11-23T00:55:56Z"
   },
   "exo_base": {
     "file": "data/exocomp.base.ini",
