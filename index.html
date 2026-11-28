@@ -428,6 +428,8 @@ g_languageAudio = english</pre><button class="sm" id="copyCfg">複製</button></
   <section class="changelog" aria-label="更新紀錄">
     <h2>更新紀錄</h2>
     <dl>
+      <dt><time datetime="2026-11-28">2026-11-28</time></dt>
+      <dd><b>雙語版：4.10.3 新物品名稱改回英文</b>：像 Arlington "Everglade" Rifle、Galaxy 模組、Marauder 塗裝等 31 個新物品，之前在雙語版顯示成中文，現在跟其他物品一樣保留英文。全繁中版不變。</dd>
       <dt><time datetime="2026-11-23">2026-11-23</time></dt>
       <dd><b>補上 Verdict 輕機槍塗裝版名稱</b>：遊戲裡會顯示 <code>@item_Nameksar_lmg_energy_01_tint02</code> 這類鍵名，因為官方英文檔本身就漏了。現在補上 tint01～05 和彈匣的名稱（全繁中版顯示「裁決 輕機槍」）。官方沒有塗裝名稱，先用基本款名稱。</dd>
       <dt><time datetime="2026-11-22">2026-11-22</time></dt>
@@ -24355,7 +24357,7 @@ function remerge(){
   LS.set('dictTail', dictTail.value); LS.set('dictTerm', dictTerm.value);
   LS.set('oreZh2', $('#oreZh').value); LS.set('oreAbbr2', $('#oreAbbr').value); LS.set('forceExo', $('#forceExo').value); LS.set('locZh', $('#locZh').value); LS.set('fillZh', $('#fillZh').value); LS.set('locOn', $('#locOn').checked); LS.set('shipOn', $('#shipOn').checked); LS.set('mlocOn', $('#mlocOn').checked); LS.set('rankOn', $('#rankOn').checked); LS.set('shipWrap', +$('#shipWrap').value); LS.set('shipLayout', $('#shipLayout').value); LS.set('shipOrder', $('#shipOrder').value); LS.set('oreLimit', +$('#oreLimit').value||14); LS.set('oreHalf', $('#oreHalf').checked);
   const zhT = applyTerms(zhT0);
-  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, rankLv: $('#rankOn').checked, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value, shipOrder: $('#shipOrder').value, zhExtra: MODE === 'ptu' || !missT ? EXTRA_ZH : new Map([...[...missT].filter(([k]) => !/^vehicle_name/i.test(k)), ...EXTRA_ZH]), exoFill: MODE === 'ptu' ? null : MISS_EN});
+  result = M.merge(parsed.zh, zhT, parsed.exo, parsed.van, {tailDict: dictTail.value, ore: oreOpts(), exoBase: parsed.base, forceExo: $('#forceExo').value, fill: $('#fillZh').value, loc: $('#locOn').checked ? {zhNames: $('#locZh').value} : false, ships: $('#shipOn').checked ? shipsT : null, mlocs: $('#mlocOn').checked ? mlocsT : null, rankLv: $('#rankOn').checked, shipWrap: +$('#shipWrap').value, shipLayout: $('#shipLayout').value, shipOrder: $('#shipOrder').value, zhExtra: MODE === 'ptu' || !missT ? EXTRA_ZH : new Map([...[...missT].filter(([k]) => !/^(vehicle_name|item_name)/i.test(k)) /* 雙語版的船名、物品名稱維持英文；全繁中版另外直接查 missT */, ...EXTRA_ZH]), exoFill: MODE === 'ptu' ? null : MISS_EN});
   byKey = new Map(result.entries.map(e=>[e.k,e]));
   $('#sumPanel').hidden=false; $('#reviewPanel').hidden=false;
   view.page=0; renderAll();

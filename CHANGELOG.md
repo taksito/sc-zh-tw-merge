@@ -1,5 +1,8 @@
 # 更新紀錄
 
+## 2026-11-28
+- **雙語版：4.10.3 新物品名稱改回英文**：補漏清單裡 31 個 4.10.3 新物品（Arlington "Everglade" Rifle、Galaxy 模組、Marauder／Liberator／Galaxy 塗裝、Idris Radar…）在雙語版顯示成中文，跟其他物品保留英文的慣例不一致，現在改回英文。全繁中版不變。
+
 ## 2026-11-23
 - **補上 Verdict 輕機槍塗裝版與彈匣名稱**：遊戲會顯示 `@item_Nameksar_lmg_energy_01_tint02` 這類鍵名，因為官方英文檔（StarStrings）、ExoAE、漢化組都沒有這些字串。現在補上 tint01～tint05（含簡稱）和彈匣 `_mag`：雙語版顯示 `Verdict LMG`／`Verdict LMG Battery`，全繁中版顯示「裁決 輕機槍」／「裁決 輕機槍電池」。官方沒有塗裝名稱，先用基本款名稱。其他 KSAR 武器的鍵都完整。
 
