@@ -1,6 +1,7 @@
 # 更新紀錄
 
 ## 2026-11-28
+- **頭盔 HUD 輻射數值被擠掉**：左下角「服裝內部：」太長，後面的 % 顯示不出來，改成「服內」（雙語、全繁中都改）。
 - **雙語版：Stanton 四個空間站加上中文**：`Seraphim Station 熾天使空間站`、`Everus Harbor 埃弗勒斯空間站`、`Baijini Point 拜基尼空間站`、`Port Tressler 特雷斯勒空間站`（中文用漢化組譯名），跟 `Crusader 十字軍` 一樣英文在前。
 - **雙語版：4.10.3 新物品名稱改回英文**：補漏清單裡 31 個 4.10.3 新物品（Arlington "Everglade" Rifle、Galaxy 模組、Marauder／Liberator／Galaxy 塗裝、Idris Radar…）在雙語版顯示成中文，跟其他物品保留英文的慣例不一致，現在改回英文。全繁中版不變。
 

@@ -349,3 +349,5 @@ event_ShipName_UTV=UTV 越野車
 event_ShipTitle_S65=S-65 刺鰩
 vehicle_NameDRAK_Marauder_short,P=Marauder 劫掠者
 vehicle_NameGAMA_Hyun_Short=Hyun 玄
+# 頭盔 HUD 輻射小方塊的標籤：原譯「服裝內部」太長，把數值擠出畫面
+mobiGlas_ui_PersonalStatus_Suit=服內
