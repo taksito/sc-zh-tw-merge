@@ -466,6 +466,10 @@ Ruin Station => 廢墟空間站
 Stanton Gateway => 斯坦頓星門
 Pyro Gateway => 派羅星門
 Port Olisar => 奧麗莎空間站
+Seraphim Station => 熾天使空間站
+Everus Harbor => 埃弗勒斯空間站
+Baijini Point => 拜基尼空間站
+Port Tressler => 特雷斯勒空間站
 `;
   function locProposals(entries, exo, o) {
     // 星系名稱：有 XxxSystem / Xxx_Star 鍵，或值是「Xxx System」
